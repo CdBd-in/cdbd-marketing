@@ -1,0 +1,23 @@
+{
+  "id": "conv-1779355310982-uzl933aq7",
+  "providerId": "claude",
+  "title": "안냐ㅕㅇ",
+  "titleGenerationStatus": "pending",
+  "createdAt": 1779355310987,
+  "updatedAt": 1779355319207,
+  "lastResponseAt": 1779355319207,
+  "sessionId": "28c46853-e18e-4f4b-a57a-0dd54bcca63b",
+  "providerState": {
+    "providerSessionId": "28c46853-e18e-4f4b-a57a-0dd54bcca63b"
+  },
+  "usage": {
+    "model": "haiku",
+    "inputTokens": 10,
+    "cacheCreationInputTokens": 5901,
+    "cacheReadInputTokens": 25826,
+    "contextWindow": 200000,
+    "contextTokens": 31737,
+    "percentage": 16,
+    "contextWindowIsAuthoritative": true
+  }
+}
