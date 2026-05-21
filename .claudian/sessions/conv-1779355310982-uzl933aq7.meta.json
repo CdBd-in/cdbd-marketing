@@ -1,10 +1,10 @@
 {
   "id": "conv-1779355310982-uzl933aq7",
   "providerId": "claude",
-  "title": "안냐ㅕㅇ",
-  "titleGenerationStatus": "pending",
+  "title": "Address Korean greeting",
+  "titleGenerationStatus": "success",
   "createdAt": 1779355310987,
-  "updatedAt": 1779355319207,
+  "updatedAt": 1779355324541,
   "lastResponseAt": 1779355319207,
   "sessionId": "28c46853-e18e-4f4b-a57a-0dd54bcca63b",
   "providerState": {
