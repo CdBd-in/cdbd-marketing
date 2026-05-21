@@ -4,8 +4,8 @@
   "title": "Address Korean greeting",
   "titleGenerationStatus": "success",
   "createdAt": 1779355310987,
-  "updatedAt": 1779357943049,
-  "lastResponseAt": 1779357943049,
+  "updatedAt": 1779358017471,
+  "lastResponseAt": 1779358017471,
   "sessionId": "28c46853-e18e-4f4b-a57a-0dd54bcca63b",
   "providerState": {
     "providerSessionId": "28c46853-e18e-4f4b-a57a-0dd54bcca63b",
@@ -155,13 +155,13 @@
     }
   },
   "usage": {
-    "model": "haiku",
-    "inputTokens": 8,
-    "cacheCreationInputTokens": 490,
-    "cacheReadInputTokens": 86351,
+    "model": "sonnet",
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 299,
+    "cacheReadInputTokens": 46219,
     "contextWindow": 200000,
-    "contextTokens": 86849,
-    "percentage": 43,
+    "contextTokens": 46519,
+    "percentage": 23,
     "contextWindowIsAuthoritative": true
   }
 }
