@@ -4,8 +4,8 @@
   "title": "Respond to greeting",
   "titleGenerationStatus": "success",
   "createdAt": 1779370231176,
-  "updatedAt": 1779435519419,
-  "lastResponseAt": 1779435519419,
+  "updatedAt": 1779435630908,
+  "lastResponseAt": 1779435630908,
   "sessionId": "488ffe7c-75f9-4776-8e78-4c790af2a01d",
   "providerState": {
     "providerSessionId": "488ffe7c-75f9-4776-8e78-4c790af2a01d",
@@ -243,12 +243,12 @@
   },
   "usage": {
     "model": "sonnet",
-    "inputTokens": 1,
-    "cacheCreationInputTokens": 2751,
-    "cacheReadInputTokens": 84697,
+    "inputTokens": 3,
+    "cacheCreationInputTokens": 6859,
+    "cacheReadInputTokens": 92556,
     "contextWindow": 200000,
-    "contextTokens": 87449,
-    "percentage": 44,
+    "contextTokens": 99418,
+    "percentage": 50,
     "contextWindowIsAuthoritative": true
   }
 }
