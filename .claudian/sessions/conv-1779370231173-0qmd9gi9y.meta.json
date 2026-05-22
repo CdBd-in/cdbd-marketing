@@ -1,11 +1,23 @@
 {
   "id": "conv-1779370231173-0qmd9gi9y",
   "providerId": "claude",
-  "title": "안녕",
-  "titleGenerationStatus": "failed",
+  "title": "Respond to greeting",
+  "titleGenerationStatus": "success",
   "createdAt": 1779370231176,
-  "updatedAt": 1779370231192,
-  "lastResponseAt": 1779370231192,
-  "sessionId": null,
-  "providerState": {}
+  "updatedAt": 1779371105042,
+  "lastResponseAt": 1779371100772,
+  "sessionId": "488ffe7c-75f9-4776-8e78-4c790af2a01d",
+  "providerState": {
+    "providerSessionId": "488ffe7c-75f9-4776-8e78-4c790af2a01d"
+  },
+  "usage": {
+    "model": "sonnet",
+    "inputTokens": 3,
+    "cacheCreationInputTokens": 3355,
+    "cacheReadInputTokens": 11157,
+    "contextWindow": 200000,
+    "contextTokens": 14515,
+    "percentage": 7,
+    "contextWindowIsAuthoritative": true
+  }
 }
