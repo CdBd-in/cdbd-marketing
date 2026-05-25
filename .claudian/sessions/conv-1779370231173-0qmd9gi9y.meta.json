@@ -4,8 +4,8 @@
   "title": "Respond to greeting",
   "titleGenerationStatus": "success",
   "createdAt": 1779370231176,
-  "updatedAt": 1779691715277,
-  "lastResponseAt": 1779691715277,
+  "updatedAt": 1779691929381,
+  "lastResponseAt": 1779691929381,
   "sessionId": "488ffe7c-75f9-4776-8e78-4c790af2a01d",
   "providerState": {
     "providerSessionId": "488ffe7c-75f9-4776-8e78-4c790af2a01d",
@@ -244,10 +244,10 @@
   "usage": {
     "model": "opus",
     "inputTokens": 1,
-    "cacheCreationInputTokens": 3670,
-    "cacheReadInputTokens": 212136,
+    "cacheCreationInputTokens": 676,
+    "cacheReadInputTokens": 217619,
     "contextWindow": 1000000,
-    "contextTokens": 215807,
+    "contextTokens": 218296,
     "percentage": 22,
     "contextWindowIsAuthoritative": true
   }
