@@ -1,0 +1,38 @@
+{
+  "capture": {
+    "텍스트 + 이미지": {
+      "file": "card-2col-텍스트_이미지-full.png",
+      "type": "2단 카드",
+      "status": "captured"
+    },
+    "예약": {
+      "file": "card-예약-panel-full.png",
+      "type": "기본 카드 (유료)",
+      "status": "captured_after_dialog",
+      "dialogFile": "card-예약-dialog.png",
+      "note": "예약 완료 1건 당 1크레딧 차감 — 다이얼로그 확인 후 추가됨"
+    }
+  },
+  "editorUITexts": {
+    "buttons": [
+      "닫기",
+      "저장하기",
+      "게시하기",
+      "내보내기",
+      "카드 추가하기",
+      "레이아웃",
+      "디자인",
+      "카드 디자인",
+      "레이어 추가",
+      "전체 카드",
+      "내 카드",
+      "취소하기"
+    ],
+    "links": [
+      "CdBd 가이드센터"
+    ],
+    "headings": [],
+    "tabs": [],
+    "navItems": []
+  }
+}
