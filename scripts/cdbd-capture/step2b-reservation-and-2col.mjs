@@ -66,17 +66,24 @@ try {
   await editor.screenshot({ path: join(OUT_DIR, 'card-예약-dialog.png'), fullPage: false });
   console.log(`   📋 다이얼로그 캡처 완료`);
 
-  // 다이얼로그 안 보라 "카드 추가하기" 버튼 — Enter 키로 primary 액션 트리거
-  // (다이얼로그가 visible 상태에서 Enter는 primary button 클릭과 동일)
-  await editor.keyboard.press('Enter');
-  await editor.waitForTimeout(3000); // 카드 추가 + 패널 렌더링
+  // MUI Dialog 정확히 잡기 — .MuiDialog-paper 안의 contained 보라 버튼
+  // 다이얼로그가 완전히 렌더링될 때까지 대기
+  await editor.locator('.MuiDialog-paper').waitFor({ state: 'visible', timeout: 5000 });
+  console.log('   다이얼로그 visible 확인');
 
-  // 만약 모달이 아직 열려있으면 ESC로 닫기
-  const modalVisible = await editor.locator('text=카드 추가하기').filter({ hasNot: editor.locator('text=새로운 페이지') }).first().isVisible().catch(() => false);
-  if (modalVisible) {
-    await editor.keyboard.press('Escape');
-    await editor.waitForTimeout(1500);
-  }
+  const dialogPrimaryBtn = editor.locator('.MuiDialog-paper button.MuiButton-contained').first();
+  const btnCount = await dialogPrimaryBtn.count();
+  console.log(`   다이얼로그 내 primary 버튼: ${btnCount}개`);
+  await dialogPrimaryBtn.click();
+  await editor.waitForTimeout(3500);
+
+  // 다이얼로그 닫힘 확인 + 카드 추가 모달도 자동으로 닫혔는지 확인
+  const dialogStillVisible = await editor.locator('.MuiDialog-paper').isVisible().catch(() => false);
+  console.log(`   다이얼로그 닫힘 후: ${dialogStillVisible ? '아직 보임' : '닫힘 ✅'}`);
+
+  // 카드 추가 모달도 ESC로 닫기 (열려있다면)
+  await editor.keyboard.press('Escape').catch(() => {});
+  await editor.waitForTimeout(1500);
 
   await editor.screenshot({ path: join(OUT_DIR, 'card-예약-panel-full.png'), fullPage: true });
   log.capture['예약'] = {
