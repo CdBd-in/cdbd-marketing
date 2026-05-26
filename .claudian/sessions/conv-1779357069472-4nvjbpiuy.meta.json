@@ -4,8 +4,8 @@
   "title": "Start conversation",
   "titleGenerationStatus": "success",
   "createdAt": 1779357069473,
-  "updatedAt": 1779775272147,
-  "lastResponseAt": 1779775272147,
+  "updatedAt": 1779775464354,
+  "lastResponseAt": 1779775464354,
   "sessionId": "f9921c8f-9b87-408e-9dc4-daeb364de120",
   "providerState": {
     "providerSessionId": "f9921c8f-9b87-408e-9dc4-daeb364de120"
@@ -13,11 +13,11 @@
   "usage": {
     "model": "opus",
     "inputTokens": 1,
-    "cacheCreationInputTokens": 10084,
-    "cacheReadInputTokens": 149885,
+    "cacheCreationInputTokens": 885,
+    "cacheReadInputTokens": 168682,
     "contextWindow": 1000000,
-    "contextTokens": 159970,
-    "percentage": 16,
+    "contextTokens": 169568,
+    "percentage": 17,
     "contextWindowIsAuthoritative": true
   }
 }

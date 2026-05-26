@@ -1,7 +1,7 @@
 ---
 tags:
   - design-system
-  - manifest
+  - 소재집
   - blog
   - automation
 created: 2026-05-26
@@ -10,7 +10,7 @@ related:
   - "[[블로그/썸네일 디자인 시스템]]"
 ---
 
-# CdBd 자산 매니페스트
+# CdBd 소재집
 
 > **목적**: 블로그 썸네일 자동 생성 시 Claude가 타이틀에 맞는 적절한 시각 자산을 *자동 선택*할 수 있도록 한 카탈로그.
 > **사용처**: [[블로그/썸네일 디자인 시스템]] 섹션 8 프롬프트 템플릿과 함께 컨텍스트로 전달.
@@ -217,7 +217,7 @@ node.fills = [{
 
 | 일자 | 변경 내용 |
 |------|-----------|
-| 2026-05-26 | 매니페스트 초기 생성 — 템플릿 3개(promotion, oak_table, newarrival) + 데코 1개(sparkle) + 매핑 사전 + Figma fills 적용 주의사항 |
+| 2026-05-26 | 소재집 초기 생성 — 템플릿 3개(promotion, oak_table, newarrival) + 데코 1개(sparkle) + 매핑 사전 + Figma fills 적용 주의사항 |
 
 ---
 
@@ -238,7 +238,7 @@ node.fills = [{
 
 ### P3. 장기 (선택)
 - [ ] CdBd 사이트맵 자동 동기화 스크립트 PoC (Next.js RSC payload 분석 또는 sitemap.xml 활용)
-- [ ] 매니페스트 → JSON 변환 스크립트 (프로그래매틱 활용)
+- [ ] 소재집 → JSON 변환 스크립트 (프로그래매틱 활용)
 
 ---
 
