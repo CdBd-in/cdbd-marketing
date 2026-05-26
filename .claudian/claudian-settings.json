@@ -1,8 +1,8 @@
 {
   "userName": "",
   "permissionMode": "yolo",
-  "model": "sonnet",
-  "thinkingBudget": "low",
+  "model": "opus",
+  "thinkingBudget": "medium",
   "effortLevel": "high",
   "serviceTier": "default",
   "enableAutoTitleGeneration": true,
@@ -32,7 +32,7 @@
       "enableOpus1M": false,
       "enableSonnet1M": false,
       "customModels": "",
-      "lastModel": "sonnet",
+      "lastModel": "opus",
       "environmentVariables": "",
       "environmentHash": ""
     },
@@ -47,7 +47,9 @@
       "environmentHash": "",
       "installationMethodsByHost": {
         "device:dd38fa87-2427-4dfe-80b8-596a9446a541": "native-windows",
-        "device:9e0543e9-d10e-49a4-9eb3-58908b532dd1": "native-windows"
+        "device:9e0543e9-d10e-49a4-9eb3-58908b532dd1": "native-windows",
+        "device:7fedeb29-fd4f-436f-a44a-7ad0acb08b36": "native-windows",
+        "device:8f88fde0-48d7-498c-ace4-732264d76c64": "native-windows"
       },
       "wslDistroOverridesByHost": {}
     },
@@ -66,14 +68,14 @@
   },
   "settingsProvider": "claude",
   "savedProviderModel": {
-    "claude": "sonnet"
+    "claude": "opus"
   },
   "savedProviderEffort": {
     "claude": "high"
   },
   "savedProviderServiceTier": {},
   "savedProviderThinkingBudget": {
-    "claude": "low"
+    "claude": "medium"
   },
   "savedProviderPermissionMode": {
     "claude": "yolo"
