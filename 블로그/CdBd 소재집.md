@@ -46,39 +46,39 @@ related:
 
 > **호출 패턴**: `{templates URL}/viewer` + `waitUntil=networkidle0&waitForTimeout=5000` + 모바일 뷰포트 375×812
 > **출처**: https://www.cdbd.in/templates/all
-> **카테고리 총 5개 / 템플릿 총 17개** (2026-05-26 기준)
+> **카테고리 총 5개 / 템플릿 총 17개** (2026-05-26 기준 — 슬러그 17/17 ✅ 확보)
+> **슬러그 추출 방법**: 카테고리 페이지 HTML → RSC payload (`self.__next_f.push`) → unescape → `"url_slug":"..."` 정규식
 
 ### 2.1. 프로필·명함 (`profilelink`) — 7개
 
-| # | 슬러그 | 한글명·핵심 카피 | 태그 | viewer URL | 사용 이력 |
+| # | 슬러그 | 브랜드·핵심 카피 | 태그 | viewer URL | 사용 이력 |
 |---|--------|-----------------|------|------------|-----------|
-| 1 | `promotion` | A1 시큐리티 / 프로모션 노출과 상담 신청으로 전환을 만드는 영업용 명함 | #명함 #영업 #B2B #보안 #프로모션 #상담신청 | https://www.cdbd.in/templates/profilelink/promotion/viewer | 2026-05-26 T2 명함·브로셔 |
-| 2 | _TBD_ | 원페이지 설문형 / 고객 데이터를 종합화하기 | #명함 #설문 #리드수집 #데이터 | _TBD_ | — |
-| 3 | _TBD_ | FINDERS / 원클릭 연락처 저장으로 선점하는 비즈니스 기회 | #명함 #연락처저장 #B2B #네트워킹 | _TBD_ | — |
-| 4 | _TBD_ | SMILING (의료) / 복잡한 홈페이지 대신, 핵심 진료 정보부터 정리해 보여주기 | #명함 #의료 #병원 #진료정보 | _TBD_ | — |
-| 5 | _TBD_ | 포트폴리오형 / 연락처와 작업 이력을 한 번에 확인 | #명함 #포트폴리오 #프리랜서 #크리에이터 | _TBD_ | — |
-| 6 | _TBD_ | 캠페인·사업 소개 / 연락처를 넘어, 진행하는 사업과 캠페인을 소개 | #명함 #캠페인 #사업소개 | _TBD_ | — |
-| 7 | _TBD_ | 김도현 B2B 영업 / 모바일 명함으로 실제 전환율 40% 상승 | #명함 #B2B #영업 #성과강조 #케이스 | _TBD_ | — |
+| 1 | `promotion` | **A1 시큐리티** / 프로모션 노출과 상담 신청으로 전환을 만드는 영업용 명함 | #명함 #영업 #B2B #보안 #프로모션 #상담신청 | https://www.cdbd.in/templates/profilelink/promotion/viewer | 2026-05-26 T2 명함·브로셔 |
+| 2 | `intake` | **원페이지 설문형** / 고객 데이터를 종합화하기 | #명함 #설문 #리드수집 #데이터 | https://www.cdbd.in/templates/profilelink/intake/viewer | — |
+| 3 | `corporate` | **FINDERS** / 원클릭 연락처 저장으로 선점하는 비즈니스 기회 | #명함 #연락처저장 #B2B #기업 #네트워킹 | https://www.cdbd.in/templates/profilelink/corporate/viewer | — |
+| 4 | `dental` | **SMILING (치과·의료)** / 복잡한 홈페이지 대신 핵심 진료 정보부터 정리해 보여주기 | #명함 #의료 #병원 #치과 #진료정보 | https://www.cdbd.in/templates/profilelink/dental/viewer | — |
+| 5 | `portfolio` | **포트폴리오형** / 연락처와 작업 이력을 한 번에 확인 | #명함 #포트폴리오 #프리랜서 #크리에이터 #작업이력 | https://www.cdbd.in/templates/profilelink/portfolio/viewer | — |
+| 6 | `campaign` | **캠페인·사업 소개** / 연락처를 넘어, 진행하는 사업과 캠페인을 소개 | #명함 #캠페인 #사업소개 #SNS | https://www.cdbd.in/templates/profilelink/campaign/viewer | — |
+| 7 | `sales` | **김도현 B2B 영업** / 모바일 명함으로 실제 전환율 40% 상승 | #명함 #B2B #영업 #성과강조 #케이스스터디 | https://www.cdbd.in/templates/profilelink/sales/viewer | — |
 
 ### 2.2. 홍보·카탈로그 (`catalog`) — 4개
 
-| # | 슬러그 | 한글명·핵심 카피 | 태그 | viewer URL | 사용 이력 |
+| # | 슬러그 | 브랜드·핵심 카피 | 태그 | viewer URL | 사용 이력 |
 |---|--------|-----------------|------|------------|-----------|
-| 1 | `oak_table` | Premium Oak Dining Table / 제품 정보 전달과 고객 문의 연결을 위한 디지털 상세 페이지 | #브로셔 #카탈로그 #가구 #프리미엄 #제품상세 #따뜻한톤 | https://www.cdbd.in/templates/catalog/oak_table/viewer | 2026-05-26 T2 명함·브로셔 |
-| 2 | _TBD_ | BLUE NOTE / 시즌 컬렉션과 매장 정보 감각적으로 전달하기 | #카탈로그 #패션 #시즌컬렉션 #매장정보 | _TBD_ | — |
-| 3 | _TBD_ | The ELXE Lab — BEYOND LIQUID / 신제품 소개부터 구매 유도, 매장 안내까지 하나의 흐름으로 | #카탈로그 #뷰티 #신제품 #구매유도 | _TBD_ | — |
-| 4 | _TBD_ | SUNGROVE CLUB / 화보 감성 그대로, 제품 탐색부터 쿠폰까지 | #카탈로그 #패션 #화보 #룩북 #쿠폰 | _TBD_ | — |
-| 참고 | `newarrival` | 신상품 카탈로그 (디자인 시스템 노트 예시 — 카테고리 페이지에서 실물 미확인) | #카탈로그 #신상 #쇼핑몰 | https://www.cdbd.in/templates/catalog/newarrival/viewer | (디자인 시스템 노트 예시) |
+| 1 | `oak_table` | **Premium Oak Dining Table** / 제품 정보 전달과 고객 문의 연결을 위한 디지털 상세 페이지 | #브로셔 #카탈로그 #가구 #프리미엄 #제품상세 #따뜻한톤 | https://www.cdbd.in/templates/catalog/oak_table/viewer | 2026-05-26 T2 명함·브로셔 |
+| 2 | `lookbook` | **BLUE NOTE** / 시즌 컬렉션과 매장 정보 감각적으로 전달하기 | #카탈로그 #패션 #시즌컬렉션 #룩북 #매장정보 | https://www.cdbd.in/templates/catalog/lookbook/viewer | — |
+| 3 | `newarrival` | **The ELXE Lab — BEYOND LIQUID** / 신제품 소개부터 구매 유도, 매장 안내까지 하나의 흐름으로 | #카탈로그 #뷰티 #신제품 #구매유도 #신상 | https://www.cdbd.in/templates/catalog/newarrival/viewer | (디자인 시스템 노트 예시) |
+| 4 | `online_lookbook` | **SUNGROVE CLUB** / 화보 감성 그대로, 제품 탐색부터 쿠폰까지 | #카탈로그 #패션 #화보 #룩북 #쿠폰 #온라인 | https://www.cdbd.in/templates/catalog/online_lookbook/viewer | — |
 
 ### 2.3. 초대·예약 (`invitation`) — 5개
 
-| # | 슬러그 | 한글명·핵심 카피 | 태그 | viewer URL | 사용 이력 |
+| # | 슬러그 | 브랜드·핵심 카피 | 태그 | viewer URL | 사용 이력 |
 |---|--------|-----------------|------|------------|-----------|
-| 1 | _TBD_ | The Heritage Summit / VIP를 위한 맞춤 초대장으로 행사의 품격 높이기 | #초대장 #VIP #행사 #서밋 #프리미엄 | _TBD_ | — |
-| 2 | _TBD_ | 갤러리 예약형 / 예약형 초대장으로 방문 일정 조율 완전 자동화 | #초대장 #예약 #갤러리 #자동화 | _TBD_ | — |
-| 3 | _TBD_ | Olive Pattern · 메리언 / RSVP 접수형 템플릿으로 초대와 참석 관리를 한 번에 | #초대장 #RSVP #참석관리 #이벤트 | _TBD — Figma 4658:1807 가능성_ | 2026-05-26 T4 인스타 이벤트 (가능성) |
-| 4 | _TBD_ | THE SIGNATURE DAY · Snowst / 고객의 이름이 담긴 초대장으로 참석율 2배 만들기 | #초대장 #개인화 #참석율 #VIP | _TBD — Figma 4659:1807 가능성_ | 2026-05-26 T4 개인화 초대장 (가능성) |
-| 5 | _TBD_ | Buttery Moment · 팝업 / 개발 없이 구축하는 우리 브랜드 팝업 스토어 예약 시스템 | #초대장 #팝업스토어 #브랜드 #예약시스템 | _TBD_ | — |
+| 1 | `seminar` | **The Heritage Summit** / VIP를 위한 맞춤 초대장으로 행사의 품격 높이기 | #초대장 #VIP #행사 #서밋 #프리미엄 #세미나 | https://www.cdbd.in/templates/invitation/seminar/viewer | — |
+| 2 | `reservation` | **갤러리 예약형** / 예약형 초대장으로 방문 일정 조율 완전 자동화 | #초대장 #예약 #갤러리 #일정조율 #자동화 | https://www.cdbd.in/templates/invitation/reservation/viewer | — |
+| 3 | `rsvp` | **Olive Pattern · 메리언** / RSVP 접수형 템플릿으로 초대와 참석 관리를 한 번에 | #초대장 #RSVP #참석관리 #이벤트 #접수 | https://www.cdbd.in/templates/invitation/rsvp/viewer | _Figma 4658:1807 (인스타 이벤트) 가능성_ |
+| 4 | `personalized` | **THE SIGNATURE DAY · Snowst** / 고객의 이름이 담긴 초대장으로 참석율 2배 만들기 | #초대장 #개인화 #참석율 #VIP #이름삽입 | https://www.cdbd.in/templates/invitation/personalized/viewer | _Figma 4659:1807 (개인화 초대장) 가능성_ |
+| 5 | `buttery_moment` | **Buttery Moment · 팝업** / 개발 없이 구축하는 우리 브랜드 팝업 스토어 예약 시스템 | #초대장 #팝업스토어 #브랜드 #예약시스템 #F&B | https://www.cdbd.in/templates/invitation/buttery_moment/viewer | — |
 
 ### 2.4. 소식·매거진 (`magazine`) — 0개
 
@@ -87,21 +87,49 @@ related:
 
 ### 2.5. 가이드·신청 (`guide`) — 1개
 
-| # | 슬러그 | 한글명·핵심 카피 | 태그 | viewer URL | 사용 이력 |
+| # | 슬러그 | 브랜드·핵심 카피 | 태그 | viewer URL | 사용 이력 |
 |---|--------|-----------------|------|------------|-----------|
-| 1 | _TBD_ | 가맹 사업 동의·서명 / 가맹 사업 중 발생하는 각종 동의와 서명을 모바일에서 한 번에 | #신청서 #가맹사업 #동의서 #서명 #폼 #B2B | _TBD — Figma 4678:1807 가능성_ | 2026-05-26 T1 사전예약 신청 (가능성) |
+| 1 | `b2b-contract` | **가맹 사업 동의·서명** / 가맹 사업 중 발생하는 각종 동의와 서명을 모바일에서 한 번에 | #신청서 #가맹사업 #동의서 #서명 #폼 #B2B #계약 | https://www.cdbd.in/templates/guide/b2b-contract/viewer | _Figma 4678:1807 (사전예약 신청) 가능성_ |
 
 ---
 
-### 📌 슬러그 확보 우선순위
+### 📌 자동 매핑 가이드 (Claude용)
 
-자주 매핑될 가능성이 높은 템플릿부터 슬러그 채우면 ROI 큼:
-1. **invitation**의 RSVP 접수형, 개인화 초대장 (이벤트성 콘텐츠에 자주 매핑)
-2. **profilelink**의 포트폴리오형, B2B 영업 (전문직 콘텐츠에 자주 매핑)
-3. **catalog**의 BLUE NOTE, SUNGROVE CLUB (패션·뷰티 콘텐츠)
-4. **guide**의 가맹 동의·서명 (B2B 폼 콘텐츠)
+타이틀 키워드 → 슬러그 1차 매칭:
 
-슬러그 확보 방법: CdBd 페이지에서 해당 카드 클릭 → 브라우저 주소창 URL 복사 → 소재집에 입력
+| 타이틀 키워드 | 카테고리 / 슬러그 후보 |
+|--------------|---------------------|
+| "명함", "프로필" (일반) | `profilelink/promotion` 또는 `corporate` |
+| "B2B 영업", "전환율" | `profilelink/sales` 또는 `corporate` |
+| "포트폴리오", "프리랜서" | `profilelink/portfolio` |
+| "병원", "치과", "의료" | `profilelink/dental` |
+| "캠페인" | `profilelink/campaign` |
+| "리드 수집", "설문" | `profilelink/intake` |
+| "브로셔", "카탈로그", "제품 상세" | `catalog/oak_table` (프리미엄) 또는 `newarrival` |
+| "룩북", "패션", "컬렉션" | `catalog/lookbook` 또는 `online_lookbook` |
+| "신제품", "신상" | `catalog/newarrival` |
+| "VIP 행사", "세미나" | `invitation/seminar` |
+| "예약", "방문" | `invitation/reservation` |
+| "RSVP", "참석 관리", "이벤트 신청" | `invitation/rsvp` |
+| "개인화 초대장", "이름 삽입" | `invitation/personalized` |
+| "팝업 스토어" | `invitation/buttery_moment` |
+| "신청서", "동의서", "서명", "가맹" | `guide/b2b-contract` |
+
+### 🔁 슬러그 추출 방법 재현 (다음에 신규 템플릿 추가 시)
+
+```bash
+# 1. 카테고리 페이지 HTML 받기 (User-Agent 필수)
+curl -sL "https://www.cdbd.in/templates/{category}" -A "Mozilla/5.0 ..." -o page.html
+
+# 2. RSC payload unescape 후 url_slug 추출
+python3 -c "
+import re
+content = open('page.html').read()
+pushes = re.findall(r'self\.__next_f\.push\(\[1,\"((?:[^\"\\\\\\\\]|\\\\\\\\.)*)\"\]\)', content)
+data = ''.join(pushes).replace('\\\\\"', '\"').replace('\\\\\\\\', '\\\\').replace('\\\\n', '\\n')
+print(set(re.findall(r'\"url_slug\":\"([a-zA-Z0-9_-]+)\"', data)))
+"
+```
 
 ---
 
@@ -245,6 +273,7 @@ node.fills = [{
 |------|-----------|
 | 2026-05-26 | 소재집 초기 생성 — 템플릿 3개(promotion, oak_table, newarrival) + 데코 1개(sparkle) + 매핑 사전 + Figma fills 적용 주의사항 |
 | 2026-05-26 | § 2 템플릿 카탈로그 보충 — templates/all 캡처 기반 17개 템플릿 한글 카피·태그 정리 (slug는 3개만 확보, 14개 TBD) |
+| 2026-05-26 | § 2 슬러그 17/17 ✅ 완료 — RSC payload(`self.__next_f.push`) 파싱으로 모든 `url_slug` 자동 추출 + viewer URL 17개 모두 확정 + 자동 매핑 가이드 추가 |
 
 ---
 
@@ -269,5 +298,5 @@ node.fills = [{
 
 ---
 
-**Status:** 🌱 Seed — § 2 17개 템플릿 카피·태그 정리 완료 (slug 3/17, 캡처 1/17)
+**Status:** 🌿 Growing — § 2 17개 템플릿 풀 매핑 완료 (slug 17/17 ✅, 캡처 2/17, 자동 매핑 가이드 1차)
 **Last Updated:** 2026-05-26
