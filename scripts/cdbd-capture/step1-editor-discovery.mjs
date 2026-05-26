@@ -105,24 +105,30 @@ try {
   console.log(`   ✅ 대시보드 캡처 완료 (URL: ${page.url()})`);
 
   // ========================================
-  // 3. 첫 페이지 카드 클릭 → 에디터 진입
+  // 3. 첫 페이지의 "수정하기" 버튼 클릭 → 에디터 진입
+  //    (DOM에는 있지만 hover 시에만 시각적으로 보이는 액션 버튼)
   // ========================================
-  console.log('▶ 3) 첫 페이지 카드 클릭 → 에디터 진입');
-  // 페이지 카드를 가장 안전하게 찾기 — "새로운 페이지" 텍스트 또는 카드 클릭
-  const firstCard = page.locator('text=새로운 페이지').first();
-  const hasCards = await firstCard.count() > 0;
+  console.log('▶ 3) 첫 페이지 카드 hover → "수정하기" 클릭');
 
-  if (!hasCards) {
-    console.log('   ⚠️ 페이지 카드가 없어 보임. 새 페이지 만들기 시도');
-    await page.getByRole('button', { name: /새 페이지/ }).first().click();
-  } else {
-    await firstCard.click();
+  // 카드 hover (첫 번째 페이지 카드)
+  const firstCard = page.locator('text=새로운 페이지').first();
+  if (await firstCard.count() > 0) {
+    await firstCard.hover();
+    await page.waitForTimeout(800); // hover 후 액션 버튼 등장 대기
   }
 
+  // "수정하기" 버튼 force click (hidden / overlap 무관)
+  const editButton = page.getByRole('button', { name: '수정하기', exact: true }).first();
+  await editButton.click({ force: true }).catch(async (err) => {
+    console.log(`   ⚠️ '수정하기' force click 실패: ${err.message}`);
+    console.log(`   🔄 대안: 카드 자체 클릭 시도`);
+    await firstCard.click({ force: true });
+  });
+
   // 에디터로 진입 — URL 변경 대기
-  await page.waitForURL((u) => u.pathname !== '/editor' && u.pathname.includes('editor'), { timeout: 15000 })
-    .catch(() => console.log('   ⚠️ URL 변경 안 감지 — 같은 페이지에서 모달 등이 있을 수 있음'));
-  await safeWait(page, 3000);
+  await page.waitForURL((u) => u.pathname !== '/editor' && u.pathname.includes('/editor'), { timeout: 20000 })
+    .catch(() => console.log('   ⚠️ URL 변경 안 감지'));
+  await safeWait(page, 4000);  // 에디터 hydration 충분히 대기
   console.log(`   에디터 URL: ${page.url()}`);
 
   await page.screenshot({ path: join(OUT_DIR, 'editor-full.png'), fullPage: true });
