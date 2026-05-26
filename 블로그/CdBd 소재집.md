@@ -227,30 +227,108 @@ print(set(re.findall(r'\"url_slug\":\"([a-zA-Z0-9_-]+)\"', data)))
 
 ---
 
-## 3. 기능 캡처 라이브러리 (로그인 필요 → 미리 캡처)
+## 3. 기능 라이브러리
 
-> CdBd 에디터·관리자 페이지 등 로그인이 필요한 화면은 Microlink로 캡처 불가. 한 번 수동 캡처 후 attachments 폴더에 저장.
+> **핵심 인사이트**: CdBd 자체가 "기능 조합으로 만든 페이지". 따라서 **viewer 페이지의 한 섹션 = 해당 기능의 라이브 데모**.
+> 기능 캡처 소스를 두 그룹으로 분류:
+> - **3.1 viewer 유래 기능** — Microlink로 자동 캡처 가능 (15개)
+> - **3.2 에디터 유래 기능** — 로그인 필요, 미리 수동 캡처 후 attachments 저장 (8개 우선 후보)
+
+---
+
+### 3.1. viewer 유래 기능 (자동 캡처 가능) ⚡
+
+> 각 기능은 17개 viewer URL 중 하나의 **특정 영역**을 지정해서 캡처.
+> 캡처 방법: Microlink full-page 캡처 → Figma `scaleMode: FILL/FIT/CROP` 또는 `imageTransform` 으로 원하는 영역만 표시.
+
+| 기능명 | 태그 | 캡처 소스 viewer URL | 영역 위치 | 권장 scaleMode |
+|--------|------|---------------------|----------|---------------|
+| **카드형 버튼 (프로모션)** | #프로모션 #링크 #랜딩 #카드형 | https://www.cdbd.in/templates/profilelink/promotion/viewer | 상단 (프로필+카드) | FILL (상단 노출) |
+| **상담 신청 폼** | #폼 #리드수집 #상담 | https://www.cdbd.in/templates/profilelink/promotion/viewer | 하단 (폼 영역) | CROP + imageTransform (하단) |
+| **원클릭 연락처 저장** | #B2B #네트워킹 #저장 | https://www.cdbd.in/templates/profilelink/corporate/viewer | 상단 (저장 버튼) | FILL |
+| **진료 정보 카드** | #병원 #의료 #치과 #진료 | https://www.cdbd.in/templates/profilelink/dental/viewer | 중단 (정보 카드) | FILL |
+| **포트폴리오 갤러리** | #작업이력 #프리랜서 #갤러리 | https://www.cdbd.in/templates/profilelink/portfolio/viewer | 중단 (갤러리 그리드) | FILL |
+| **캠페인 소개** | #캠페인 #사업소개 #SNS | https://www.cdbd.in/templates/profilelink/campaign/viewer | 상단 | FILL |
+| **케이스 스터디 (성과 강조)** | #B2B #성과강조 #케이스 | https://www.cdbd.in/templates/profilelink/sales/viewer | 중단 (성과 카드) | FILL |
+| **원페이지 설문형** | #설문 #리드수집 #데이터 | https://www.cdbd.in/templates/profilelink/intake/viewer | 중·하단 (설문 폼) | CROP (중단부터) |
+| **디지털 제품 상세** | #카탈로그 #제품 #프리미엄 | https://www.cdbd.in/templates/catalog/oak_table/viewer | 상·중단 (제품) | FILL |
+| **시즌 룩북** | #패션 #컬렉션 #룩북 | https://www.cdbd.in/templates/catalog/lookbook/viewer | 상단 | FILL |
+| **신제품 안내** | #신상 #구매유도 #신상품 | https://www.cdbd.in/templates/catalog/newarrival/viewer | 상단 | FILL |
+| **화보 룩북 + 쿠폰** | #화보 #쿠폰 #온라인쇼핑 | https://www.cdbd.in/templates/catalog/online_lookbook/viewer | 상·중단 | FILL |
+| **VIP 맞춤 초대장** | #VIP #행사 #세미나 #프리미엄 | https://www.cdbd.in/templates/invitation/seminar/viewer | 상단 | FILL |
+| **예약 캘린더** | #예약 #일정조율 #캘린더 | https://www.cdbd.in/templates/invitation/reservation/viewer | 중단 (캘린더 UI) | CROP (중단) |
+| **RSVP 접수 폼** | #RSVP #참석관리 #이벤트 #폼 | https://www.cdbd.in/templates/invitation/rsvp/viewer | 중단 (폼) | CROP (중단) |
+| **개인화 (이름 삽입) 초대** | #개인화 #이름삽입 #VIP | https://www.cdbd.in/templates/invitation/personalized/viewer | 상단 (이름 표시) | FILL |
+| **팝업 스토어 예약 시스템** | #팝업 #브랜드 #F&B #예약 | https://www.cdbd.in/templates/invitation/buttery_moment/viewer | 중단 (예약 + 지도) | FILL |
+| **모바일 동의·서명** | #서명 #계약 #B2B #가맹 | https://www.cdbd.in/templates/guide/b2b-contract/viewer | 하단 (서명 패드) | CROP (하단) |
+
+> **영역 위치 조정 팁**: 모바일 뷰포트 캡처(375×812)에서 viewer는 보통 매우 세로로 김. iPhone 베젤 안에 fill 하면 자연스럽게 상단부터 노출. 중단/하단을 보여주려면 **scaleMode: CROP + imageTransform** 필요.
+>
+> ```js
+> // Figma 예시: 캡처의 중단부터 보여주기 (Y축 30% 아래부터)
+> screen.fills = [{
+>   type: 'IMAGE',
+>   scaleMode: 'CROP',
+>   imageHash: '...',
+>   imageTransform: [[1, 0, 0], [0, 1, 0.3]]  // Y offset 30%
+> }];
+> ```
+
+---
+
+### 3.2. 에디터 유래 기능 (수동 캡처 필요) 📸
+
+> CdBd 에디터·관리자 페이지는 로그인이 필요해서 Microlink로 캡처 불가.
+> 한 번 수동 캡처 후 `attachments/cdbd-features/` 에 저장 → 재사용.
 
 **저장 위치**: `attachments/cdbd-features/`
 **파일명 컨벤션**: `{도메인}_{기능}_{태그}.png`
 - 예: `editor_layer-add_ui-update.png`
-- 예: `feature_team-share_collaboration.png`
+- 예: `dashboard_form-responses_analytics.png`
 
-| 기능명 | 태그 | 파일 경로 | 캡처 일자 |
-|--------|------|-----------|-----------|
-| _TBD_ | _아직 캡처 안 됨 — 다음 세션 첫 작업_ | — | — |
+| 기능명 | 태그 | 캡처 위치 (CdBd 사이트 경로) | 파일 경로 | 캡처 일자 |
+|--------|------|----------------------------|----------|-----------|
+| **카드 쌓기 (에디터 메인)** | #편집 #제작 #카드빌더 | cdbd.in/editor — 에디터 진입 화면 | _TBD_ | — |
+| **레이어 추가** | #편집 #UI업데이트 #레이어 | cdbd.in/editor — 레이어 추가 메뉴 활성 상태 | _TBD_ | — |
+| **스타일 시스템 (테마)** | #테마 #디자인 #색상 | cdbd.in/editor — 스타일 패널 | _TBD_ | — |
+| **AI 자동 디자인** | #AI #자동화 #스마트 | cdbd.in/editor — AI 디자인 트리거 화면 | _TBD_ | — |
+| **팀 공유 권한** | #협업 #공유 #권한 | cdbd.in/admin — 멤버 공유 UI | _TBD_ | — |
+| **폼 응답 대시보드** | #폼 #분석 #응답수집 | cdbd.in/admin — 응답 리스트 화면 | _TBD_ | — |
+| **분석 대시보드** | #성장 #지표 #방문수 | cdbd.in/admin — 분석 대시보드 | _TBD_ | — |
+| **개인화 QR 생성** | #QR #개인화 #고객별 | cdbd.in/admin — QR 일괄 생성 화면 | _TBD_ | — |
 
-### 우선 캡처 후보 (자주 등장할 만한 기능)
-- [ ] 카드 쌓기 / 에디터 메인 화면
-- [ ] 레이어 추가
-- [ ] 스타일 시스템 (테마, 색상)
-- [ ] **팀 공유** (협업 권한 설정 UI)
-- [ ] 폼 빌더 (응답 수집)
-- [ ] 분석 대시보드
-- [ ] 개인화 QR 생성
-- [ ] 프로필 링크 편집기
-- [ ] AI 자동 디자인
-- [ ] 다국어 번역
+#### 캡처 가이드 (수동 캡처 시)
+1. **데스크탑 뷰포트 권장** (1440×900) — 에디터·대시보드 UI는 데스크탑 기준 디자인
+2. **CMD+SHIFT+5** (Mac) 또는 **PrtSc** (Windows)로 영역 캡처
+3. **민감 정보 마스킹** — 실제 고객 데이터 흐림 처리
+4. **데모 데이터 사용** — 가능하면 깨끗한 데모 워크스페이스에서 캡처
+5. **파일명 컨벤션 준수** → `attachments/cdbd-features/` 저장 → 이 표 업데이트
+
+---
+
+### 3.3. 기능 → 캡처 자동화 흐름 (Claude 워크플로우)
+
+타이틀에서 기능명이 추출되면 (§ 1 Step 1a 매칭):
+
+```
+1. § 3.1에서 매칭 → viewer URL + 영역 정보 확보
+   ↓
+2. Microlink로 viewer URL 캡처 (모바일 뷰포트)
+   ↓
+3. 캡처를 Figma에 업로드 (upload_assets)
+   ↓
+4. 영역 위치에 맞게 scaleMode + imageTransform 적용
+   ↓
+5. iPhone 베젤 안에 fill
+
+— OR —
+
+1. § 3.2에서 매칭 → attachments 파일 경로 확보
+   ↓
+2. 로컬 파일 읽기 → Figma에 업로드
+   ↓
+3. iPhone 베젤 안에 fill (CROP 거의 불필요)
+```
 
 ---
 
@@ -368,6 +446,7 @@ node.fills = [{
 | 2026-05-26 | 소재집 초기 생성 — 템플릿 3개(promotion, oak_table, newarrival) + 데코 1개(sparkle) + 매핑 사전 + Figma fills 적용 주의사항 |
 | 2026-05-26 | § 2 템플릿 카탈로그 보충 — templates/all 캡처 기반 17개 템플릿 한글 카피·태그 정리 (slug는 3개만 확보, 14개 TBD) |
 | 2026-05-26 | § 2 슬러그 17/17 ✅ 완료 — RSC payload(`self.__next_f.push`) 파싱으로 모든 `url_slug` 자동 추출 + viewer URL 17개 모두 확정 + 자동 매핑 가이드 추가 |
+| 2026-05-26 | § 1 Step 1 다층 분석으로 재설계 (1a 기능명·1b 산업·1c 형식·1d 톤) + 적용 예시 4개 / § 3 기능 라이브러리 재설계 — viewer 유래 18개 자동 매핑표 + 에디터 유래 8개 자리 마련 + scaleMode·imageTransform 가이드 |
 
 ---
 
@@ -392,5 +471,5 @@ node.fills = [{
 
 ---
 
-**Status:** 🌿 Growing — § 2 17개 템플릿 풀 매핑 완료 (slug 17/17 ✅, 캡처 2/17, 자동 매핑 가이드 1차)
+**Status:** 🌿 Growing — § 1 다층 분석 / § 2 17/17 slug ✅ / § 3 viewer 유래 18개 + 에디터 유래 8개 골격 / 자동화 흐름 정립
 **Last Updated:** 2026-05-26
