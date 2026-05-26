@@ -105,37 +105,59 @@ try {
   console.log(`   ✅ 대시보드 캡처 완료 (URL: ${page.url()})`);
 
   // ========================================
-  // 3. 첫 페이지의 "수정하기" 버튼 클릭 → 에디터 진입
-  //    (DOM에는 있지만 hover 시에만 시각적으로 보이는 액션 버튼)
+  // 3. 첫 페이지 카드 hover → "수정하기" 클릭 → 에디터 진입
   // ========================================
-  console.log('▶ 3) 첫 페이지 카드 hover → "수정하기" 클릭');
+  console.log('▶ 3) 첫 페이지 카드 hover → "수정하기" 버튼 클릭');
 
-  // 카드 hover (첫 번째 페이지 카드)
-  const firstCard = page.locator('text=새로운 페이지').first();
-  if (await firstCard.count() > 0) {
-    await firstCard.hover();
-    await page.waitForTimeout(800); // hover 후 액션 버튼 등장 대기
+  // 카드 컨테이너 — "새로운 페이지" + "수정됨" 둘 다 들어있는 div 가 카드
+  const cardContainer = page.locator('div').filter({
+    has: page.getByText('새로운 페이지', { exact: false }),
+  }).filter({
+    has: page.getByText(/수정됨/),
+  }).first();
+
+  const cardCount = await cardContainer.count();
+  console.log(`   카드 컨테이너 발견: ${cardCount}개 (첫 번째 사용)`);
+
+  if (cardCount === 0) {
+    throw new Error('페이지 카드를 찾을 수 없음 — DOM 구조 확인 필요');
   }
 
-  // "수정하기" 버튼 force click (hidden / overlap 무관)
-  const editButton = page.getByRole('button', { name: '수정하기', exact: true }).first();
-  await editButton.click({ force: true }).catch(async (err) => {
-    console.log(`   ⚠️ '수정하기' force click 실패: ${err.message}`);
-    console.log(`   🔄 대안: 카드 자체 클릭 시도`);
-    await firstCard.click({ force: true });
-  });
+  // 1) 카드 전체에 마우스 호버 (텍스트가 아닌 카드 박스 중심)
+  await cardContainer.hover();
+  console.log(`   hover 완료, "수정하기" 버튼 등장 대기...`);
+  await page.waitForTimeout(1500);
 
-  // 에디터로 진입 — URL 변경 대기
-  await page.waitForURL((u) => u.pathname !== '/editor' && u.pathname.includes('/editor'), { timeout: 20000 })
-    .catch(() => console.log('   ⚠️ URL 변경 안 감지'));
-  await safeWait(page, 4000);  // 에디터 hydration 충분히 대기
-  console.log(`   에디터 URL: ${page.url()}`);
+  // 2) 카드 scope 안의 "수정하기" 버튼만 찾기
+  const editButton = cardContainer.getByRole('button', { name: '수정하기', exact: true });
+  const editCount = await editButton.count();
+  console.log(`   카드 내부 "수정하기" 버튼: ${editCount}개`);
 
-  await page.screenshot({ path: join(OUT_DIR, 'editor-full.png'), fullPage: true });
-  await page.screenshot({ path: join(OUT_DIR, 'editor-viewport.png'), fullPage: false });
-  uiTextLog.editor = await extractUITexts(page);
-  uiTextLog.editor.url = page.url();
-  uiTextLog.editor.title = await page.title();
+  // 3) 클릭 — 새 탭 열릴 가능성 대비 popup waiter 같이
+  const popupPromise = context.waitForEvent('page', { timeout: 8000 }).catch(() => null);
+  await editButton.click();
+  const newPage = await popupPromise;
+
+  let targetPage = page;
+  if (newPage) {
+    console.log(`   🆕 새 탭에서 에디터 열림: ${newPage.url()}`);
+    targetPage = newPage;
+    await targetPage.waitForLoadState('networkidle').catch(() => {});
+  } else {
+    // 같은 탭에서 URL 변경 기다리기
+    await page.waitForURL((u) => u.pathname !== '/editor', { timeout: 15000 })
+      .catch(() => console.log('   ⚠️ URL 변경 안 감지'));
+  }
+
+  await targetPage.waitForTimeout(4000);  // hydration
+  console.log(`   에디터 URL: ${targetPage.url()}`);
+  // 이후 캡처 대상도 targetPage 로 교체
+
+  await targetPage.screenshot({ path: join(OUT_DIR, 'editor-full.png'), fullPage: true });
+  await targetPage.screenshot({ path: join(OUT_DIR, 'editor-viewport.png'), fullPage: false });
+  uiTextLog.editor = await extractUITexts(targetPage);
+  uiTextLog.editor.url = targetPage.url();
+  uiTextLog.editor.title = await targetPage.title();
   console.log(`   ✅ 에디터 캡처 완료`);
 
   // ========================================
