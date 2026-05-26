@@ -39,11 +39,17 @@ try {
   await page.getByPlaceholder(/비밀번호.*입력/).fill(PASSWORD);
   await page.screenshot({ path: join(OUT_DIR, '02-login-filled.png'), fullPage: false });
 
-  console.log('▶ 3) 로그인 버튼 클릭');
-  await page.getByRole('button', { name: /로그인하기/ }).click();
+  console.log('▶ 3) 로그인 버튼 클릭 (Google·Apple 제외, 메인 "로그인하기" 버튼만)');
+  // 메인 로그인 버튼은 type=submit, 정확히 "로그인하기" 텍스트
+  await page.getByRole('button', { name: '로그인하기', exact: true }).click();
 
   // 로그인 후 리다이렉트 대기 (URL 변경)
-  await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 15000 });
+  await page.waitForURL((url) => !url.pathname.startsWith('/login'), { timeout: 20000 }).catch(async () => {
+    // URL이 안 바뀌면 에러 메시지 확인
+    const errMsg = await page.locator('text=/잘못|틀렸|일치하지|오류/').first().textContent().catch(() => null);
+    if (errMsg) throw new Error(`로그인 실패 — 페이지 메시지: "${errMsg}"`);
+    throw new Error('로그인 후 URL 변화 없음 (캡차·2FA 등 추가 인증 가능성)');
+  });
   console.log(`✅ 로그인 성공 — 현재 URL: ${page.url()}`);
   await page.screenshot({ path: join(OUT_DIR, '03-after-login.png'), fullPage: true });
 
