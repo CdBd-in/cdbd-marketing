@@ -66,12 +66,17 @@ try {
   await editor.screenshot({ path: join(OUT_DIR, 'card-예약-dialog.png'), fullPage: false });
   console.log(`   📋 다이얼로그 캡처 완료`);
 
-  // 다이얼로그 안의 "카드 추가하기" 버튼 (보라색) 클릭
-  // — 모달 헤더와 구분: 다이얼로그 내부의 카드 추가하기는 더 작은 영역
-  const dialogConfirmBtn = editor.locator('[role="dialog"]').getByRole('button', { name: '카드 추가하기', exact: true })
-    .or(editor.locator('button.MuiButton-contained:has-text("카드 추가하기")'));
-  await dialogConfirmBtn.first().click({ force: true });
+  // 다이얼로그 안 보라 "카드 추가하기" 버튼 — Enter 키로 primary 액션 트리거
+  // (다이얼로그가 visible 상태에서 Enter는 primary button 클릭과 동일)
+  await editor.keyboard.press('Enter');
   await editor.waitForTimeout(3000); // 카드 추가 + 패널 렌더링
+
+  // 만약 모달이 아직 열려있으면 ESC로 닫기
+  const modalVisible = await editor.locator('text=카드 추가하기').filter({ hasNot: editor.locator('text=새로운 페이지') }).first().isVisible().catch(() => false);
+  if (modalVisible) {
+    await editor.keyboard.press('Escape');
+    await editor.waitForTimeout(1500);
+  }
 
   await editor.screenshot({ path: join(OUT_DIR, 'card-예약-panel-full.png'), fullPage: true });
   log.capture['예약'] = {
