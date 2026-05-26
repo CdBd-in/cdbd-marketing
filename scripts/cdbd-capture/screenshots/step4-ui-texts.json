@@ -1,0 +1,51 @@
+{
+  "statsSidebar": {
+    "페이지뷰 & 클릭": {
+      "buttons": [
+        "통계 다운로드"
+      ],
+      "links": [],
+      "headings": [],
+      "tabs": [],
+      "navItems": [],
+      "url": "https://www.cdbd.in/stats/3030/view"
+    },
+    "제출된 답변": {
+      "buttons": [],
+      "links": [],
+      "headings": [],
+      "tabs": [],
+      "navItems": [],
+      "url": "https://www.cdbd.in/stats/3030/survey"
+    },
+    "예약 현황": {
+      "buttons": [],
+      "links": [],
+      "headings": [],
+      "tabs": [],
+      "navItems": [],
+      "url": "https://www.cdbd.in/stats/3030/reservation"
+    },
+    "구독 현황": {
+      "buttons": [
+        "현황 다운로드"
+      ],
+      "links": [],
+      "headings": [],
+      "tabs": [],
+      "navItems": [],
+      "url": "https://www.cdbd.in/stats/3030/subscription"
+    }
+  },
+  "topRightButtons": [
+    {
+      "text": "새 페이지",
+      "ariaLabel": "",
+      "tag": "BUTTON",
+      "x": 1273,
+      "y": 42,
+      "w": 107,
+      "h": 38
+    }
+  ]
+}
