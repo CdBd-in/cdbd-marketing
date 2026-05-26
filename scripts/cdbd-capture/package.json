@@ -1,0 +1,15 @@
+{
+  "name": "cdbd-capture",
+  "version": "0.1.0",
+  "description": "CdBd 에디터·관리자 화면 자동 캡처 — Playwright 기반",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "login-poc": "node login-poc.mjs",
+    "capture": "node capture-all.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0",
+    "dotenv": "^16.4.5"
+  }
+}
