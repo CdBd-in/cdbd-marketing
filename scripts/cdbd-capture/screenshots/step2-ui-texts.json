@@ -1,0 +1,52 @@
+{
+  "modal": {
+    "buttons": [
+      "닫기",
+      "저장하기",
+      "게시하기",
+      "내보내기",
+      "카드 추가하기",
+      "테마 저장",
+      "내 테마",
+      "Text",
+      "색상 더보기",
+      "프리텐다드",
+      "본명조",
+      "평창평화체",
+      "베이글팻",
+      "서체 더보기",
+      "전체 카드",
+      "내 카드"
+    ],
+    "links": [],
+    "headings": [],
+    "tabs": [],
+    "navItems": [],
+    "allCardNamesInDialog": []
+  },
+  "cards": {
+    "갤러리": {
+      "status": "captured",
+      "file": "card-갤러리-full.png",
+      "editorURL": "https://www.cdbd.in/editor/3030"
+    },
+    "질문과 답변": {
+      "status": "captured",
+      "file": "card-질문과_답변-full.png",
+      "editorURL": "https://www.cdbd.in/editor/3030"
+    },
+    "예약": {
+      "status": "captured",
+      "file": "card-예약-full.png",
+      "editorURL": "https://www.cdbd.in/editor/3030"
+    },
+    "2단 카드": {
+      "status": "captured",
+      "file": "card-2단_카드-full.png",
+      "editorURL": "https://www.cdbd.in/editor/3030"
+    },
+    "2단카드": {
+      "status": "not_found"
+    }
+  }
+}
