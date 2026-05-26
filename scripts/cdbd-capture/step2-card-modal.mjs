@@ -36,8 +36,37 @@ try {
   // 3. "카드 추가하기" 클릭 → 모달 캡처
   // ========================================
   console.log('▶ 3) "카드 추가하기" 클릭');
-  await editor.getByRole('button', { name: '카드 추가하기', exact: true }).first().click();
-  await editor.waitForTimeout(2000); // 모달 렌더링 대기
+  // 다양한 selector 시도 (button role, text, contains text)
+  const addCardSelectors = [
+    () => editor.getByRole('button', { name: /카드 추가/ }).first(),
+    () => editor.getByText('카드 추가하기', { exact: true }).first(),
+    () => editor.locator('text=카드 추가하기').first(),
+    () => editor.locator('button:has-text("카드 추가하기")').first(),
+  ];
+  let clicked = false;
+  for (const getLocator of addCardSelectors) {
+    try {
+      const loc = getLocator();
+      await loc.waitFor({ state: 'visible', timeout: 5000 });
+      await loc.click();
+      clicked = true;
+      console.log(`   ✅ selector 성공`);
+      break;
+    } catch (err) {
+      // 다음 selector 시도
+    }
+  }
+  if (!clicked) {
+    // force click 마지막 시도
+    try {
+      await editor.locator('text=카드 추가하기').first().click({ force: true });
+      clicked = true;
+      console.log(`   ⚠️ force click 사용`);
+    } catch (err) {
+      throw new Error('"카드 추가하기" 버튼 click 실패 — 모든 selector 실패');
+    }
+  }
+  await editor.waitForTimeout(2500); // 모달 렌더링 대기
 
   await editor.screenshot({ path: join(OUT_DIR, 'card-add-modal-full.png'), fullPage: true });
   await editor.screenshot({ path: join(OUT_DIR, 'card-add-modal-viewport.png'), fullPage: false });
@@ -107,8 +136,8 @@ try {
 
       // 다음 카드 위해 모달 다시 열기 (마지막 카드면 안 열어도 됨)
       if (cardName !== importantCards[importantCards.length - 1]) {
-        await editor.getByRole('button', { name: '카드 추가하기', exact: true }).first().click();
-        await editor.waitForTimeout(1500);
+        await editor.locator('text=카드 추가하기').first().click({ force: true });
+        await editor.waitForTimeout(1800);
       }
     } catch (err) {
       console.log(`   ❌ "${cardName}" 실패: ${err.message}`);
