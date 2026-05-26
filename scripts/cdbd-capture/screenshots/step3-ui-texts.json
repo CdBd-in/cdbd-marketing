@@ -1,0 +1,33 @@
+{
+  "stats": {
+    "buttons": [
+      "통계 다운로드"
+    ],
+    "links": [],
+    "headings": [],
+    "tabs": [],
+    "navItems": [],
+    "url": "https://www.cdbd.in/stats/3030/view",
+    "title": "모바일 페이지 빌더 CdBd"
+  },
+  "savedPages": {
+    "buttons": [
+      "새 페이지"
+    ],
+    "links": [],
+    "headings": [],
+    "tabs": [],
+    "navItems": [],
+    "url": "https://www.cdbd.in/saved"
+  },
+  "invitedPages": {
+    "buttons": [
+      "새 페이지"
+    ],
+    "links": [],
+    "headings": [],
+    "tabs": [],
+    "navItems": [],
+    "url": "https://www.cdbd.in/invited"
+  }
+}

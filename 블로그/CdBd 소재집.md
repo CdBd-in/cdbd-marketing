@@ -191,23 +191,23 @@ related:
 
 타이틀 키워드 → 슬러그 1차 매칭:
 
-| 타이틀 키워드 | 카테고리 / 슬러그 후보 |
-|--------------|---------------------|
-| "명함", "프로필" (일반) | `profilelink/promotion` 또는 `corporate` |
-| "B2B 영업", "전환율" | `profilelink/sales` 또는 `corporate` |
-| "포트폴리오", "프리랜서" | `profilelink/portfolio` |
-| "병원", "치과", "의료" | `profilelink/dental` |
-| "캠페인" | `profilelink/campaign` |
-| "리드 수집", "설문" | `profilelink/intake` |
-| "브로셔", "카탈로그", "제품 상세" | `catalog/oak_table` (프리미엄) 또는 `newarrival` |
-| "룩북", "패션", "컬렉션" | `catalog/lookbook` 또는 `online_lookbook` |
-| "신제품", "신상" | `catalog/newarrival` |
-| "VIP 행사", "세미나" | `invitation/seminar` |
-| "예약", "방문" | `invitation/reservation` |
-| "RSVP", "참석 관리", "이벤트 신청" | `invitation/rsvp` |
-| "개인화 초대장", "이름 삽입" | `invitation/personalized` |
-| "팝업 스토어" | `invitation/buttery_moment` |
-| "신청서", "동의서", "서명", "가맹" | `guide/b2b-contract` |
+| 타이틀 키워드                   | 카테고리 / 슬러그 후보                              |
+| ------------------------- | ------------------------------------------ |
+| "명함", "프로필" (일반)          | `profilelink/promotion` 또는 `corporate`     |
+| "B2B 영업", "전환율"           | `profilelink/sales` 또는 `corporate`         |
+| "포트폴리오", "프리랜서"           | `profilelink/portfolio`                    |
+| "병원", "치과", "의료"          | `profilelink/dental`                       |
+| "캠페인"                     | `profilelink/campaign`                     |
+| "리드 수집", "설문"             | `profilelink/intake`                       |
+| "브로셔", "카탈로그", "제품 상세"    | `catalog/oak_table` (프리미엄) 또는 `newarrival` |
+| "룩북", "패션", "컬렉션"         | `catalog/lookbook` 또는 `online_lookbook`    |
+| "신제품", "신상"               | `catalog/newarrival`                       |
+| "VIP 행사", "세미나"           | `invitation/seminar`                       |
+| "예약", "방문"                | `invitation/reservation`                   |
+| "RSVP", "참석 관리", "이벤트 신청" | `invitation/rsvp`                          |
+| "개인화 초대장", "이름 삽입"        | `invitation/personalized`                  |
+| "팝업 스토어"                  | `invitation/buttery_moment`                |
+| "신청서", "동의서", "서명", "가맹"  | `guide/b2b-contract`                       |
 
 ### 🔁 슬러그 추출 방법 재현 (다음에 신규 템플릿 추가 시)
 
