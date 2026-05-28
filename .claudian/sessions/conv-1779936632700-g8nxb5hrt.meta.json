@@ -4,8 +4,8 @@
   "title": "Check Wix MCP and CDBD homepage access",
   "titleGenerationStatus": "success",
   "createdAt": 1779936632700,
-  "updatedAt": 1779937928278,
-  "lastResponseAt": 1779937928278,
+  "updatedAt": 1779937987085,
+  "lastResponseAt": 1779937987085,
   "sessionId": "96ec193a-ecca-4c6e-901f-9357de98611f",
   "providerState": {
     "providerSessionId": "96ec193a-ecca-4c6e-901f-9357de98611f"
@@ -13,11 +13,11 @@
   "usage": {
     "model": "opus",
     "inputTokens": 2,
-    "cacheCreationInputTokens": 2253,
-    "cacheReadInputTokens": 62470,
+    "cacheCreationInputTokens": 573,
+    "cacheReadInputTokens": 64723,
     "contextWindow": 1000000,
-    "contextTokens": 64725,
-    "percentage": 6,
+    "contextTokens": 65298,
+    "percentage": 7,
     "contextWindowIsAuthoritative": true
   }
 }
