@@ -1,0 +1,276 @@
+{
+  "url": "https://www.cdbd.in/templates/invitation/rsvp/viewer",
+  "pageHeight": 5596,
+  "sections": [
+    {
+      "y": 0,
+      "h": 844,
+      "w": 390,
+      "yPercent": 0,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": "fixed inset-0 z-0 bg-grey-50 overflow-hi"
+    },
+    {
+      "y": 128,
+      "h": 377,
+      "w": 390,
+      "yPercent": 2,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 136,
+      "h": 329,
+      "w": 366,
+      "yPercent": 2,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": "w-full h-full"
+    },
+    {
+      "y": 632,
+      "h": 92,
+      "w": 390,
+      "yPercent": 11,
+      "textPreview": "행사 시간",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 779,
+      "h": 256,
+      "w": 256,
+      "yPercent": 14,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 826,
+      "h": 91,
+      "w": 390,
+      "yPercent": 15,
+      "textPreview": "에스파스 루미나 아르망 르페브르  청담 플래그십 서울특별시 강남구 청담동",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 940,
+      "h": 410,
+      "w": 390,
+      "yPercent": 17,
+      "textPreview": "300m 서울특별시 강남구 청담동 행사 장소 보러 가기",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 980,
+      "h": 346,
+      "w": 346,
+      "yPercent": 18,
+      "textPreview": "300m 서울특별시 강남구 청담동 행사 장소 보러 가기",
+      "tag": "DIV",
+      "className": "flex flex-col items-center justify-cente"
+    },
+    {
+      "y": 980,
+      "h": 231,
+      "w": 346,
+      "yPercent": 18,
+      "textPreview": "300m",
+      "tag": "DIV",
+      "className": "w-full overflow-hidden flex justify-cent"
+    },
+    {
+      "y": 1035,
+      "h": 256,
+      "w": 256,
+      "yPercent": 18,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 1291,
+      "h": 256,
+      "w": 256,
+      "yPercent": 23,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 1350,
+      "h": 119,
+      "w": 390,
+      "yPercent": 24,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 1468,
+      "h": 102,
+      "w": 390,
+      "yPercent": 26,
+      "textPreview": "아주 특별한  유산과 미식의 밤",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 1578,
+      "h": 243,
+      "w": 390,
+      "yPercent": 28,
+      "textPreview": "론 파트너스 VIP 김나연님을  유산과 미식의 밤에 정중히 모십니다.  ",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 1602,
+      "h": 179,
+      "w": 358,
+      "yPercent": 29,
+      "textPreview": "론 파트너스 VIP 김나연님을  유산과 미식의 밤에 정중히 모십니다.  ",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 1821,
+      "h": 81,
+      "w": 390,
+      "yPercent": 33,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 1902,
+      "h": 102,
+      "w": 390,
+      "yPercent": 34,
+      "textPreview": "아르망 르페브르  헤리티지 컬렉션",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 2011,
+      "h": 597,
+      "w": 390,
+      "yPercent": 36,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 2043,
+      "h": 533,
+      "w": 350,
+      "yPercent": 37,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 2608,
+      "h": 106,
+      "w": 390,
+      "yPercent": 47,
+      "textPreview": "컬렉션 전체보기",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 2714,
+      "h": 81,
+      "w": 390,
+      "yPercent": 48,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 2865,
+      "h": 276,
+      "w": 390,
+      "yPercent": 51,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 2889,
+      "h": 228,
+      "w": 342,
+      "yPercent": 52,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": "relative"
+    },
+    {
+      "y": 3141,
+      "h": 330,
+      "w": 390,
+      "yPercent": 56,
+      "textPreview": "이선우 셰프 경력사항  제이에스더블유 부주방장 2018.02  |   아",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 3142,
+      "h": 328,
+      "w": 340,
+      "yPercent": 56,
+      "textPreview": "이선우 셰프 경력사항  제이에스더블유 부주방장 2018.02  |   아",
+      "tag": "DIV",
+      "className": "relative w-full"
+    },
+    {
+      "y": 3172,
+      "h": 268,
+      "w": 308,
+      "yPercent": 57,
+      "textPreview": "이선우 셰프 경력사항  제이에스더블유 부주방장 2018.02  |   아",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 3471,
+      "h": 122,
+      "w": 390,
+      "yPercent": 62,
+      "textPreview": "셰프 인스타그램 방문하기",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 4075,
+      "h": 105,
+      "w": 390,
+      "yPercent": 73,
+      "textPreview": "담당자 | 박찬희 연락처 | 02-4732-0985",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 4180,
+      "h": 122,
+      "w": 390,
+      "yPercent": 75,
+      "textPreview": "전화로 문의하기",
+      "tag": "DIV",
+      "className": ""
+    },
+    {
+      "y": 4302,
+      "h": 81,
+      "w": 390,
+      "yPercent": 77,
+      "textPreview": "",
+      "tag": "DIV",
+      "className": ""
+    }
+  ]
+}
