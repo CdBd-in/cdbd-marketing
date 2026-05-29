@@ -4,8 +4,8 @@
   "title": "Restart work session",
   "titleGenerationStatus": "success",
   "createdAt": 1780022590340,
-  "updatedAt": 1780035136588,
-  "lastResponseAt": 1780035136588,
+  "updatedAt": 1780035475150,
+  "lastResponseAt": 1780035475150,
   "sessionId": "5370c450-17b4-4d2a-a397-42389a446ccd",
   "providerState": {
     "providerSessionId": "5370c450-17b4-4d2a-a397-42389a446ccd"
@@ -14,11 +14,11 @@
   "usage": {
     "model": "opus",
     "inputTokens": 2,
-    "cacheCreationInputTokens": 284,
-    "cacheReadInputTokens": 349119,
+    "cacheCreationInputTokens": 1318,
+    "cacheReadInputTokens": 377159,
     "contextWindow": 1000000,
-    "contextTokens": 349405,
-    "percentage": 35,
+    "contextTokens": 378479,
+    "percentage": 38,
     "contextWindowIsAuthoritative": true
   }
 }
