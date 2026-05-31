@@ -4,8 +4,8 @@
   "title": "Resume previous work",
   "titleGenerationStatus": "success",
   "createdAt": 1780218606682,
-  "updatedAt": 1780221418340,
-  "lastResponseAt": 1780221418340,
+  "updatedAt": 1780221592380,
+  "lastResponseAt": 1780221592380,
   "sessionId": "ee9d23f1-9177-41ee-a4b0-693913c9fc9d",
   "providerState": {
     "providerSessionId": "ee9d23f1-9177-41ee-a4b0-693913c9fc9d"
@@ -14,11 +14,11 @@
   "usage": {
     "model": "opus",
     "inputTokens": 1,
-    "cacheCreationInputTokens": 747,
-    "cacheReadInputTokens": 207385,
+    "cacheCreationInputTokens": 111,
+    "cacheReadInputTokens": 218203,
     "contextWindow": 1000000,
-    "contextTokens": 208133,
-    "percentage": 21,
+    "contextTokens": 218315,
+    "percentage": 22,
     "contextWindowIsAuthoritative": true
   }
 }
