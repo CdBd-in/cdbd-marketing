@@ -1,9 +1,16 @@
-// CdBd 블로그 썸네일 자동 제작 Plugin
-// vault: 1. 디자인 가이드 (5유형 시스템 + 슬롯 16종 + 베리에이션 워크플로우)
+// CdBd 블로그 썸네일 자동 제작 Plugin v4
+// vault: 1. 디자인 가이드
+// v4 변경: 공식 목업 컴포넌트 인스턴스 + TITLE/SUBTITLE 자동 줄바꿈 (width 300)
 
-// 강조색 (1-1. 스타일)
+// 강조색 (1-1 §2)
 const GREEN = { r: 77 / 255, g: 233 / 255, b: 139 / 255 };
 const PURPLE = { r: 143 / 255, g: 128 / 255, b: 255 / 255 };
+
+// 텍스트 자동 줄바꿈 임계 (1-1 §3.텍스트 작성 규칙)
+const TEXT_MAX_WIDTH = 300;
+
+// 공식 목업 컴포넌트 ID (1-3-1 §1.1.a)
+const DEFAULT_MOCKUP_ID = "1:1368"; // 원페이지 목업-1
 
 figma.showUI(__html__, { width: 500, height: 700 });
 
@@ -20,36 +27,25 @@ figma.ui.onmessage = async (msg) => {
   }
 };
 
-/**
- * 4안 자동 제작 메인 함수
- * @param {Object} payload
- * @param {string} payload.title - 타이틀 (줄바꿈 \n 포함 가능)
- * @param {string} payload.subtitle - 서브타이틀 (없으면 빈 문자열)
- * @param {string} payload.emphasis - 강조어 (타이틀 안에 있는 문구)
- * @param {Array<{slotId: string, imageHash: string, name: string}>} payload.variants
- */
 async function createVariants(payload) {
   const { title, subtitle, emphasis, variants } = payload;
 
-  // 슬롯 페이지로 전환
   await figma.loadAllPagesAsync();
-  let slotPage = figma.root.children.find(
-    (p) => p.name === "🧩 썸네일 자동생성 템플릿 (슬롯)" || p.id === "1:1245"
-  );
+  let slotPage =
+    figma.root.children.find((p) => p.id === "1:1245") ||
+    figma.root.children.find((p) => p.name.includes("슬롯"));
   if (!slotPage) slotPage = figma.currentPage;
-
   await figma.setCurrentPageAsync(slotPage);
 
-  // 강조색: 서브 있으면 그린, 없으면 퍼플 (1-1 §2)
   const emphasisColor = subtitle ? GREEN : PURPLE;
-
   const results = [];
-  let xCursor = -3500;
+  const baseX = -3500;
   const baseY = 4000;
-  let yRow = 0;
 
   for (let i = 0; i < variants.length; i++) {
-    const { slotId, imageHash, name } = variants[i];
+    const v = variants[i];
+    const { slotId, imageHash, name } = v;
+    const mockupId = v.mockupId || DEFAULT_MOCKUP_ID;
 
     const original = await figma.getNodeByIdAsync(slotId);
     if (!original) {
@@ -57,91 +53,149 @@ async function createVariants(payload) {
       continue;
     }
 
-    // 슬롯 clone
     const cloned = original.clone();
     cloned.name = name || `안${i + 1}_${slotId}`;
-    cloned.x = xCursor + (i % 4) * 650;
+    cloned.x = baseX + (i % 4) * 650;
     cloned.y = baseY + Math.floor(i / 4) * 500;
     slotPage.appendChild(cloned);
 
-    // VISUAL_SLOT에 이미지 fill (FILL — 캡쳐는 미리 슬롯 비율로 크롭한 이미지 사용 권장)
+    // 1) VISUAL_SLOT 찾기
     const visualSlot = cloned.findOne((n) => n.name === "VISUAL_SLOT");
-    if (visualSlot && "fills" in visualSlot) {
-      visualSlot.fills = [
-        {
-          type: "IMAGE",
-          imageHash: imageHash,
-          scaleMode: "FILL",
-        },
-      ];
-      // placeholder 외곽선 제거
-      if ("strokes" in visualSlot) visualSlot.strokes = [];
+    if (visualSlot) {
+      // 2) 공식 목업 컴포넌트 인스턴스 생성 + 내부 #FFFFFF rect에 fill
+      const result = await applyMockup(cloned, visualSlot, mockupId, imageHash);
+      if (!result.success) {
+        // 폴백: 목업 못 찾으면 VISUAL_SLOT에 직접 fill
+        if ("fills" in visualSlot) {
+          visualSlot.fills = [
+            { type: "IMAGE", imageHash: imageHash, scaleMode: "FILL" },
+          ];
+          if ("strokes" in visualSlot) visualSlot.strokes = [];
+        }
+      }
     }
 
-    // TITLE 텍스트 + 강조어 그린 — TITLE 못 찾으면 폴백 (옛 더미 이름)
-    let titleNode = cloned.findOne(
-      (n) => n.name === "TITLE" && n.type === "TEXT"
+    // 3) TITLE 텍스트 + 자동 줄바꿈 + 강조어
+    await fillText(
+      cloned,
+      "TITLE",
+      title,
+      emphasis,
+      emphasisColor,
+      false
     );
-    if (!titleNode) {
-      // 폴백: TEXT_BLOCK 안의 두 번째 텍스트 (서브 다음 = 타이틀)
-      const textBlock = cloned.findOne((n) => n.name === "TEXT_BLOCK");
-      if (textBlock) {
-        const texts = textBlock.children.filter((n) => n.type === "TEXT");
-        titleNode = texts.length >= 2 ? texts[1] : texts[0];
-      } else {
-        // 폴백 2: 슬롯 직속 TEXT 중 가장 큰 것 = 타이틀
-        const texts = cloned.children.filter((n) => n.type === "TEXT");
-        titleNode = texts.sort((a, b) => b.height - a.height)[0];
-      }
-    }
-    if (titleNode) {
-      await figma.loadFontAsync(titleNode.fontName);
-      titleNode.characters = title;
 
-      // 강조어 색상 적용 (대소문자 그대로 매칭)
-      if (emphasis) {
-        const startIdx = title.indexOf(emphasis);
-        if (startIdx !== -1) {
-          titleNode.setRangeFills(startIdx, startIdx + emphasis.length, [
-            { type: "SOLID", color: emphasisColor },
-          ]);
-        }
-      }
-    }
-
-    // SUBTITLE 텍스트 (전체 그린) — 폴백 포함
+    // 4) SUBTITLE 텍스트 (전체 그린) + 자동 줄바꿈
     if (subtitle) {
-      let subtitleNode = cloned.findOne(
-        (n) => n.name === "SUBTITLE" && n.type === "TEXT"
-      );
-      if (!subtitleNode) {
-        // 폴백: TEXT_BLOCK 안의 첫 번째 텍스트 = 서브타이틀
-        const textBlock = cloned.findOne((n) => n.name === "TEXT_BLOCK");
-        if (textBlock) {
-          const texts = textBlock.children.filter((n) => n.type === "TEXT");
-          if (texts.length >= 2) subtitleNode = texts[0]; // 첫 번째 = 서브
-        }
-      }
-      if (subtitleNode) {
-        await figma.loadFontAsync(subtitleNode.fontName);
-        subtitleNode.characters = subtitle;
-        subtitleNode.fills = [{ type: "SOLID", color: GREEN }];
-      }
+      await fillText(cloned, "SUBTITLE", subtitle, null, GREEN, true);
     }
 
-    results.push({
-      name: cloned.name,
-      id: cloned.id,
-      x: cloned.x,
-      y: cloned.y,
-    });
+    results.push({ name: cloned.name, id: cloned.id });
   }
 
-  // 뷰포트 첫 안으로 이동
+  // 첫 안으로 뷰포트 이동
   if (results.length > 0 && !results[0].error) {
     const firstNode = await figma.getNodeByIdAsync(results[0].id);
     if (firstNode) figma.viewport.scrollAndZoomIntoView([firstNode]);
   }
 
   return results;
+}
+
+/**
+ * 공식 목업 컴포넌트 인스턴스 생성 + VISUAL_SLOT 위치에 배치 + 내부 #FFFFFF rect에 imageHash fill
+ */
+async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
+  const mockupComponent = await figma.getNodeByIdAsync(mockupId);
+  if (
+    !mockupComponent ||
+    (mockupComponent.type !== "COMPONENT" &&
+      mockupComponent.type !== "COMPONENT_SET")
+  ) {
+    return { success: false, reason: "mockup component not found" };
+  }
+
+  // 인스턴스 생성
+  const instance = mockupComponent.createInstance();
+
+  // VISUAL_SLOT 크기에 맞춰 균일 스케일 (가로 기준)
+  const scale = visualSlot.width / instance.width;
+  instance.resize(instance.width * scale, instance.height * scale);
+
+  // VISUAL_SLOT 위치에 배치 (가로 중앙, 세로 시작점)
+  instance.x = visualSlot.x + (visualSlot.width - instance.width) / 2;
+  instance.y = visualSlot.y;
+
+  parentSlot.appendChild(instance);
+
+  // 내부 #FFFFFF rect 찾아서 imageHash fill (1-3-1 §1.1.a 공통 규칙)
+  const screen = instance.findOne((n) => {
+    if (!("fills" in n) || !Array.isArray(n.fills) || n.fills.length === 0)
+      return false;
+    const f = n.fills[0];
+    if (f.type !== "SOLID") return false;
+    return f.color.r >= 0.99 && f.color.g >= 0.99 && f.color.b >= 0.99;
+  });
+
+  if (screen) {
+    screen.fills = [{ type: "IMAGE", imageHash: imageHash, scaleMode: "FILL" }];
+  }
+
+  // 빈 VISUAL_SLOT placeholder 제거
+  visualSlot.remove();
+
+  return { success: true, instanceId: instance.id, screenId: screen && screen.id };
+}
+
+/**
+ * 텍스트 노드를 찾아 텍스트 채우기 + 자동 줄바꿈 (width 300)
+ */
+async function fillText(parent, nodeName, text, emphasis, color, isSubtitle) {
+  // 1) 이름으로 찾기
+  let node = parent.findOne((n) => n.name === nodeName && n.type === "TEXT");
+
+  // 2) 폴백: TEXT_BLOCK 안에서 추정
+  if (!node) {
+    const textBlock = parent.findOne((n) => n.name === "TEXT_BLOCK");
+    if (textBlock) {
+      const texts = textBlock.children.filter((c) => c.type === "TEXT");
+      if (isSubtitle) {
+        // SUBTITLE은 TEXT_BLOCK 내 첫 번째
+        node = texts.length >= 2 ? texts[0] : null;
+      } else {
+        // TITLE은 TEXT_BLOCK 내 두 번째 (서브 다음), 또는 단일
+        node = texts.length >= 2 ? texts[1] : texts[0];
+      }
+    }
+  }
+
+  // 3) 폴백 2: 슬롯 직속 TEXT 중 큰 것 (TITLE)
+  if (!node && !isSubtitle) {
+    const texts = parent.children.filter((n) => n.type === "TEXT");
+    node = texts.sort((a, b) => b.height - a.height)[0];
+  }
+
+  if (!node) return;
+
+  await figma.loadFontAsync(node.fontName);
+
+  // width 300 강제 + textAutoResize HEIGHT (자동 줄바꿈)
+  node.textAutoResize = "HEIGHT";
+  node.resize(TEXT_MAX_WIDTH, node.height);
+  node.characters = text;
+
+  // 전체 색상 적용 (서브타이틀)
+  if (isSubtitle) {
+    node.fills = [{ type: "SOLID", color: color }];
+  }
+
+  // 강조어 색상 적용 (타이틀)
+  if (emphasis) {
+    const idx = text.indexOf(emphasis);
+    if (idx !== -1) {
+      node.setRangeFills(idx, idx + emphasis.length, [
+        { type: "SOLID", color: color },
+      ]);
+    }
+  }
 }
