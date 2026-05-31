@@ -48,7 +48,8 @@ async function createVariants(payload) {
   if (!slotPage) slotPage = figma.currentPage;
   await figma.setCurrentPageAsync(slotPage);
 
-  const emphasisColor = subtitle ? GREEN : PURPLE;
+  // 2026-05-31: 강조어는 항상 Purple (서브 유무 무관). SUBTITLE 색은 fillText에서 별도 GREEN 적용.
+  const emphasisColor = PURPLE;
   const results = [];
   const baseX = -3500;
   const baseY = 4000;
