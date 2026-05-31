@@ -72,14 +72,38 @@
       "tier": "uploaded",
       "match": "초대장 (invitation 5종) §5.4 ⭐⭐⭐",
       "priority": "⭐⭐⭐"
+    },
+    "credit-card": {
+      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-xylXWxjRoBYdaH9IPOx1080olvl5Ur.png",
+      "local_path": "attachments/decorations/credit-card.png",
+      "figma_hash": null,
+      "figma_component_id": null,
+      "tier": "downloaded",
+      "match": "TBD",
+      "priority": "⭐⭐"
     }
   },
   "needed": {
     "_comment": "§5.4 1순위 자산 — auto-fetch-decoration.py로 자동 다운로드 후 figma_hash 등록",
-    "card": {"match": "명함 (profilelink 7종)", "priority": "⭐⭐⭐"},
-    "book": {"match": "카탈로그·브로셔 (catalog 4종)", "priority": "⭐⭐⭐"},
-    "chat-bubble": {"match": "상담·문의 (폼)", "priority": "⭐⭐⭐"},
-    "pen": {"match": "서명·계약 (guide)", "priority": "⭐⭐⭐"},
-    "chart-up": {"match": "성장·분석·매출 (§5.1)", "priority": "⭐⭐"}
+    "card": {
+      "match": "명함 (profilelink 7종)",
+      "priority": "⭐⭐⭐"
+    },
+    "book": {
+      "match": "카탈로그·브로셔 (catalog 4종)",
+      "priority": "⭐⭐⭐"
+    },
+    "chat-bubble": {
+      "match": "상담·문의 (폼)",
+      "priority": "⭐⭐⭐"
+    },
+    "pen": {
+      "match": "서명·계약 (guide)",
+      "priority": "⭐⭐⭐"
+    },
+    "chart-up": {
+      "match": "성장·분석·매출 (§5.1)",
+      "priority": "⭐⭐"
+    }
   }
 }
