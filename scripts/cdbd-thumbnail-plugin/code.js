@@ -106,16 +106,24 @@ async function createVariants(payload) {
 
     // 1) VISUAL_SLOT 찾기
     const visualSlot = cloned.findOne((n) => n.name === "VISUAL_SLOT");
+    const slotType = SLOT_TYPE_MAP[slotId] || "A";
+
     if (visualSlot) {
-      // 2) 공식 목업 컴포넌트 인스턴스 생성 + 내부 #FFFFFF rect에 fill
-      const result = await applyMockup(cloned, visualSlot, mockupId, imageHash);
-      if (!result.success) {
-        // 폴백: 목업 못 찾으면 VISUAL_SLOT에 직접 fill
-        if ("fills" in visualSlot) {
-          visualSlot.fills = [
-            { type: "IMAGE", imageHash: imageHash, scaleMode: "FILL" },
-          ];
-          if ("strokes" in visualSlot) visualSlot.strokes = [];
+      if (slotType === "D") {
+        // D. 3D 아이콘 — 목업 컴포넌트 없이 VISUAL_SLOT에 직접 PNG fill
+        // (1-2-1 §3.3: w·h 260, contain — 블리드 X)
+        apply3DIcon(visualSlot, imageHash);
+      } else {
+        // A·B·C·E — 공식 목업 컴포넌트 인스턴스 + 내부 #FAFAFA rect에 fill
+        const result = await applyMockup(cloned, visualSlot, mockupId, imageHash);
+        if (!result.success) {
+          // 폴백: 목업 못 찾으면 VISUAL_SLOT에 직접 fill
+          if ("fills" in visualSlot) {
+            visualSlot.fills = [
+              { type: "IMAGE", imageHash: imageHash, scaleMode: "FILL" },
+            ];
+            if ("strokes" in visualSlot) visualSlot.strokes = [];
+          }
         }
       }
     }
@@ -145,6 +153,19 @@ async function createVariants(payload) {
   }
 
   return results;
+}
+
+/**
+ * D 유형 — 3D 아이콘 (Thiings PNG) VISUAL_SLOT에 직접 fill
+ * (목업 컴포넌트 없음. 1-2-1 §3.3: contain — FIT scaleMode로 잘림 방지)
+ */
+function apply3DIcon(visualSlot, imageHash) {
+  if (!("fills" in visualSlot)) return { success: false, reason: "no fills" };
+  visualSlot.fills = [
+    { type: "IMAGE", imageHash: imageHash, scaleMode: "FIT" },
+  ];
+  if ("strokes" in visualSlot) visualSlot.strokes = [];
+  return { success: true };
 }
 
 /**
