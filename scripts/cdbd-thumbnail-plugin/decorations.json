@@ -76,10 +76,10 @@
     "credit-card": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-xylXWxjRoBYdaH9IPOx1080olvl5Ur.png",
       "local_path": "attachments/decorations/credit-card.png",
-      "figma_hash": null,
+      "figma_hash": "6fc51f614db2a71f3ddff5eb90415f84f99cbb75",
       "figma_component_id": null,
-      "tier": "downloaded",
-      "match": "TBD",
+      "tier": "uploaded",
+      "match": "결제·금융 (※ 명함은 id-card 등 별도 시도)",
       "priority": "⭐⭐"
     }
   },
