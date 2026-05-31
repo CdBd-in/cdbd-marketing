@@ -6,9 +6,13 @@
 const GREEN = { r: 77 / 255, g: 233 / 255, b: 139 / 255 };
 const PURPLE = { r: 143 / 255, g: 128 / 255, b: 255 / 255 };
 
-// 텍스트 자동 줄바꿈 임계 (1-1 §3.텍스트 작성 규칙)
+// 텍스트 자동 줄바꿈 임계 (1-1 §3.텍스트 작성 규칙) — 유형별
+// A·B·C·E: TITLE 300 / SUBTITLE 285 (목업이 우측에 있어 텍스트 영역 좁음)
+// D: TITLE 350 / SUBTITLE 350 (3D 아이콘이 더 작아 텍스트 영역 넓음 — 2026-05-31)
 const TITLE_MAX_WIDTH = 300;
-const SUBTITLE_MAX_WIDTH = 285; // 서브 285 넘으면 2줄 (사용자 요청 2026-05-31)
+const SUBTITLE_MAX_WIDTH = 285;
+const TITLE_MAX_WIDTH_D = 350;
+const SUBTITLE_MAX_WIDTH_D = 350;
 const TEXT_MAX_WIDTH = TITLE_MAX_WIDTH; // 하위 호환
 
 // 공식 목업 컴포넌트 ID (1-3-1 §1.1.a)
@@ -41,6 +45,15 @@ const SLOT_TYPE_MAP = {
   // E. 배경
   "1:1262": "E", "1:1294": "E",
 };
+
+// 하단 텍스트 슬롯 — 텍스트 채운 후 y=410-height 자동 보정 (1-2-1 §2.2)
+const BOTTOM_SLOT_IDS = new Set([
+  "1:1251", "1:1246", // A 하단/하단·서브
+  "1:1304", "1:1314", // B 하단/하단·서브
+  "1:1274", "1:1277", // D 하단/하단·서브
+]);
+const TEXT_BOTTOM_Y = 410; // 슬롯 하단(450) - bottom padding(40)
+const TEXT_CENTER_HEIGHT_TOTAL = 450; // 배경(E) 중앙 정렬용
 
 figma.showUI(__html__, { width: 500, height: 700 });
 
@@ -128,19 +141,23 @@ async function createVariants(payload) {
       }
     }
 
-    // 3) TITLE 텍스트 + 자동 줄바꿈 + 강조어
-    await fillText(
-      cloned,
-      "TITLE",
-      title,
-      emphasis,
-      emphasisColor,
-      false
-    );
+    // 3) TITLE 텍스트 + 자동 줄바꿈 + 강조어 (slotType 전달 → 유형별 폭)
+    await fillText(cloned, "TITLE", title, emphasis, emphasisColor, false, slotType);
 
     // 4) SUBTITLE 텍스트 (전체 그린) + 자동 줄바꿈
     if (subtitle) {
-      await fillText(cloned, "SUBTITLE", subtitle, null, GREEN, true);
+      await fillText(cloned, "SUBTITLE", subtitle, null, GREEN, true, slotType);
+    }
+
+    // 5) 하단 슬롯 — 텍스트 줄 수 변화에 따른 y 자동 보정 (1-2-1 §2.2)
+    if (BOTTOM_SLOT_IDS.has(slotId)) {
+      // TEXT_BLOCK이 있으면 그것의 y / 없으면 TITLE의 y
+      const tb = cloned.findOne((n) => n.name === "TEXT_BLOCK");
+      const title_node = cloned.findOne((n) => n.type === "TEXT" && n.name === "TITLE");
+      const target = tb || title_node;
+      if (target) {
+        target.y = TEXT_BOTTOM_Y - target.height;
+      }
     }
 
     results.push({ name: cloned.name, id: cloned.id });
@@ -235,9 +252,10 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
 }
 
 /**
- * 텍스트 노드를 찾아 텍스트 채우기 + 자동 줄바꿈 (width 300)
+ * 텍스트 노드를 찾아 텍스트 채우기 + 자동 줄바꿈
+ * slotType: "A"·"B"·"C"·"D"·"E" — 유형별 폭 분기 (D는 350, 나머지는 300/285)
  */
-async function fillText(parent, nodeName, text, emphasis, color, isSubtitle) {
+async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slotType) {
   // 1) 이름으로 찾기
   let node = parent.findOne((n) => n.name === nodeName && n.type === "TEXT");
 
@@ -267,8 +285,11 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle) {
   await figma.loadFontAsync(node.fontName);
 
   // 폭 강제 + textAutoResize HEIGHT (자동 줄바꿈)
-  // TITLE 300px / SUBTITLE 285px (서브가 더 짧은 폭에서 줄바꿈)
-  const maxWidth = isSubtitle ? SUBTITLE_MAX_WIDTH : TITLE_MAX_WIDTH;
+  // D 유형: 350 / 나머지: TITLE 300 · SUBTITLE 285
+  const isD = slotType === "D";
+  const maxWidth = isD
+    ? (isSubtitle ? SUBTITLE_MAX_WIDTH_D : TITLE_MAX_WIDTH_D)
+    : (isSubtitle ? SUBTITLE_MAX_WIDTH : TITLE_MAX_WIDTH);
   node.textAutoResize = "HEIGHT";
   node.resize(maxWidth, node.height);
   node.characters = text;
