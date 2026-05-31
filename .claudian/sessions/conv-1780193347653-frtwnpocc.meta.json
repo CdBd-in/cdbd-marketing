@@ -1,0 +1,24 @@
+{
+  "id": "conv-1780193347653-frtwnpocc",
+  "providerId": "claude",
+  "title": "Resume work session",
+  "titleGenerationStatus": "success",
+  "createdAt": 1780193347653,
+  "updatedAt": 1780193363300,
+  "lastResponseAt": 1780193363300,
+  "sessionId": "e08cea7c-1cca-4e19-b76e-a95fa70d561b",
+  "providerState": {
+    "providerSessionId": "e08cea7c-1cca-4e19-b76e-a95fa70d561b"
+  },
+  "currentNote": "컨텍스트: 강현이/강현이-2026-05-29-2.md",
+  "usage": {
+    "model": "haiku",
+    "inputTokens": 8,
+    "cacheCreationInputTokens": 61765,
+    "cacheReadInputTokens": 0,
+    "contextWindow": 200000,
+    "contextTokens": 61773,
+    "percentage": 31,
+    "contextWindowIsAuthoritative": true
+  }
+}
