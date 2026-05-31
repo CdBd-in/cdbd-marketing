@@ -13,6 +13,14 @@ const TEXT_MAX_WIDTH = 300;
 // 2026-05-31: 사용자가 1:1368 폐기 후 새 마스터 75:34 등록 (베젤 5px + cornerRadius 26)
 const DEFAULT_MOCKUP_ID = "75:34"; // 원페이지 목업-1 (신규)
 
+// Microlink 캡쳐 외곽 검정 padding을 Figma 내장 crop으로 잘라내는 변환 매트릭스
+// (사용자 ref frame 83:186에서 추출 — 위 8.59% / 좌우 4.61% / 아래 2.34% crop)
+// 원본 v8 캡쳐(검정 padding 포함)에 CROP scaleMode와 함께 사용.
+const VIEWER_CAPTURE_TRANSFORM = [
+  [0.9078340530395508, 0, 0.04608295112848282],
+  [0, 0.8907168507575989, 0.08593140542507172],
+];
+
 figma.showUI(__html__, { width: 500, height: 700 });
 
 figma.ui.onmessage = async (msg) => {
@@ -161,7 +169,14 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
   });
 
   if (screen) {
-    screen.fills = [{ type: "IMAGE", imageHash: imageHash, scaleMode: "FILL" }];
+    // CROP + imageTransform — Microlink 캡쳐 외곽 검정 padding을 Figma 단에서 잘라냄
+    // (Python 측에서 픽셀 처리할 필요 없음, 원본 캡쳐 그대로 사용 가능)
+    screen.fills = [{
+      type: "IMAGE",
+      imageHash: imageHash,
+      scaleMode: "CROP",
+      imageTransform: VIEWER_CAPTURE_TRANSFORM,
+    }];
   }
 
   // 빈 VISUAL_SLOT placeholder 제거
