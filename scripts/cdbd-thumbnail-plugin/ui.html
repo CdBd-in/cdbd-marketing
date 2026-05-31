@@ -35,6 +35,8 @@
 <body>
   <h2>🎨 CdBd 블로그 썸네일 자동 제작</h2>
 
+  <button id="fillExample" style="background:#888; margin-top:0;">📋 검증 예시 자동 채우기 (CdBd 모바일 명함)</button>
+
   <label>타이틀 (줄바꿈은 \n)</label>
   <textarea id="title" placeholder="전 세계 파트너를 사로잡는\nCdBd 모바일 명함"></textarea>
 
@@ -87,13 +89,32 @@
     };
   });
 
+  // 검증 예시 자동 채우기
+  document.getElementById('fillExample').onclick = () => {
+    document.getElementById('title').value = '전 세계 파트너를 사로잡는\\nCdBd 모바일 명함';
+    document.getElementById('subtitle').value = '언어 장벽 없는 글로벌 네트워킹';
+    document.getElementById('emphasis').value = 'CdBd 모바일 명함';
+    document.getElementById('variants').value = JSON.stringify([
+      {slotId: "1:1269", imageHash: "1f0dd12ff1dab6ba707bdca34639a615078db56f", name: "안1_corporate_상단·서브"},
+      {slotId: "1:1246", imageHash: "1f0dd12ff1dab6ba707bdca34639a615078db56f", name: "안2_corporate_하단·서브"},
+      {slotId: "1:1269", imageHash: "bfcaf900ee18a3ba009a0ac49d532b0d26d477d2", name: "안3_promotion_상단·서브"},
+      {slotId: "1:1246", imageHash: "bfcaf900ee18a3ba009a0ac49d532b0d26d477d2", name: "안4_promotion_하단·서브"}
+    ], null, 2);
+    document.getElementById('result').innerHTML = '<span class="ok">✅ 예시 입력 완료. "4안 자동 제작 ▶" 클릭하세요.</span>';
+  };
+
   document.getElementById('run').onclick = () => {
     const title = document.getElementById('title').value.replace(/\\n/g, '\n');
     const subtitle = document.getElementById('subtitle').value.trim();
     const emphasis = document.getElementById('emphasis').value.trim();
+    const variantsRaw = document.getElementById('variants').value.trim();
+    if (!variantsRaw) {
+      document.getElementById('result').innerHTML = '<span class="err">변형 매트릭스 JSON이 비어있습니다. "📋 검증 예시 자동 채우기" 버튼을 누르거나 직접 입력하세요.</span>';
+      return;
+    }
     let variants;
     try {
-      variants = JSON.parse(document.getElementById('variants').value);
+      variants = JSON.parse(variantsRaw);
     } catch (e) {
       document.getElementById('result').innerHTML = '<span class="err">변형 JSON 파싱 오류: ' + e.message + '</span>';
       return;
