@@ -38,7 +38,8 @@
     📂 출력: <b>"💻 AI 블로그 썸네일 제작"</b> 페이지 (26:2) · 슬롯 원본은 건드리지 않음
   </div>
 
-  <button id="fillExample" style="background:#888; margin-top:0;">📋 검증 예시 자동 채우기 (CdBd 모바일 명함)</button>
+  <button id="fillExample" style="background:#888; margin-top:0;">📋 A 유형 예시 (CdBd 모바일 명함)</button>
+  <button id="fillExampleD" style="background:#888; margin-top:0; margin-left:4px;">📋 D 유형 예시 (3D shield)</button>
 
   <label>타이틀 (줄바꿈은 \n)</label>
   <textarea id="title" placeholder="전 세계 파트너를 사로잡는\nCdBd 모바일 명함"></textarea>
@@ -103,7 +104,22 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
       {slotId: "1:1269", imageHash: "f16b122b33a0868edc6902d79e7f12735b12312f", name: "안3_promotion_상단·서브"},
       {slotId: "1:1246", imageHash: "f16b122b33a0868edc6902d79e7f12735b12312f", name: "안4_promotion_하단·서브"}
     ], null, 2);
-    document.getElementById('result').innerHTML = '<span class="ok">✅ 예시 입력 완료. "4안 자동 제작 ▶" 클릭하세요.</span>';
+    document.getElementById('result').innerHTML = '<span class="ok">✅ A유형 예시 입력 완료. "4안 자동 제작 ▶" 클릭하세요.</span>';
+  };
+
+  // D 유형 검증 예시 — 3D 아이콘 (shield, "왜·이유" 톤)
+  document.getElementById('fillExampleD').onclick = () => {
+    // 1-1 §3: 의미 단위, 강조어 "7가지 이유" 한 줄 안에
+    document.getElementById('title').value = '기업이 비공개 초대장을\\n고집하는\\n7가지 이유';
+    document.getElementById('subtitle').value = 'B2B 행사·세미나\\n운영 가이드';
+    document.getElementById('emphasis').value = '7가지 이유';
+    document.getElementById('variants').value = JSON.stringify([
+      {slotId: "1:1282", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안1_shield_상단·서브"},
+      {slotId: "1:1277", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안2_shield_하단·서브"},
+      {slotId: "1:1254", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안3_shield_상단"},
+      {slotId: "1:1274", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안4_shield_하단"}
+    ], null, 2);
+    document.getElementById('result').innerHTML = '<span class="ok">✅ D유형 예시 입력 완료 (shield + 비공개 초대장). "4안 자동 제작 ▶" 클릭하세요.</span>';
   };
 
   document.getElementById('run').onclick = () => {
