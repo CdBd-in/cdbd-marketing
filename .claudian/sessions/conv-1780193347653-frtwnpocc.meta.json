@@ -4,8 +4,8 @@
   "title": "Resume work session",
   "titleGenerationStatus": "success",
   "createdAt": 1780193347653,
-  "updatedAt": 1780195508299,
-  "lastResponseAt": 1780195508299,
+  "updatedAt": 1780195660705,
+  "lastResponseAt": 1780195660705,
   "sessionId": "e08cea7c-1cca-4e19-b76e-a95fa70d561b",
   "providerState": {
     "providerSessionId": "e08cea7c-1cca-4e19-b76e-a95fa70d561b",
@@ -244,11 +244,11 @@
   "currentNote": "컨텍스트: 강현이/강현이-2026-05-29-2.md",
   "usage": {
     "model": "opus",
-    "inputTokens": 1,
-    "cacheCreationInputTokens": 229,
-    "cacheReadInputTokens": 109603,
+    "inputTokens": 6,
+    "cacheCreationInputTokens": 1175,
+    "cacheReadInputTokens": 109832,
     "contextWindow": 1000000,
-    "contextTokens": 109833,
+    "contextTokens": 111013,
     "percentage": 11,
     "contextWindowIsAuthoritative": true
   }
