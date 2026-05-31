@@ -64,19 +64,14 @@ async function createVariants(payload) {
     cloned.y = baseY + Math.floor(i / 4) * 500;
     slotPage.appendChild(cloned);
 
-    // VISUAL_SLOT에 이미지 fill (CROP + 상단부터 — 의미 영역 크롭 §1.1.b)
+    // VISUAL_SLOT에 이미지 fill (FILL — 캡쳐는 미리 슬롯 비율로 크롭한 이미지 사용 권장)
     const visualSlot = cloned.findOne((n) => n.name === "VISUAL_SLOT");
     if (visualSlot && "fills" in visualSlot) {
       visualSlot.fills = [
         {
           type: "IMAGE",
           imageHash: imageHash,
-          scaleMode: "CROP",
-          // Y offset 0 = 상단부터. variants에 yOffset 명시 시 그 값 사용 (예: 0.3 = 30% 아래)
-          imageTransform: [
-            [1, 0, 0],
-            [0, 1, variants[i].yOffset || 0],
-          ],
+          scaleMode: "FILL",
         },
       ];
       // placeholder 외곽선 제거
