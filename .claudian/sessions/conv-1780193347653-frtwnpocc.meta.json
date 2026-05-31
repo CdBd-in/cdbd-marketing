@@ -4,8 +4,8 @@
   "title": "Resume work session",
   "titleGenerationStatus": "success",
   "createdAt": 1780193347653,
-  "updatedAt": 1780207896319,
-  "lastResponseAt": 1780207896319,
+  "updatedAt": 1780208034217,
+  "lastResponseAt": 1780208034217,
   "sessionId": "e08cea7c-1cca-4e19-b76e-a95fa70d561b",
   "providerState": {
     "providerSessionId": "e08cea7c-1cca-4e19-b76e-a95fa70d561b",
@@ -245,11 +245,11 @@
   "usage": {
     "model": "opus",
     "inputTokens": 1,
-    "cacheCreationInputTokens": 1134,
-    "cacheReadInputTokens": 387476,
+    "cacheCreationInputTokens": 111,
+    "cacheReadInputTokens": 397232,
     "contextWindow": 1000000,
-    "contextTokens": 388611,
-    "percentage": 39,
+    "contextTokens": 397344,
+    "percentage": 40,
     "contextWindowIsAuthoritative": true
   }
 }
