@@ -53,8 +53,14 @@ async function createVariants(payload) {
       continue;
     }
 
+    const newName = name || `안${i + 1}_${slotId}`;
+
+    // 동명 잔재 안 자동 삭제 (재실행 시 누적 방지)
+    const existing = slotPage.children.filter((c) => c.name === newName);
+    existing.forEach((c) => c.remove());
+
     const cloned = original.clone();
-    cloned.name = name || `안${i + 1}_${slotId}`;
+    cloned.name = newName;
     cloned.x = baseX + (i % 4) * 650;
     cloned.y = baseY + Math.floor(i / 4) * 500;
     slotPage.appendChild(cloned);
