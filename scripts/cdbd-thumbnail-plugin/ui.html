@@ -39,7 +39,7 @@
   </div>
 
   <button id="fillExample" style="background:#888; margin-top:0;">📋 A 유형 예시 (CdBd 모바일 명함)</button>
-  <button id="fillExampleD" style="background:#888; margin-top:0; margin-left:4px;">📋 D 유형 예시 (3D shield)</button>
+  <button id="fillExampleD" style="background:#888; margin-top:0; margin-left:4px;">📋 D 유형 예시 (envelope·초대장)</button>
 
   <label>타이틀 (줄바꿈은 \n)</label>
   <textarea id="title" placeholder="전 세계 파트너를 사로잡는\nCdBd 모바일 명함"></textarea>
@@ -107,7 +107,7 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
     document.getElementById('result').innerHTML = '<span class="ok">✅ A유형 예시 입력 완료. "4안 자동 제작 ▶" 클릭하세요.</span>';
   };
 
-  // D 유형 검증 예시 — 3D 아이콘 (shield, "왜·이유" 톤)
+  // D 유형 검증 예시 — 3D 아이콘 (envelope, 1-3-2 §5.4 "초대장" 기능 매칭 1순위)
   // 폭 350px (3D 아이콘은 더 작아 텍스트 영역 넓음) → 한 줄 ~10-12자
   document.getElementById('fillExampleD').onclick = () => {
     // 1-1 §3: 의미 단위, 강조어 "7가지 이유" 한 줄 안에
@@ -115,12 +115,12 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
     document.getElementById('subtitle').value = 'B2B 행사·세미나 운영 가이드';
     document.getElementById('emphasis').value = '7가지 이유';
     document.getElementById('variants').value = JSON.stringify([
-      {slotId: "1:1282", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안1_shield_상단·서브"},
-      {slotId: "1:1277", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안2_shield_하단·서브"},
-      {slotId: "1:1254", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안3_shield_상단"},
-      {slotId: "1:1274", imageHash: "5d902638e425d50efa6550490ff1d842c921802f", name: "안4_shield_하단"}
+      {slotId: "1:1282", imageHash: "1d12e23b16a1a731f301472f653adb56c7761295", name: "안1_envelope_상단·서브"},
+      {slotId: "1:1277", imageHash: "1d12e23b16a1a731f301472f653adb56c7761295", name: "안2_envelope_하단·서브"},
+      {slotId: "1:1254", imageHash: "1d12e23b16a1a731f301472f653adb56c7761295", name: "안3_envelope_상단"},
+      {slotId: "1:1274", imageHash: "1d12e23b16a1a731f301472f653adb56c7761295", name: "안4_envelope_하단"}
     ], null, 2);
-    document.getElementById('result').innerHTML = '<span class="ok">✅ D유형 예시 입력 완료 (shield + 비공개 초대장). "4안 자동 제작 ▶" 클릭하세요.</span>';
+    document.getElementById('result').innerHTML = '<span class="ok">✅ D유형 예시 입력 완료 (envelope = 초대장 기능 매칭 §5.4). "4안 자동 제작 ▶" 클릭하세요.</span>';
   };
 
   document.getElementById('run').onclick = () => {
