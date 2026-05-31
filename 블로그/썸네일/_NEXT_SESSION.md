@@ -1,0 +1,262 @@
+---
+updated: 2026-05-31
+session: 2026-05-31 (16 tasks)
+purpose: 다음 세션 빠른 인계 — 이 문서만 읽으면 컨텍스트 복원
+---
+
+# 🔁 다음 세션 인계 — CdBd 블로그 썸네일 자동화
+
+> **이 문서의 역할**: 이전 세션의 결정사항·진행 상황·다음 우선순위를 압축. 새 세션 시작 시 [[0. 목표와 비전]] → 이 문서 → 작업.
+
+---
+
+## ⚡ TL;DR
+
+**이번 세션 (2026-05-31, 16 tasks 완료)** = Figma 플러그인 자동화 파이프라인을 **A 유형 완성 + D 유형 신규** 수준으로 끌어올림.
+
+- ✅ A 유형 (목업): 새 마스터 75:34, viewer 캡쳐 CROP+imageTransform 표준 패턴 확정
+- ✅ D 유형 (3D 아이콘): 자동화 코드 추가, envelope 자산 검증
+- ✅ Thiings 자동 다운로드 인프라 (`auto-fetch-decoration.py` + `decorations.json`)
+- ✅ 규칙 단순화: 강조어 항상 Purple / SUBTITLE 항상 Green / D 텍스트 폭 350 / 하단 y 자동 보정
+- ✅ 페이지 분리: 슬롯 원본(1:1245) ↔ 안 출력(26:2)
+- ✅ 자산 선택 기준: **제품·기능명 우선** (1-1 §3 강조어와 동일 원칙) → §5.4 신규 매핑
+
+---
+
+## 📂 핵심 파일 위치
+
+### 자동화 코드
+| 파일 | 역할 |
+|------|------|
+| `scripts/cdbd-thumbnail-plugin/code.js` | Figma 플러그인 메인 (createVariants, applyMockup, apply3DIcon, fillText) |
+| `scripts/cdbd-thumbnail-plugin/ui.html` | 플러그인 UI + 검증 예시 자동 채우기 (A/D) |
+| `scripts/cdbd-thumbnail-plugin/manifest.json` | Figma 플러그인 매니페스트 |
+| `scripts/cdbd-thumbnail-plugin/decorations.json` | 자산 메타 카탈로그 ⭐ (slug→hash·url·tier·match) |
+| `scripts/cdbd-thumbnail-plugin/auto-fetch-decoration.py` | Thiings 자동 다운로드 |
+
+### 문서 (디자인 가이드)
+| 파일 | 핵심 변경 |
+|------|----------|
+| [[1-1. 스타일]] | 강조색 단순화 (Purple 고정) / D 텍스트 폭 350 / 하단 y 자동 보정 명시 |
+| [[1-2-1. 레이아웃 규칙]] | 페이지 분리 4종 (1:1245/26:2/0:1/1:1343) / 사용 절차 26:2 명시 |
+| [[1-3-2. 이미지 출처]] | §5.4 신규 (CdBd 기능명→A·D 자산 매핑) / §7.2 신규 (Microlink CROP+xfm) / §4 자동 다운로드 워크플로우 |
+
+---
+
+## 🎨 Figma 파일 상태 (`3LPfZ6a6vlJrZ4TXorVWJL`)
+
+### 페이지 구조
+| 페이지 ID | 이름 | 역할 |
+|----------|------|------|
+| `1:1245` | 🧩 썸네일 자동생성 템플릿 (슬롯) | **슬롯 16종 원본** (clone 소스, 자동화 안 건드림) |
+| **`26:2`** | 💻 AI 블로그 썸네일 제작 | **자동 생성 안 출력 위치** ⭐ |
+| `0:1` | 🎨 블로그 썸네일 | 최종 발행본 (수작업) |
+| `1:1343` | ✨ 컴포넌트 | 모바일 목업 · 데코 라이브러리 |
+
+### 모바일 목업 마스터 (section `1:1344`)
+| ID | 이름 | 상태 |
+|----|------|------|
+| ~~`1:1368`~~ | 옛 마스터 | **폐기** |
+| **`75:34`** | 원페이지 목업-1 (신규) | **현재 사용** — 베젤 5px + cornerRadius 26 |
+| `1:1369` | 원페이지 목업-2 | 187×444 (다른 비율) |
+| `1:1370` | 멀티페이지 목업 | 150×341 (C유형용) |
+
+### 현재 시안 (1:1245 페이지)
+- **안1~4 (A유형, CdBd 모바일 명함)**: corporate·promotion × 상단·하단·서브 — 사용자 검토용 보관
+- 기타 잔여 frames (`83:186` "원페이지 목업-1" — 사용자 작성, **참조 frame**: CROP+imageTransform 원본)
+
+### 안 출력 페이지 (26:2)
+- 현재 비어있음
+- 다음 자동화 실행부터 여기에 생성됨
+
+---
+
+## 🛠️ 자동화 파이프라인 (현재 상태)
+
+```
+[Claude]
+  타이틀 분석 (1-3-2 §1 다층 분석)
+    ↓
+  유형 결정 A/B/C/D/E (§1c)
+    ↓
+  자산 후보 1-2개 (§5.4 기능명 우선 → §5.1 톤 fallback)
+    ↓
+  자산 hash 확보:
+    - decorations.json 조회
+    - 없으면 python3 auto-fetch-decoration.py <slug>
+    - Figma upload_assets → update-hash
+    ↓
+  Microlink 캡쳐 (A·B만, 모바일 뷰포트 375×812)
+    ↓
+  Figma upload_assets → imageHash
+    ↓
+  plugin variants JSON 작성
+    
+[사용자]
+  플러그인 새로고침 → "예시 자동 채우기" → "4안 자동 제작"
+    ↓
+  26:2 페이지에 안1~N 생성
+    ↓
+  2-4안 중 선택 → 0:1 페이지로 이동
+```
+
+### 유형별 자동화 완성도
+
+| 유형 | 자동화 상태 | 슬롯 ID |
+|------|-----------|---------|
+| **A. 목업** | ✅ 완성 | 1:1266/1269/1251/1246 |
+| **D. 3D 아이콘** | ✅ 신규 | 1:1254/1282/1274/1277 |
+| B. 목업+에디터 | ❌ 다음 우선순위 | 1:1300/1308/1304/1314 |
+| C. 멀티 목업 | ❌ 다음 | 1:1257/1287 |
+| E. 배경 | ❌ 다음 | 1:1262/1294 |
+| 보조 데코 (sparkle 등) | ❌ 다음 (라이브러리 인스턴스) | `4:117` section |
+
+---
+
+## 📋 확정된 규칙 (이번 세션)
+
+### 1. 강조색 (1-1 §2)
+- **타이틀 강조어 = 항상 Purple `#8F80FF`** (서브 유무 무관)
+- **서브타이틀 = 항상 Green `#4DE98B`** (있을 때 전체)
+
+### 2. 텍스트 폭 (1-1 §3)
+| 유형 | TITLE | SUBTITLE |
+|------|-------|----------|
+| A·B·C·E | 300 | 285 |
+| **D** | **350** | **350** |
+
+### 3. 줄나누기 (1-1 §3)
+- **Claude가 의미 단위 `\n` 미리 끊는다** (자동 줄바꿈은 fallback)
+- TITLE·SUBTITLE 동일 원칙
+- 강조어 한 줄 안에 통째로
+
+### 4. 하단 슬롯 y 자동 보정 (1-2-1 §2.2)
+- 슬롯 ID: `1:1251/1246/1304/1314/1274/1277`
+- `y = TEXT_BOTTOM_Y(410) - height` 자동 적용
+- TEXT_BLOCK이 있으면 그것, 없으면 TITLE 단독
+
+### 5. Microlink viewer 캡쳐 fill (1-3-2 §7.2)
+```js
+fills = [{
+  type: "IMAGE", imageHash, scaleMode: "CROP",
+  imageTransform: [
+    [0.9078, 0, 0.0461],  // 좌우 4.61% crop
+    [0, 0.8907, 0.0859],  // 위 8.59% / 아래 2.34% crop
+  ],
+}];
+```
+- 원본 캡쳐 그대로 사용 (Python crop 불필요)
+- Figma 내장 CROP으로 검정 padding 시각적으로 잘라냄
+- 참조 frame: `83:186`
+
+### 6. 자산 선택 우선순위 (1-3-2 §1 Step 3)
+1. **1a 제품·기능명 명시** ⭐⭐⭐ (1-1 §3 강조어와 동일 원칙)
+2. 1b 산업·고객층
+3. 1d 톤 매칭 (1a 없을 때만 fallback)
+4. 시각적 임팩트 → 다양성
+
+**예시**: "기업이 비공개 초대장을 고집하는 7가지 이유"
+- 1순위 자산 = **envelope** (초대장 기능 매칭)
+- shield(보안 톤)는 후순위 — 톤 매칭은 fallback
+
+---
+
+## 📦 자산 라이브러리 현황 (`decorations.json`)
+
+### Uploaded (Figma hash 있음, 즉시 사용 가능)
+| Slug | Hash (앞 10자) | 매칭 |
+|------|---------------|------|
+| `shield` | `5d902638e4` | 안전·보안·신뢰 |
+| **`envelope`** | `1d12e23b16` | **초대장 (invitation 5종) §5.4 ⭐⭐⭐** |
+| `credit-card` | `6fc51f614d` | 결제·금융 (※ 명함은 별도 슬러그 시도 필요) |
+
+### Downloaded (PNG 있음, Figma 업로드 안 됨)
+- crown, calendar, globe
+
+### Needed (다음 다운로드 우선순위)
+- **card** (※ `business-card`·`card` 모두 thiings 404 — 다른 슬러그 탐색 필요)
+- book (카탈로그·브로셔)
+- chat-bubble (상담·문의)
+- pen (서명·계약)
+- chart-up (성장·분석)
+
+### 자동 다운로드 사용법
+```bash
+python3 scripts/cdbd-thumbnail-plugin/auto-fetch-decoration.py list
+python3 scripts/cdbd-thumbnail-plugin/auto-fetch-decoration.py <slug>
+# 다음: Figma upload_assets → update-hash <slug> <hash>
+```
+
+---
+
+## 🎯 다음 세션 우선순위 (제안)
+
+### P1. 즉시 검증 (사용자 작업 대기)
+- [ ] **D 유형 envelope 테스트 결과 확인** — 26:2에 안1~4 생성됐는지, 베젤 없는 envelope 3D가 잘 fit하는지, 하단 y 보정 정상 동작하는지
+
+### P2. 자동화 확장
+- [ ] **B 유형** (목업+에디터) 자동화 — VISUAL_SLOT + EDITOR_SLOT 동시 처리. Playwright 캡쳐 인프라(`scripts/cdbd-capture/`) 이미 구축됨.
+- [ ] **C 유형** (멀티 목업) 자동화 — VISUAL_SLOT_1/2/3 다중 목업
+- [ ] **E 유형** (배경) 자동화 — BG_SLOT opacity 20%
+
+### P3. 자산 라이브러리 확장
+- [ ] §5.4 needed 자산 5종 다운로드: card·book·chat-bubble·pen·chart-up
+  - "card"는 thiings 슬러그 탐색 필요 (`business-card`·`card`·`id-card` 등 시도)
+- [ ] 보조 데코 컴포넌트 라이브러리 (4:117 section)에 envelope 등 추가 → 인스턴스 동적 배치 자동화
+
+### P4. 베리에이션 워크플로우 검증
+- [ ] 1-3-2 §1 다층 분석 + §5.4 매핑이 실제 다양한 타이틀에서 정확히 동작하는지 5-10개 검증
+- [ ] 잘못된 매칭 케이스 발견 시 §5.4 보강
+
+---
+
+## ⚠️ 알려진 이슈·결정 대기
+
+1. **마스터 75:34 베젤 5px 처리**: 사용자가 직접 등록함 (이전엔 자동화가 베젤 삭제 시도했다가 되돌림)
+2. **컴포넌트 변환·section 이동은 수동**: Figma MCP가 commit 안 함 → 사용자가 figma.com에서 직접 처리
+3. **`throw new Error()`로 결과 출력 시 롤백**: 변경 적용은 별도 호출(notify), 검증은 throw로 분리해야 함
+4. **인스턴스 자식 fill은 override 가능**, **위치·크기는 override 불가** → 마스터에서 변경해야 함
+5. **`master.resize()`는 자식 위치 anchor 부작용** → resize 후 자식 위치 재정렬 필수
+6. **`instance.rescale()`은 자식 비례 변환** (`resize`와 다름) — `apply3DIcon` 코드에서 활용 X (FIT scaleMode가 처리)
+
+---
+
+## 🚀 빠른 시작 (다음 세션 첫 작업 시)
+
+1. 이 문서 + [[0. 목표와 비전]] 읽기
+2. 작업 시작 전 현황 빠른 확인:
+   ```bash
+   python3 scripts/cdbd-thumbnail-plugin/auto-fetch-decoration.py list
+   ls "블로그/썸네일/1. 디자인 가이드/"
+   ```
+3. Figma 파일 상태는 26:2 페이지 확인 (이전 안1~4 결과 보존됨)
+4. 우선순위 P1 (D 유형 envelope 테스트 결과 확인) 또는 P2 (B/C/E 자동화)부터
+
+---
+
+## 📝 이번 세션 16 tasks 요약
+
+| # | 작업 | 결과 |
+|---|------|------|
+| 1 | 목업 컴포넌트(1:1368/1369/1370) 슬롯 크기로 키우기 | 완료 (이후 1:1368 폐기) |
+| 2 | 베젤 제거 + #FAFAFA 풀사이즈 정렬 | 완료 (이후 75:34로 재구성) |
+| 3 | 캡쳐 v10 — 검정 padding crop | ❌ viewer 여백 손실 발견 |
+| 4 | 새 마스터 75:34로 교체 | ✅ |
+| 5 | 캡쳐 v11 — 검정 padding 흰색 치환 | ❌ 사용자가 거부 |
+| 6 | v8 + CROP+imageTransform (사용자 ref frame 모방) | ✅ **확정 표준** |
+| 7 | SUBTITLE 285px 자동 줄바꿈 | ✅ |
+| 8 | SUBTITLE \n 의미 단위 줄바꿈 지원 | ✅ |
+| 9 | 강조색 규칙 단순화 (항상 Purple) | ✅ |
+| 10 | 안 생성 출력 페이지 26:2로 분리 | ✅ |
+| 11 | D 유형 자동화 추가 (apply3DIcon) | ✅ |
+| 12 | D 유형 shield 테스트 | ❌ 톤 매칭이라 부적절 |
+| 13 | D 텍스트 350px + 하단 y 보정 + 줄바꿈 재조정 | ✅ |
+| 14 | 자산 선택 기준 정립 — 제품·기능명 우선 §5.4 | ✅ |
+| 15 | envelope 다운로드 + D 재테스트 | ✅ (사용자 검증 대기) |
+| 16 | Thiings 자동 다운로드 인프라 | ✅ credit-card로 검증 완료 |
+
+---
+
+**Last Updated**: 2026-05-31 19:30 (세션 종료 시점)
+**Session Duration**: ~3시간 (대화 시작 17:00 ~ 19:30)
+**다음 세션 첫 액션**: D 유형 envelope 테스트 결과 검증 + B/C/E 중 어디부터 자동화할지 결정
