@@ -7,7 +7,9 @@ const GREEN = { r: 77 / 255, g: 233 / 255, b: 139 / 255 };
 const PURPLE = { r: 143 / 255, g: 128 / 255, b: 255 / 255 };
 
 // 텍스트 자동 줄바꿈 임계 (1-1 §3.텍스트 작성 규칙)
-const TEXT_MAX_WIDTH = 300;
+const TITLE_MAX_WIDTH = 300;
+const SUBTITLE_MAX_WIDTH = 285; // 서브 285 넘으면 2줄 (사용자 요청 2026-05-31)
+const TEXT_MAX_WIDTH = TITLE_MAX_WIDTH; // 하위 호환
 
 // 공식 목업 컴포넌트 ID (1-3-1 §1.1.a)
 // 2026-05-31: 사용자가 1:1368 폐기 후 새 마스터 75:34 등록 (베젤 5px + cornerRadius 26)
@@ -217,9 +219,11 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle) {
 
   await figma.loadFontAsync(node.fontName);
 
-  // width 300 강제 + textAutoResize HEIGHT (자동 줄바꿈)
+  // 폭 강제 + textAutoResize HEIGHT (자동 줄바꿈)
+  // TITLE 300px / SUBTITLE 285px (서브가 더 짧은 폭에서 줄바꿈)
+  const maxWidth = isSubtitle ? SUBTITLE_MAX_WIDTH : TITLE_MAX_WIDTH;
   node.textAutoResize = "HEIGHT";
-  node.resize(TEXT_MAX_WIDTH, node.height);
+  node.resize(maxWidth, node.height);
   node.characters = text;
 
   // 전체 색상 적용 (서브타이틀)
