@@ -64,24 +64,41 @@ async function createVariants(payload) {
     cloned.y = baseY + Math.floor(i / 4) * 500;
     slotPage.appendChild(cloned);
 
-    // VISUAL_SLOT에 이미지 fill
+    // VISUAL_SLOT에 이미지 fill (CROP + 상단부터 — 의미 영역 크롭 §1.1.b)
     const visualSlot = cloned.findOne((n) => n.name === "VISUAL_SLOT");
     if (visualSlot && "fills" in visualSlot) {
       visualSlot.fills = [
         {
           type: "IMAGE",
           imageHash: imageHash,
-          scaleMode: "FILL",
+          scaleMode: "CROP",
+          // Y offset 0 = 상단부터. variants에 yOffset 명시 시 그 값 사용 (예: 0.3 = 30% 아래)
+          imageTransform: [
+            [1, 0, 0],
+            [0, 1, variants[i].yOffset || 0],
+          ],
         },
       ];
       // placeholder 외곽선 제거
       if ("strokes" in visualSlot) visualSlot.strokes = [];
     }
 
-    // TITLE 텍스트 + 강조어 그린
-    const titleNode = cloned.findOne(
+    // TITLE 텍스트 + 강조어 그린 — TITLE 못 찾으면 폴백 (옛 더미 이름)
+    let titleNode = cloned.findOne(
       (n) => n.name === "TITLE" && n.type === "TEXT"
     );
+    if (!titleNode) {
+      // 폴백: TEXT_BLOCK 안의 두 번째 텍스트 (서브 다음 = 타이틀)
+      const textBlock = cloned.findOne((n) => n.name === "TEXT_BLOCK");
+      if (textBlock) {
+        const texts = textBlock.children.filter((n) => n.type === "TEXT");
+        titleNode = texts.length >= 2 ? texts[1] : texts[0];
+      } else {
+        // 폴백 2: 슬롯 직속 TEXT 중 가장 큰 것 = 타이틀
+        const texts = cloned.children.filter((n) => n.type === "TEXT");
+        titleNode = texts.sort((a, b) => b.height - a.height)[0];
+      }
+    }
     if (titleNode) {
       await figma.loadFontAsync(titleNode.fontName);
       titleNode.characters = title;
@@ -97,15 +114,22 @@ async function createVariants(payload) {
       }
     }
 
-    // SUBTITLE 텍스트 (전체 그린)
+    // SUBTITLE 텍스트 (전체 그린) — 폴백 포함
     if (subtitle) {
-      const subtitleNode = cloned.findOne(
+      let subtitleNode = cloned.findOne(
         (n) => n.name === "SUBTITLE" && n.type === "TEXT"
       );
+      if (!subtitleNode) {
+        // 폴백: TEXT_BLOCK 안의 첫 번째 텍스트 = 서브타이틀
+        const textBlock = cloned.findOne((n) => n.name === "TEXT_BLOCK");
+        if (textBlock) {
+          const texts = textBlock.children.filter((n) => n.type === "TEXT");
+          if (texts.length >= 2) subtitleNode = texts[0]; // 첫 번째 = 서브
+        }
+      }
       if (subtitleNode) {
         await figma.loadFontAsync(subtitleNode.fontName);
         subtitleNode.characters = subtitle;
-        // SUBTITLE은 이미 그린이지만 명시
         subtitleNode.fills = [{ type: "SOLID", color: GREEN }];
       }
     }
