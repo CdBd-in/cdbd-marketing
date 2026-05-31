@@ -10,7 +10,8 @@ const PURPLE = { r: 143 / 255, g: 128 / 255, b: 255 / 255 };
 const TEXT_MAX_WIDTH = 300;
 
 // 공식 목업 컴포넌트 ID (1-3-1 §1.1.a)
-const DEFAULT_MOCKUP_ID = "1:1368"; // 원페이지 목업-1
+// 2026-05-31: 사용자가 1:1368 폐기 후 새 마스터 75:34 등록 (베젤 5px + cornerRadius 26)
+const DEFAULT_MOCKUP_ID = "75:34"; // 원페이지 목업-1 (신규)
 
 figma.showUI(__html__, { width: 500, height: 700 });
 
