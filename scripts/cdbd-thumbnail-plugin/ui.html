@@ -88,9 +88,9 @@ mockupId: 1:1368(원페이지-1, 기본) / 1:1369(iPhone-16-Pro) / 1:1370(멀티
     };
   });
 
-  // 검증 예시 자동 채우기
+  // 검증 예시 자동 채우기 (1-1 스타일: 의미 단위, 한 줄 ≤8자, 강조어 한 줄 안)
   document.getElementById('fillExample').onclick = () => {
-    document.getElementById('title').value = '전 세계 파트너를 사로잡는\\nCdBd 모바일 명함';
+    document.getElementById('title').value = '전 세계 파트너를\\n사로잡는\\nCdBd 모바일 명함';
     document.getElementById('subtitle').value = '언어 장벽 없는 글로벌 네트워킹';
     document.getElementById('emphasis').value = 'CdBd 모바일 명함';
     document.getElementById('variants').value = JSON.stringify([

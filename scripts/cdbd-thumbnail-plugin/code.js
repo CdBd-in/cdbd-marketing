@@ -128,13 +128,19 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
 
   parentSlot.appendChild(instance);
 
-  // 내부 #FFFFFF rect 찾아서 imageHash fill (1-3-1 §1.1.a 공통 규칙)
+  // 내부 흰색/거의 흰색 rect 찾기 (#FFFFFF·#FAFAFA 등) — 1-3-1 §1.1.a
+  // Vector 베젤은 VECTOR 타입이므로 RECTANGLE/FRAME만 허용
   const screen = instance.findOne((n) => {
+    if (n.type !== "RECTANGLE" && n.type !== "FRAME") return false;
     if (!("fills" in n) || !Array.isArray(n.fills) || n.fills.length === 0)
       return false;
     const f = n.fills[0];
     if (f.type !== "SOLID") return false;
-    return f.color.r >= 0.99 && f.color.g >= 0.99 && f.color.b >= 0.99;
+    // 회색 톤 (R/G/B 차이 ≤ 0.05) + 밝기 ≥ 0.9 (흰색/거의 흰색)
+    const { r, g, b } = f.color;
+    const isGrayTone =
+      Math.abs(r - g) < 0.05 && Math.abs(g - b) < 0.05 && Math.abs(r - b) < 0.05;
+    return isGrayTone && r >= 0.9 && g >= 0.9 && b >= 0.9;
   });
 
   if (screen) {
