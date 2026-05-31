@@ -40,8 +40,8 @@
   <label>타이틀 (줄바꿈은 \n)</label>
   <textarea id="title" placeholder="전 세계 파트너를 사로잡는\nCdBd 모바일 명함"></textarea>
 
-  <label>서브타이틀 (없으면 비움)</label>
-  <input type="text" id="subtitle" placeholder="언어 장벽 없는 글로벌 네트워킹">
+  <label>서브타이틀 (없으면 비움 / 줄바꿈은 \n)</label>
+  <input type="text" id="subtitle" placeholder="언어 장벽 없는\n글로벌 네트워킹">
 
   <label>강조어 (타이틀 안에 있는 문구)</label>
   <input type="text" id="emphasis" placeholder="CdBd 모바일 명함">
@@ -104,7 +104,7 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
 
   document.getElementById('run').onclick = () => {
     const title = document.getElementById('title').value.replace(/\\n/g, '\n');
-    const subtitle = document.getElementById('subtitle').value.trim();
+    const subtitle = document.getElementById('subtitle').value.trim().replace(/\\n/g, '\n');
     const emphasis = document.getElementById('emphasis').value.trim();
     const variantsRaw = document.getElementById('variants').value.trim();
     if (!variantsRaw) {
