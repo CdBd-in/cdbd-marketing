@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  * { box-sizing: border-box; font-family: 'Inter', -apple-system, sans-serif; }
+  body { margin: 0; padding: 16px; background: #fff; color: #222; font-size: 13px; }
+  h2 { margin: 0 0 16px; font-size: 15px; }
+  label { display: block; margin: 12px 0 4px; font-weight: 600; font-size: 12px; color: #444; }
+  input[type=text], textarea {
+    width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;
+    font-family: inherit;
+  }
+  textarea { min-height: 80px; resize: vertical; font-family: 'SF Mono', Menlo, monospace; font-size: 12px; }
+  button {
+    background: #18A0FB; color: #fff; border: 0; padding: 10px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 16px;
+  }
+  button:hover { background: #0d8de6; }
+  button:disabled { background: #aaa; cursor: not-allowed; }
+  .hint { font-size: 11px; color: #888; margin-top: 4px; }
+  .preset {
+    display: inline-block; background: #f0f0f0; padding: 4px 8px; border-radius: 4px;
+    margin: 2px 4px 2px 0; cursor: pointer; font-size: 11px; user-select: none;
+  }
+  .preset:hover { background: #e0e0e0; }
+  #result {
+    margin-top: 16px; padding: 12px; background: #f6f6f6; border-radius: 6px;
+    font-family: 'SF Mono', Menlo, monospace; font-size: 11px; white-space: pre-wrap;
+    max-height: 200px; overflow-y: auto;
+  }
+  .ok { color: #0a8a3f; }
+  .err { color: #c00; }
+</style>
+</head>
+<body>
+  <h2>🎨 CdBd 블로그 썸네일 자동 제작</h2>
+
+  <label>타이틀 (줄바꿈은 \n)</label>
+  <textarea id="title" placeholder="전 세계 파트너를 사로잡는\nCdBd 모바일 명함"></textarea>
+
+  <label>서브타이틀 (없으면 비움)</label>
+  <input type="text" id="subtitle" placeholder="언어 장벽 없는 글로벌 네트워킹">
+
+  <label>강조어 (타이틀 안에 있는 문구)</label>
+  <input type="text" id="emphasis" placeholder="CdBd 모바일 명함">
+  <div class="hint">서브타이틀 있음 → 그린 / 없음 → 퍼플 자동 적용</div>
+
+  <label>변형 매트릭스 (JSON 배열)</label>
+  <textarea id="variants" placeholder='[
+  {"slotId": "1:1269", "imageHash": "1f0dd...", "name": "안1_corporate_상단·서브"},
+  {"slotId": "1:1246", "imageHash": "1f0dd...", "name": "안2_corporate_하단·서브"},
+  {"slotId": "1:1269", "imageHash": "bfcaf...", "name": "안3_promotion_상단·서브"},
+  {"slotId": "1:1246", "imageHash": "bfcaf...", "name": "안4_promotion_하단·서브"}
+]'></textarea>
+
+  <div class="hint">
+    슬롯 ID 빠른 참조:<br>
+    <span class="preset" data-id="1:1266">A 목업·상</span>
+    <span class="preset" data-id="1:1269">A 목업·상·서</span>
+    <span class="preset" data-id="1:1251">A 목업·하</span>
+    <span class="preset" data-id="1:1246">A 목업·하·서</span>
+    <span class="preset" data-id="1:1300">B 목업+에디터·상</span>
+    <span class="preset" data-id="1:1308">B 상·서</span>
+    <span class="preset" data-id="1:1304">B 하</span>
+    <span class="preset" data-id="1:1314">B 하·서</span>
+    <span class="preset" data-id="1:1254">D 3D·상</span>
+    <span class="preset" data-id="1:1282">D 상·서</span>
+    <span class="preset" data-id="1:1274">D 하</span>
+    <span class="preset" data-id="1:1277">D 하·서</span>
+    <span class="preset" data-id="1:1257">C 멀티·상</span>
+    <span class="preset" data-id="1:1287">C 상·서</span>
+    <span class="preset" data-id="1:1262">E 배경·중앙</span>
+    <span class="preset" data-id="1:1294">E 중앙·서</span>
+  </div>
+
+  <button id="run">4안 자동 제작 ▶</button>
+
+  <div id="result"></div>
+
+<script>
+  // 슬롯 ID 클릭하면 클립보드에 복사
+  document.querySelectorAll('.preset').forEach(el => {
+    el.onclick = () => {
+      navigator.clipboard.writeText(el.dataset.id);
+      el.textContent = '복사됨!';
+      setTimeout(() => el.textContent = el.dataset.id ? document.querySelector(`[data-id="${el.dataset.id}"]`).textContent : '', 800);
+    };
+  });
+
+  document.getElementById('run').onclick = () => {
+    const title = document.getElementById('title').value.replace(/\\n/g, '\n');
+    const subtitle = document.getElementById('subtitle').value.trim();
+    const emphasis = document.getElementById('emphasis').value.trim();
+    let variants;
+    try {
+      variants = JSON.parse(document.getElementById('variants').value);
+    } catch (e) {
+      document.getElementById('result').innerHTML = '<span class="err">변형 JSON 파싱 오류: ' + e.message + '</span>';
+      return;
+    }
+    if (!title) {
+      document.getElementById('result').innerHTML = '<span class="err">타이틀 필수</span>';
+      return;
+    }
+    if (!Array.isArray(variants) || variants.length === 0) {
+      document.getElementById('result').innerHTML = '<span class="err">변형 1개 이상 필요</span>';
+      return;
+    }
+
+    document.getElementById('result').textContent = '제작 중…';
+    parent.postMessage({ pluginMessage: {
+      type: 'create-variants',
+      payload: { title, subtitle, emphasis, variants }
+    }}, '*');
+  };
+
+  window.onmessage = (event) => {
+    const msg = event.data.pluginMessage;
+    if (msg && msg.type === 'result') {
+      if (msg.success) {
+        document.getElementById('result').innerHTML =
+          '<span class="ok">✅ 완료!</span>\n' + JSON.stringify(msg.data, null, 2);
+      } else {
+        document.getElementById('result').innerHTML =
+          '<span class="err">❌ ' + msg.error + '</span>';
+      }
+    }
+  };
+</script>
+</body>
+</html>
