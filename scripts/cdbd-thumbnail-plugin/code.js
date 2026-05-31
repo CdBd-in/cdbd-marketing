@@ -123,19 +123,12 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
     return { success: false, reason: "mockup component not found" };
   }
 
-  // 인스턴스 생성
+  // 인스턴스 생성 (마스터 원본 크기 그대로 — child #FAFAFA rect 비율 일치 보장)
   const instance = mockupComponent.createInstance();
 
-  // VISUAL_SLOT 크기에 맞춰 스케일 (비율 유지) — 베젤이 슬롯 안에 꽉 차게
-  // 목업 비율(0.475) ≈ 슬롯 비율(0.4748)이라 FIT/FILL 차이 거의 없음
-  const scaleW = visualSlot.width / instance.width;
-  const scaleH = visualSlot.height / instance.height;
-  const scale = Math.min(scaleW, scaleH); // FIT — 슬롯 안에 완전히 들어가게
-  instance.resize(instance.width * scale, instance.height * scale);
-
-  // 슬롯 중앙 정렬 (가로·세로 모두)
+  // VISUAL_SLOT의 가로 중앙·세로 시작점에 배치 (원본 크기 그대로)
   instance.x = visualSlot.x + (visualSlot.width - instance.width) / 2;
-  instance.y = visualSlot.y + (visualSlot.height - instance.height) / 2;
+  instance.y = visualSlot.y;
 
   // 인스턴스 자체도 clipsContent (베젤 child들 cut-off 보장)
   if ("clipsContent" in instance) instance.clipsContent = true;
