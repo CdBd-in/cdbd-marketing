@@ -123,11 +123,20 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
     return { success: false, reason: "mockup component not found" };
   }
 
-  // 인스턴스 생성 (마스터 원본 크기 그대로 — child #FAFAFA rect 비율 일치 보장)
+  // 인스턴스 생성
   const instance = mockupComponent.createInstance();
 
-  // VISUAL_SLOT의 가로 중앙·세로 시작점에 배치 (원본 크기 그대로)
-  instance.x = visualSlot.x + (visualSlot.width - instance.width) / 2;
+  // VISUAL_SLOT 폭에 맞춰 비례 rescale — 자식(#FAFAFA·VECTOR) 비율 유지
+  // (resize는 자식 위치 깨지지만 rescale은 자식까지 비례 → 안전)
+  if (visualSlot.width && instance.width) {
+    const scale = visualSlot.width / instance.width;
+    if (Math.abs(scale - 1) > 0.001) {
+      instance.rescale(scale);
+    }
+  }
+
+  // 슬롯 좌상단에 정렬 (rescale 후 폭이 visualSlot.width와 동일하므로 가로 중앙 = visualSlot.x)
+  instance.x = visualSlot.x;
   instance.y = visualSlot.y;
 
   // 인스턴스 자체도 clipsContent (베젤 child들 cut-off 보장)
