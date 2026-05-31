@@ -15,6 +15,10 @@ const TEXT_MAX_WIDTH = TITLE_MAX_WIDTH; // 하위 호환
 // 2026-05-31: 사용자가 1:1368 폐기 후 새 마스터 75:34 등록 (베젤 5px + cornerRadius 26)
 const DEFAULT_MOCKUP_ID = "75:34"; // 원페이지 목업-1 (신규)
 
+// 페이지 분리 (2026-05-31)
+const SLOT_TEMPLATE_PAGE_ID = "1:1245"; // 슬롯 16종 원본 (clone 소스, 건드리지 않음)
+const OUTPUT_PAGE_ID = "26:2"; // "💻 AI 블로그 썸네일 제작" — 자동 생성된 안 출력 위치
+
 // Microlink 캡쳐 외곽 검정 padding을 Figma 내장 crop으로 잘라내는 변환 매트릭스
 // (사용자 ref frame 83:186에서 추출 — 위 8.59% / 좌우 4.61% / 아래 2.34% crop)
 // 원본 v8 캡쳐(검정 padding 포함)에 CROP scaleMode와 함께 사용.
