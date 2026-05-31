@@ -3,7 +3,7 @@
   "_format": {
     "slug": "Thiings 슬러그 (URL의 /things/{slug})",
     "thiings_url": "원본 PNG URL (vercel-storage)",
-    "local_path": "다운로드 경로 (vault 상대)",
+    "local_path": "vault 백업 경로 (자동화는 figma_hash만 사용 — local_path는 재업로드·복구·문서 임베드용)",
     "figma_hash": "Figma upload_assets 후 imageHash (없으면 null)",
     "tier": "uploaded | downloaded | needed",
     "match": "§5.4 매칭 기능명 (CdBd 제품) 또는 §5.1 톤 키워드",
@@ -12,7 +12,7 @@
   "decorations": {
     "sparkle": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-SJcxLxIC8lH8u7d9CvcOGIULgEz7wX.png",
-      "local_path": "attachments/decorations/sparkle.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/sparkle.png",
       "figma_hash": null,
       "figma_component_id": "4:141",
       "tier": "uploaded",
@@ -21,7 +21,7 @@
     },
     "magic-wand": {
       "thiings_url": null,
-      "local_path": "attachments/decorations/magic-wand.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/magic-wand.png",
       "figma_hash": null,
       "figma_component_id": "4:167",
       "tier": "uploaded",
@@ -30,7 +30,7 @@
     },
     "crown": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-o82qImf0LoNhDhTch7C2G2CwyVj9Ud.png",
-      "local_path": "attachments/decorations/crown.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/crown.png",
       "figma_hash": null,
       "figma_component_id": "14:2",
       "tier": "downloaded",
@@ -39,7 +39,7 @@
     },
     "shield": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-CZxT18DNf12Vjv8rrZv8V0tddRi9Xu.png",
-      "local_path": "attachments/decorations/shield.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/shield.png",
       "figma_hash": "5d902638e425d50efa6550490ff1d842c921802f",
       "figma_component_id": "14:3",
       "tier": "uploaded",
@@ -48,7 +48,7 @@
     },
     "calendar": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-ij7GEZhfmzLNlLgDJVhkST8FIm5rJV.png",
-      "local_path": "attachments/decorations/calendar.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/calendar.png",
       "figma_hash": null,
       "figma_component_id": "14:4",
       "tier": "downloaded",
@@ -57,7 +57,7 @@
     },
     "globe": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-KBUXl6AhDj2IsoZnozHL39yX1acqa5.png",
-      "local_path": "attachments/decorations/globe.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/globe.png",
       "figma_hash": null,
       "figma_component_id": "14:5",
       "tier": "downloaded",
@@ -66,7 +66,7 @@
     },
     "envelope": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-lp9vjuXTCqeB9yhVXBoBmyqdy8e9jv.png",
-      "local_path": "attachments/decorations/envelope.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/envelope.png",
       "figma_hash": "1d12e23b16a1a731f301472f653adb56c7761295",
       "figma_component_id": null,
       "tier": "uploaded",
@@ -75,7 +75,7 @@
     },
     "credit-card": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-xylXWxjRoBYdaH9IPOx1080olvl5Ur.png",
-      "local_path": "attachments/decorations/credit-card.png",
+      "local_path": "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/credit-card.png",
       "figma_hash": "6fc51f614db2a71f3ddff5eb90415f84f99cbb75",
       "figma_component_id": null,
       "tier": "uploaded",

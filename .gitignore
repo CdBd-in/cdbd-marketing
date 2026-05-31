@@ -23,8 +23,8 @@
 
 # Node / Playwright
 node_modules/
-scripts/cdbd-capture/.cache/
-scripts/cdbd-capture/screenshots-raw/
+자동화 도구/cdbd-capture/.cache/
+자동화 도구/cdbd-capture/screenshots-raw/
 
 # 캡처 자동화 산출물 임시
 .playwright-mcp/

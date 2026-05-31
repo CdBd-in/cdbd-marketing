@@ -14,7 +14,7 @@
 
 ### 2단계 — `.env` 파일 작성
 ```bash
-cd scripts/cdbd-capture
+cd "자동화 도구/cdbd-capture"
 cp .env.example .env
 # .env 파일을 에디터로 열고 CDBD_EMAIL, CDBD_PASSWORD 채우기
 ```
@@ -26,7 +26,7 @@ cp .env.example .env
 
 ### 3단계 — Playwright 설치 (이미 진행 중일 수 있음)
 ```bash
-cd scripts/cdbd-capture
+cd "자동화 도구/cdbd-capture"
 npm install
 npx playwright install chromium
 ```
@@ -44,7 +44,7 @@ npm run login-poc
 ## 📂 디렉토리 구조
 
 ```
-scripts/cdbd-capture/
+자동화 도구/cdbd-capture/
 ├── package.json
 ├── .env.example          ← 템플릿 (git 추적)
 ├── .env                  ← 실제 자격증명 (git 무시)

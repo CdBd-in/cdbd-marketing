@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Thiings 데코 자동 다운로드 + decorations.json 갱신
-사용: python3 scripts/cdbd-thumbnail-plugin/auto-fetch-decoration.py <slug>
-예: python3 scripts/cdbd-thumbnail-plugin/auto-fetch-decoration.py card
+사용: python3 "자동화 도구/cdbd-thumbnail-plugin/auto-fetch-decoration.py" <slug>
+예: python3 "자동화 도구/cdbd-thumbnail-plugin/auto-fetch-decoration.py" card
 
 동작:
 1. decorations.json 로드
@@ -10,7 +10,7 @@ Thiings 데코 자동 다운로드 + decorations.json 갱신
 3. 없으면:
    a. thiings.co/things/{slug} HTML fetch
    b. PNG URL 정규식 추출 (vercel-storage)
-   c. attachments/decorations/{slug}.png 다운로드
+   c. 블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코/{slug}.png 다운로드
    d. decorations.json에 등록 (tier=downloaded, figma_hash=null)
 4. 출력: 다음 단계 안내 (Figma upload_assets MCP 호출)
 
@@ -31,7 +31,12 @@ from urllib.error import URLError, HTTPError
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent.parent
 JSON_PATH = SCRIPT_DIR / "decorations.json"
-DOWNLOAD_DIR = PROJECT_ROOT / "attachments" / "decorations"
+DOWNLOAD_DIR = (
+    PROJECT_ROOT / "블로그" / "썸네일" / "1. 디자인 가이드"
+    / "1-3. 이미지" / "1-3-3. 이미지 자산" / "데코"
+)
+# vault 상대 경로 (decorations.json local_path 기록용)
+LOCAL_PATH_PREFIX = "블로그/썸네일/1. 디자인 가이드/1-3. 이미지/1-3-3. 이미지 자산/데코"
 
 THIINGS_BASE = "https://thiings.co/things"
 PNG_URL_PATTERN = re.compile(
@@ -132,7 +137,7 @@ def cmd_fetch(slug):
     if slug not in decos:
         decos[slug] = {
             "thiings_url": png_url,
-            "local_path": f"attachments/decorations/{slug}.png",
+            "local_path": f"{LOCAL_PATH_PREFIX}/{slug}.png",
             "figma_hash": None,
             "figma_component_id": None,
             "tier": "downloaded",
