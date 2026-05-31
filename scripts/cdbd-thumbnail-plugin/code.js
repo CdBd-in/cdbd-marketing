@@ -46,11 +46,17 @@ async function createVariants(payload) {
   const { title, subtitle, emphasis, variants } = payload;
 
   await figma.loadAllPagesAsync();
-  let slotPage =
-    figma.root.children.find((p) => p.id === "1:1245") ||
+  // 슬롯 템플릿 페이지 (clone 소스, 건드리지 않음)
+  const templatePage =
+    figma.root.children.find((p) => p.id === SLOT_TEMPLATE_PAGE_ID) ||
     figma.root.children.find((p) => p.name.includes("슬롯"));
-  if (!slotPage) slotPage = figma.currentPage;
-  await figma.setCurrentPageAsync(slotPage);
+  // 출력 페이지 (생성 안들이 들어갈 곳)
+  let outputPage = figma.root.children.find((p) => p.id === OUTPUT_PAGE_ID);
+  if (!outputPage) {
+    // fallback — 출력 페이지 없으면 템플릿 페이지 (옛 동작)
+    outputPage = templatePage || figma.currentPage;
+  }
+  await figma.setCurrentPageAsync(outputPage);
 
   // 2026-05-31: 강조어는 항상 Purple (서브 유무 무관). SUBTITLE 색은 fillText에서 별도 GREEN 적용.
   const emphasisColor = PURPLE;
@@ -71,8 +77,8 @@ async function createVariants(payload) {
 
     const newName = name || `안${i + 1}_${slotId}`;
 
-    // 동명 잔재 안 자동 삭제 (재실행 시 누적 방지)
-    const existing = slotPage.children.filter((c) => c.name === newName);
+    // 동명 잔재 안 자동 삭제 (재실행 시 누적 방지) — 출력 페이지 기준
+    const existing = outputPage.children.filter((c) => c.name === newName);
     existing.forEach((c) => c.remove());
 
     const cloned = original.clone();
@@ -81,7 +87,7 @@ async function createVariants(payload) {
     cloned.y = baseY + Math.floor(i / 4) * 500;
     // clipsContent 강제 — 베젤 위·아래 cut-off 블리드 ([[1-2-1]] §3 슬롯 스펙)
     if ("clipsContent" in cloned) cloned.clipsContent = true;
-    slotPage.appendChild(cloned);
+    outputPage.appendChild(cloned); // 출력 페이지에 클론 추가
 
     // 1) VISUAL_SLOT 찾기
     const visualSlot = cloned.findOne((n) => n.name === "VISUAL_SLOT");
