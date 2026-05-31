@@ -63,6 +63,8 @@ async function createVariants(payload) {
     cloned.name = newName;
     cloned.x = baseX + (i % 4) * 650;
     cloned.y = baseY + Math.floor(i / 4) * 500;
+    // clipsContent 강제 — 베젤 위·아래 cut-off 블리드 ([[1-2-1]] §3 슬롯 스펙)
+    if ("clipsContent" in cloned) cloned.clipsContent = true;
     slotPage.appendChild(cloned);
 
     // 1) VISUAL_SLOT 찾기
@@ -131,6 +133,9 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
   // VISUAL_SLOT 위치에 배치 (가로 중앙, 세로 시작점)
   instance.x = visualSlot.x + (visualSlot.width - instance.width) / 2;
   instance.y = visualSlot.y;
+
+  // 인스턴스 자체도 clipsContent (베젤 child들 cut-off 보장)
+  if ("clipsContent" in instance) instance.clipsContent = true;
 
   parentSlot.appendChild(instance);
 
