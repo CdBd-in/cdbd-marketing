@@ -229,11 +229,16 @@ async function createVariants(payload) {
     const { slotId, imageHash, name } = v;
     const mockupId = v.mockupId || DEFAULT_MOCKUP_ID;
 
+    console.log(`[CdBd] 변형 ${i+1} 처리: slotId=${slotId}, name=${name}`);
+
     const original = await figma.getNodeByIdAsync(slotId);
     if (!original) {
+      console.error(`[CdBd] ❌ 슬롯 ${slotId} 찾기 실패 — Figma에서 해당 노드 없음`);
       results.push({ name, error: `slot ${slotId} not found` });
       continue;
     }
+
+    console.log(`[CdBd] ✅ 슬롯 ${slotId} 발견: name="${original.name}", type=${original.type}`);
 
     const newName = name || `안${i + 1}_${slotId}`;
 
@@ -251,6 +256,11 @@ async function createVariants(payload) {
 
     // 1) 유형 판단
     const slotType = SLOT_TYPE_MAP[slotId] || "A";
+    console.log(`[CdBd] 슬롯 ${slotId} → 유형 "${slotType}" (SLOT_TYPE_MAP)`);
+
+    // 클론된 슬롯 내부 구조 확인 (디버깅)
+    const childNames = cloned.findAll ? cloned.findAll(() => true).map(n => `${n.name}(${n.type})`).slice(0, 10) : [];
+    console.log(`[CdBd]   내부 자식 노드 (상위 10개): ${childNames.join(", ")}`);
 
     // E 유형: BG_SLOT (배경) + 보조 VISUAL_SLOT (선택)
     if (slotType === "E") {
@@ -550,17 +560,14 @@ function adjustTextCenterE(parentSlot, slotId) {
 async function createVariantsFromAI(payload) {
   const { blogTitle, blogContent, imageCount } = payload;
 
-  // Step 1: 이미지 URL 후보 생성
+  // Step 1: 키워드 추출
   const imageData = await generateImageCandidates(blogTitle, blogContent, imageCount);
 
-  if (!imageData.images || imageData.images.length === 0) {
-    throw new Error("이미지 후보 생성 실패");
-  }
-
-  // Step 2: UI에 URL 리스트 전달 → UI가 fetch
+  // Step 2: UI에 키워드 전달 → UI가 Openverse 검색 + 이미지 다운로드
   figma.ui.postMessage({
-    type: "fetch-images",
-    urls: imageData.images,
+    type: "search-openverse",
+    keywords: imageData.keywords,
+    count: imageData.count,
     blogTitle,
     blogContent
   });
@@ -665,40 +672,19 @@ function extractEmphasis(title) {
  * Python image_generator.py 호출
  * (또는 온라인 API 호출)
  */
+/**
+ * Openverse API로 이미지 검색 (UI 측에서 실행)
+ * Plugin code는 키워드만 전달하고, UI에서 fetch
+ */
 async function generateImageCandidates(title, content, count) {
-  // Lorem Flickr (키워드 기반) + Picsum (랜덤 fallback)
   const keywords = extractKeywordsSimple(title, content);
   console.log("[CdBd] 추출된 키워드:", keywords);
 
-  const images = [];
-
-  // Lorem Flickr: 키워드 기반 이미지 (https://loremflickr.com/600/450/keyword)
-  for (let i = 0; i < count; i++) {
-    const keyword = keywords[i % keywords.length];
-    const variant = Math.floor(i / keywords.length);
-
-    // 변형: 캐시 무효화 + 키워드 조합
-    let url;
-    if (variant === 0) {
-      url = `https://loremflickr.com/600/450/${encodeURIComponent(keyword)}?lock=${i}`;
-    } else if (variant === 1) {
-      url = `https://loremflickr.com/600/450/${encodeURIComponent(keyword + ",business")}?lock=${i + 100}`;
-    } else {
-      url = `https://loremflickr.com/600/450/${encodeURIComponent(keyword + ",abstract")}?lock=${i + 200}`;
-    }
-
-    images.push({
-      url: url,
-      keyword: keyword,
-      name: `안${i + 1}_${keyword}${variant > 0 ? "_v" + variant : ""}`,
-      fallbackUrl: `https://picsum.photos/seed/cdbd${i}/600/450` // Picsum fallback (랜덤)
-    });
-  }
-
+  // UI에 키워드 전달 → UI에서 Openverse 검색
   return {
     keywords: keywords,
-    images: images.slice(0, count),
-    count: Math.min(images.length, count)
+    searchMode: "openverse",
+    count: count
   };
 }
 

@@ -244,6 +244,120 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
           <span style="font-size:11px; color:#666;">슬롯 수: ${msg.slotCount}개</span>
         </div>
         🎨 썸네일 제작 중…`;
+    } else if (msg.type === 'search-openverse') {
+      // Openverse API로 키워드별 이미지 검색
+      const { keywords, count, blogTitle, blogContent } = msg;
+      document.getElementById('result').innerHTML =
+        `🔍 Openverse에서 이미지 검색 중…<br><span style="font-size:11px;color:#666;">키워드: ${keywords.join(", ")}</span>`;
+
+      const allImageUrls = [];
+
+      // 각 키워드별로 검색 (관련도 높은 순)
+      for (const keyword of keywords) {
+        try {
+          const apiUrl = `https://api.openverse.org/v1/images/?q=${encodeURIComponent(keyword)}&page_size=8&license_type=commercial&size=large`;
+          console.log(`[CdBd] Openverse 검색: ${keyword} → ${apiUrl}`);
+
+          const response = await fetch(apiUrl);
+          if (!response.ok) {
+            console.warn(`[CdBd] Openverse 검색 실패 (${keyword}): HTTP ${response.status}`);
+            continue;
+          }
+
+          const data = await response.json();
+          if (data.results && data.results.length > 0) {
+            // 상위 3개씩 추가
+            for (let i = 0; i < Math.min(3, data.results.length); i++) {
+              const result = data.results[i];
+              allImageUrls.push({
+                url: result.url || result.thumbnail,
+                thumbnail: result.thumbnail,
+                keyword: keyword,
+                title: result.title || keyword,
+                source: result.source || "openverse"
+              });
+            }
+            console.log(`[CdBd] "${keyword}" → ${data.results.length}개 발견`);
+          }
+        } catch (e) {
+          console.error(`[CdBd] Openverse 오류 (${keyword}):`, e.message);
+        }
+      }
+
+      if (allImageUrls.length === 0) {
+        document.getElementById('result').innerHTML =
+          '<span class="err">❌ Openverse에서 이미지를 찾을 수 없음. 다른 제목으로 시도하세요.</span>';
+        return;
+      }
+
+      // 상위 N개만 사용 (관련도 높은 순)
+      const selectedImages = allImageUrls.slice(0, count);
+      console.log(`[CdBd] 총 ${selectedImages.length}개 이미지 선택됨`);
+
+      // 이미지 다운로드
+      document.getElementById('result').innerHTML =
+        `📥 이미지 다운로드 중… (0/${selectedImages.length})`;
+
+      const imagesData = [];
+      let successCount = 0;
+
+      for (let i = 0; i < selectedImages.length; i++) {
+        const img = selectedImages[i];
+        try {
+          console.log(`[CdBd] 다운로드 ${i+1}/${selectedImages.length}: ${img.url}`);
+          const response = await fetch(img.url);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const blob = await response.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          const bytes = Array.from(new Uint8Array(arrayBuffer));
+
+          imagesData.push({
+            success: true,
+            bytes: bytes,
+            name: `${img.keyword}_${i + 1}`,
+            keyword: img.keyword,
+            title: img.title
+          });
+          successCount++;
+        } catch (e) {
+          console.warn(`[CdBd] 다운로드 실패:`, e.message);
+          // 썸네일 URL로 재시도
+          if (img.thumbnail && img.thumbnail !== img.url) {
+            try {
+              const response = await fetch(img.thumbnail);
+              const blob = await response.blob();
+              const arrayBuffer = await blob.arrayBuffer();
+              const bytes = Array.from(new Uint8Array(arrayBuffer));
+              imagesData.push({
+                success: true,
+                bytes: bytes,
+                name: `${img.keyword}_${i + 1}_thumb`,
+                keyword: img.keyword
+              });
+              successCount++;
+            } catch (e2) {
+              imagesData.push({ success: false, error: e2.message, name: `${img.keyword}_${i + 1}` });
+            }
+          } else {
+            imagesData.push({ success: false, error: e.message, name: `${img.keyword}_${i + 1}` });
+          }
+        }
+
+        document.getElementById('result').innerHTML =
+          `📥 이미지 다운로드 중… (${i + 1}/${selectedImages.length}, 성공: ${successCount})`;
+      }
+
+      document.getElementById('result').innerHTML =
+        `✅ ${successCount}개 이미지 다운로드 완료. Figma에 업로드 중…`;
+
+      // 결과를 plugin으로 전달
+      parent.postMessage({
+        pluginMessage: {
+          type: 'images-fetched',
+          payload: { blogTitle, blogContent, imagesData }
+        }
+      }, '*');
     } else if (msg.type === 'fetch-images') {
       // Plugin이 이미지 URL 리스트 전달 → UI가 fetch
       const { urls, blogTitle, blogContent } = msg;
