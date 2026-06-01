@@ -244,6 +244,85 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
           <span style="font-size:11px; color:#666;">슬롯 수: ${msg.slotCount}개</span>
         </div>
         🎨 썸네일 제작 중…`;
+    } else if (msg.type === 'capture-viewers') {
+      // A 유형 — Microlink으로 cdbd.in viewer 캡처
+      const { viewerAssets, blogTitle, blogContent } = msg;
+      document.getElementById('result').innerHTML =
+        `🌐 cdbd.in viewer 캡처 중… (Microlink)<br>` +
+        `<span style="font-size:11px;color:#666;">자산 ${viewerAssets.length}개 처리</span>`;
+
+      const imagesData = [];
+      let successCount = 0;
+
+      for (let i = 0; i < viewerAssets.length; i++) {
+        const asset = viewerAssets[i];
+        try {
+          // Microlink API 호출 (모바일 뷰포트 375×812)
+          const targetUrl = encodeURIComponent(asset.url);
+          const apiUrl = `https://api.microlink.io/?url=${targetUrl}&screenshot=true&meta=false&viewport.width=375&viewport.height=812&waitUntil=networkidle0&waitForTimeout=5000&full-page=true`;
+
+          console.log(`[CdBd] Microlink 캡처 요청 ${i + 1}/${viewerAssets.length}: ${asset.url}`);
+          document.getElementById('result').innerHTML =
+            `🌐 캡처 중… (${i + 1}/${viewerAssets.length})<br>` +
+            `<span style="font-size:11px;color:#666;">${asset.note}</span>`;
+
+          const response = await fetch(apiUrl);
+          if (!response.ok) throw new Error(`Microlink HTTP ${response.status}`);
+
+          const data = await response.json();
+          if (!data.data || !data.data.screenshot || !data.data.screenshot.url) {
+            throw new Error("Microlink 응답에 screenshot URL 없음");
+          }
+
+          const screenshotUrl = data.data.screenshot.url;
+          console.log(`[CdBd]   캡처 URL: ${screenshotUrl}`);
+
+          // 캡처 이미지 다운로드
+          const imgResponse = await fetch(screenshotUrl);
+          if (!imgResponse.ok) throw new Error(`Screenshot download HTTP ${imgResponse.status}`);
+
+          const blob = await imgResponse.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          const bytes = Array.from(new Uint8Array(arrayBuffer));
+
+          imagesData.push({
+            success: true,
+            bytes: bytes,
+            name: `viewer_${i + 1}`,
+            keyword: asset.note,
+            isMain: true,
+            scaleMode: asset.scaleMode, // FILL or CROP (plugin에서 사용)
+            yOffset: asset.yOffset || 0,
+          });
+          successCount++;
+          console.log(`[CdBd] ✅ 캡처 완료 ${i + 1}`);
+        } catch (e) {
+          console.error(`[CdBd] Microlink 캡처 실패:`, e.message);
+          imagesData.push({
+            success: false,
+            error: e.message,
+            name: `viewer_${i + 1}`,
+            isMain: true,
+          });
+        }
+      }
+
+      if (successCount === 0) {
+        document.getElementById('result').innerHTML =
+          '<span class="err">❌ viewer 캡처 실패. 콘솔 확인 필요. (Microlink 무료 한도 초과 가능성)</span>';
+        return;
+      }
+
+      document.getElementById('result').innerHTML =
+        `✅ ${successCount}개 viewer 캡처 완료. Figma에 업로드 중…`;
+
+      // 결과를 plugin으로 전달
+      parent.postMessage({
+        pluginMessage: {
+          type: 'images-fetched',
+          payload: { blogTitle, blogContent, imagesData, decoration: null }
+        }
+      }, '*');
     } else if (msg.type === 'search-openverse') {
       // 메인 배경 = Pollinations AI / 보조 3D 아이콘 = Thiings 다운로드
       const { keywords, count, decoration, blogTitle, blogContent } = msg;
