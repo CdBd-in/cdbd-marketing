@@ -239,7 +239,9 @@ function selectDecoration(blogTitle, blogContent = "") {
   const sparkle = SPARKLE_VARIANTS[Math.floor(Math.random() * SPARKLE_VARIANTS.length)];
   console.log(`[CdBd] 데코 폴백: ${sparkle.slug} (sparkle 1-4 랜덤)`);
   return {
-    ...sparkle,
+    slug: sparkle.slug,
+    figma_id: sparkle.figma_id,
+    thiings_url: sparkle.thiings_url,
     note: "§5.1 일반 강조 (기본값)",
   };
 }
