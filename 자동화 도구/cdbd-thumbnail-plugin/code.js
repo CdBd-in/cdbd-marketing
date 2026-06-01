@@ -706,78 +706,125 @@ async function generateImageCandidates(title, content, count) {
  * 간단한 키워드 추출 (JavaScript 판)
  * Python version과 동일한 결과 반환
  */
+/**
+ * 한글 → 영문 핵심 명사 매핑 (Unsplash/Openverse 검색용)
+ * 키워드 점수: 핵심 비즈니스 명사 = 10, 일반 명사 = 5, 형용사 = 2
+ */
+const KOREAN_NOUN_MAP = {
+  // CdBd 제품 (점수 10)
+  "초대장": { en: "invitation", score: 10 },
+  "명함": { en: "business card", score: 10 },
+  "카탈로그": { en: "catalog", score: 10 },
+  "브로셔": { en: "brochure", score: 10 },
+  "예약": { en: "appointment", score: 10 },
+  "결제": { en: "payment", score: 10 },
+  "상담": { en: "consulting", score: 10 },
+  "문의": { en: "inquiry", score: 10 },
+  "프로필링크": { en: "portfolio", score: 10 },
+  "포트폴리오": { en: "portfolio", score: 10 },
+
+  // 마케팅·전략 (점수 8)
+  "마케팅": { en: "marketing", score: 8 },
+  "전략": { en: "strategy", score: 8 },
+  "트렌드": { en: "trend", score: 8 },
+  "성장": { en: "growth", score: 8 },
+  "분석": { en: "analytics", score: 8 },
+  "고객": { en: "customer", score: 8 },
+  "브랜드": { en: "branding", score: 8 },
+  "광고": { en: "advertising", score: 8 },
+  "캠페인": { en: "campaign", score: 8 },
+
+  // 기술 (점수 7)
+  "AI": { en: "artificial intelligence", score: 9 },
+  "인공지능": { en: "artificial intelligence", score: 9 },
+  "자동화": { en: "automation", score: 8 },
+  "기술": { en: "technology", score: 6 },
+  "디자인": { en: "design", score: 7 },
+  "데이터": { en: "data", score: 7 },
+  "솔루션": { en: "software", score: 6 },
+  "도구": { en: "tools", score: 5 },
+  "글쓰기": { en: "writing", score: 8 },
+  "콘텐츠": { en: "content creation", score: 8 },
+
+  // 비즈니스 (점수 6)
+  "기업": { en: "corporate office", score: 6 },
+  "비즈니스": { en: "business", score: 6 },
+  "스타트업": { en: "startup", score: 7 },
+  "회사": { en: "company", score: 5 },
+  "팀": { en: "team", score: 6 },
+  "리더십": { en: "leadership", score: 7 },
+  "협업": { en: "collaboration", score: 7 },
+
+  // 이벤트·네트워킹 (점수 7)
+  "이벤트": { en: "event", score: 7 },
+  "세미나": { en: "seminar", score: 8 },
+  "행사": { en: "conference", score: 7 },
+  "네트워킹": { en: "networking", score: 8 },
+  "미팅": { en: "meeting", score: 6 },
+  "회의": { en: "meeting", score: 6 },
+
+  // 글로벌·모바일 (점수 6)
+  "글로벌": { en: "global", score: 6 },
+  "모바일": { en: "mobile", score: 6 },
+  "해외": { en: "international", score: 6 },
+
+  // 보안·금융 (점수 6)
+  "보안": { en: "security", score: 7 },
+  "금융": { en: "finance", score: 7 },
+  "은행": { en: "banking", score: 7 },
+
+  // 추상 개념 (점수 4)
+  "미래": { en: "future technology", score: 5 },
+  "혁신": { en: "innovation", score: 5 },
+  "성공": { en: "success", score: 4 },
+};
+
+/**
+ * 블로그 제목/콘텐츠 → 검색 키워드 추출 (점수 기반)
+ * - 핵심 명사 우선 (점수 높은 순)
+ * - 의미 없는 단어 (조사/형용사/불용어) 제외
+ */
 function extractKeywordsSimple(title, content) {
-  // 한글 키워드 → 영문 Unsplash 검색어 매핑
-  const KOREAN_TO_ENGLISH = {
-    "AI": "AI",
-    "ai": "AI",
-    "인공지능": "artificial intelligence",
-    "자동화": "automation",
-    "초대장": "invitation",
-    "명함": "business card",
-    "카탈로그": "catalog",
-    "포트폴리오": "portfolio",
-    "예약": "booking",
-    "결제": "payment",
-    "보안": "security",
-    "분석": "analytics",
-    "마케팅": "marketing",
-    "성장": "growth",
-    "글로벌": "global",
-    "모바일": "mobile",
-    "글쓰기": "writing",
-    "콘텐츠": "content",
-    "블로그": "blog",
-    "비즈니스": "business",
-    "기업": "corporate",
-    "스타트업": "startup",
-    "전략": "strategy",
-    "디자인": "design",
-    "기술": "technology",
-    "데이터": "data",
-    "고객": "customer",
-    "서비스": "service",
-    "브랜드": "brand",
-    "광고": "advertising",
-    "이벤트": "event",
-    "세미나": "seminar",
-    "회의": "meeting",
-    "프레젠테이션": "presentation",
-    "네트워킹": "networking",
-    "협업": "collaboration",
-    "팀": "team",
-    "리더십": "leadership",
-    "트렌드": "trend",
-    "혁신": "innovation",
-    "미래": "future",
-    "도구": "tool",
-    "솔루션": "solution",
-  };
+  const text = `${title} ${content || ""}`;
+  const scored = [];
 
-  const text = `${title} ${content}`;
-  const found = [];
-
-  // 1) 한글 키워드 → 영문 매핑
-  for (const [korean, english] of Object.entries(KOREAN_TO_ENGLISH)) {
-    if (text.includes(korean) && !found.includes(english)) {
-      found.push(english);
+  // 한글 핵심 명사 매핑 (점수 기반)
+  for (const [korean, info] of Object.entries(KOREAN_NOUN_MAP)) {
+    if (text.includes(korean)) {
+      scored.push({ keyword: info.en, score: info.score, source: korean });
     }
   }
 
-  // 2) 영문 키워드 직접 추출 (3글자 이상)
+  // 영문 명사 추출 (3글자 이상, 불용어 제외)
   const englishWords = text.toLowerCase().match(/[a-z]{3,}/g) || [];
+  const seenEnglish = new Set();
   for (const word of englishWords) {
-    if (!STOPWORDS.has(word) && !found.includes(word)) {
-      found.push(word);
-    }
+    if (STOPWORDS.has(word)) continue;
+    if (seenEnglish.has(word)) continue;
+    seenEnglish.add(word);
+    scored.push({ keyword: word, score: 5, source: word });
   }
 
-  // 키워드가 없으면 기본 폴백
-  if (found.length === 0) {
-    found.push("business", "abstract");
+  // 점수 정렬 (높은 순)
+  scored.sort((a, b) => b.score - a.score);
+
+  // 중복 제거 후 상위 3개
+  const seen = new Set();
+  const result = [];
+  for (const item of scored) {
+    if (seen.has(item.keyword)) continue;
+    seen.add(item.keyword);
+    result.push(item.keyword);
+    if (result.length >= 3) break;
   }
 
-  return found.slice(0, 5);
+  // 폴백: 키워드가 없으면 기본
+  if (result.length === 0) {
+    result.push("business", "office");
+  }
+
+  console.log("[CdBd] 키워드 점수:", scored);
+  return result;
 }
 
 const STOPWORDS = new Set([

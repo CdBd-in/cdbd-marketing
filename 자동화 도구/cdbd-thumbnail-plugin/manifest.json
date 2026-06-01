@@ -7,11 +7,19 @@
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": [
-      "https://loremflickr.com",
-      "https://picsum.photos",
-      "https://fastly.picsum.photos",
+      "https://api.openverse.org",
+      "https://api.openverse.engineering",
+      "https://*.openverse.org",
+      "https://*.openverse.engineering",
+      "https://*.flickr.com",
+      "https://*.staticflickr.com",
+      "https://*.wikimedia.org",
+      "https://*.unsplash.com",
+      "https://commons.wikimedia.org",
+      "https://upload.wikimedia.org",
       "https://images.unsplash.com",
-      "https://api.unsplash.com"
+      "https://picsum.photos",
+      "https://fastly.picsum.photos"
     ]
   }
 }
