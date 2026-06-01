@@ -865,10 +865,7 @@ async function createVariantsFromAI(payload) {
   // 가이드 §5.3: 자동화 우선순위 — E·D 우선 (Thiings 인프라만 필요)
   // A·B·C는 cdbd.in viewer/에디터 캡처가 필요 (Microlink/Playwright 인프라 → 추후 작업)
   if (["A", "B", "C"].includes(layoutDecision.type)) {
-    figma.notify(
-      `⚠️ ${layoutDecision.type} 유형은 cdbd.in viewer 캡처 필요 — 현재는 E·D만 완전 자동화 지원`,
-      { error: false, timeout: 5000 }
-    );
+    figma.notify(`⚠️ ${layoutDecision.type} 유형은 cdbd.in viewer 캡처 필요 — 현재는 E·D만 완전 자동화 지원`);
     console.warn(`[CdBd] ⚠️ ${layoutDecision.type} 유형은 추후 작업 (Microlink/Playwright 인프라 필요)`);
   }
 
