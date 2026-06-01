@@ -283,38 +283,59 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
       }
 
       // ════════════════════════════════════════════
-      // Step 2: 메인 배경 이미지 — Pollinations AI 생성
+      // Step 2: 메인 배경 이미지 — Lexica.art API (API key 불필요)
+      // Stable Diffusion으로 이미 생성된 이미지 데이터베이스 검색
       // ════════════════════════════════════════════
-      const prompts = [];
+      const queries = [];
       const mainKeyword = keywords[0];
-      const subKeyword = keywords[1] || keywords[0];
 
-      prompts.push({
-        prompt: `${keywords.join(", ")}, modern, professional, marketing, clean background, cinematic`,
-        keyword: mainKeyword,
-        style: "main_bg"
-      });
-      prompts.push({
-        prompt: `${subKeyword}, professional photography, business, minimalist, soft lighting`,
-        keyword: subKeyword,
-        style: "photo_bg"
-      });
+      // 검색 쿼리: 각 키워드를 비즈니스/마케팅 맥락에 매칭
+      queries.push({ q: `${keywords.join(" ")} modern professional`, keyword: mainKeyword, style: "main" });
+      queries.push({ q: `${mainKeyword} business minimalist`, keyword: mainKeyword, style: "photo" });
       if (keywords.length >= 2) {
-        prompts.push({
-          prompt: `${keywords[0]} and ${keywords[1]}, abstract gradient, modern, deep colors`,
-          keyword: `${keywords[0]}_${keywords[1]}`,
-          style: "abstract_bg"
-        });
+        queries.push({ q: `${keywords[0]} ${keywords[1]} abstract`, keyword: `${keywords[0]}_${keywords[1]}`, style: "abstract" });
       }
-      prompts.push({
-        prompt: `${mainKeyword}, illustration, flat design, vibrant gradient`,
-        keyword: mainKeyword,
-        style: "illustration_bg"
-      });
+      queries.push({ q: `${mainKeyword} illustration flat design`, keyword: mainKeyword, style: "illustration" });
 
-      const totalBg = Math.min(prompts.length, count);
-      const selectedPrompts = prompts.slice(0, totalBg);
-      console.log(`[CdBd] 생성할 배경 이미지: ${selectedPrompts.length}개 + Thiings 아이콘 ${thiingsIcon ? 1 : 0}개`);
+      console.log(`[CdBd] Lexica 검색 쿼리: ${queries.length}개`);
+
+      // Lexica API에서 이미지 후보 가져오기
+      const allImages = [];
+      for (const q of queries) {
+        try {
+          const apiUrl = `https://lexica.art/api/v1/search?q=${encodeURIComponent(q.q)}`;
+          console.log(`[CdBd] Lexica 검색: "${q.q}"`);
+          document.getElementById('result').innerHTML =
+            `🔍 Lexica 검색 중…<br><span style="font-size:11px;color:#666;">"${q.q}"</span>`;
+
+          const response = await fetch(apiUrl);
+          if (!response.ok) {
+            console.warn(`[CdBd] Lexica 검색 실패 (${q.q}): HTTP ${response.status}`);
+            continue;
+          }
+
+          const data = await response.json();
+          if (data.images && data.images.length > 0) {
+            // 상위 1개씩만 사용 (다양성 위해)
+            const img = data.images[0];
+            allImages.push({
+              imageUrl: img.src || img.srcSmall,
+              keyword: q.keyword,
+              style: q.style,
+              prompt: img.prompt || q.q
+            });
+            console.log(`[CdBd]   → 이미지 발견: ${img.prompt?.substring(0, 60) || "(no prompt)"}`);
+          } else {
+            console.warn(`[CdBd]   → 결과 없음`);
+          }
+        } catch (e) {
+          console.error(`[CdBd] Lexica 검색 오류:`, e.message);
+        }
+      }
+
+      const totalBg = Math.min(allImages.length, count);
+      const selectedImages = allImages.slice(0, totalBg);
+      console.log(`[CdBd] 다운로드할 배경 이미지: ${selectedImages.length}개 + Thiings 아이콘 ${thiingsIcon ? 1 : 0}개`);
 
       const imagesData = [];
       let successCount = 0;
@@ -325,20 +346,16 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
         successCount++;
       }
 
-      // Pollinations 메인 배경 생성
-      for (let i = 0; i < selectedPrompts.length; i++) {
-        const p = selectedPrompts[i];
+      // Lexica 이미지 다운로드
+      for (let i = 0; i < selectedImages.length; i++) {
+        const p = selectedImages[i];
         try {
-          const promptEncoded = encodeURIComponent(p.prompt);
-          const seed = Math.floor(Math.random() * 100000) + i;
-          const url = `https://image.pollinations.ai/prompt/${promptEncoded}?width=600&height=450&seed=${seed}`;
-
-          console.log(`[CdBd] 배경 생성 ${i+1}/${selectedPrompts.length}: "${p.prompt.substring(0, 60)}..."`);
+          console.log(`[CdBd] 배경 다운로드 ${i+1}/${selectedImages.length}: ${p.imageUrl}`);
           document.getElementById('result').innerHTML =
-            `🎨 AI 배경 생성 중… (${i + 1}/${selectedPrompts.length})<br>` +
+            `📥 이미지 다운로드 중… (${i + 1}/${selectedImages.length})<br>` +
             `<span style="font-size:11px;color:#666;">"${p.prompt.substring(0, 80)}..."</span>`;
 
-          const response = await fetch(url);
+          const response = await fetch(p.imageUrl);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
           const blob = await response.blob();
