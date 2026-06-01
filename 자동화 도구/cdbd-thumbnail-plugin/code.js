@@ -47,6 +47,79 @@ const SLOT_TYPE_MAP = {
   "1:1262": "E", "1:1294": "E",
 };
 
+// ============================================================================
+// cdbd.in viewer URL 매핑 (가이드 [[1-3-2. 이미지 출처]] §3.1·§2 기반)
+// A 유형 자동화: 타이틀 1a 기능명 → viewer URL + 영역 결정
+// ============================================================================
+
+// §3.1 viewer 유래 기능 매핑 — 키워드 → URL + scaleMode + Y offset (CROP용)
+const CDBD_VIEWER_MAP = [
+  // ─── 프로필·명함 (profilelink) ───
+  { keywords: ["프로필 링크", "프로필링크"], url: "https://www.cdbd.in/templates/profilelink/promotion/viewer", scaleMode: "FILL", yOffset: 0, note: "프로모션·링크" },
+  { keywords: ["B2B 영업", "전환율"], url: "https://www.cdbd.in/templates/profilelink/sales/viewer", scaleMode: "FILL", yOffset: 0, note: "케이스 스터디" },
+  { keywords: ["원클릭 연락처", "연락처 저장"], url: "https://www.cdbd.in/templates/profilelink/corporate/viewer", scaleMode: "FILL", yOffset: 0, note: "원클릭 연락처" },
+  { keywords: ["병원", "치과", "의료", "진료"], url: "https://www.cdbd.in/templates/profilelink/dental/viewer", scaleMode: "FILL", yOffset: 0, note: "진료 정보 카드" },
+  { keywords: ["포트폴리오", "프리랜서", "크리에이터"], url: "https://www.cdbd.in/templates/profilelink/portfolio/viewer", scaleMode: "FILL", yOffset: 0, note: "포트폴리오 갤러리" },
+  { keywords: ["캠페인", "사업 소개"], url: "https://www.cdbd.in/templates/profilelink/campaign/viewer", scaleMode: "FILL", yOffset: 0, note: "캠페인" },
+  { keywords: ["설문", "리드 수집"], url: "https://www.cdbd.in/templates/profilelink/intake/viewer", scaleMode: "CROP", yOffset: 0.2, note: "설문형 (중·하단)" },
+  { keywords: ["상담 신청", "상담 폼"], url: "https://www.cdbd.in/templates/profilelink/promotion/viewer", scaleMode: "CROP", yOffset: 0.5, note: "상담 신청 폼 (하단)" },
+
+  // ─── 홍보·카탈로그 (catalog) ───
+  { keywords: ["디지털 카탈로그", "제품 상세", "가구", "프리미엄 제품"], url: "https://www.cdbd.in/templates/catalog/oak_table/viewer", scaleMode: "FILL", yOffset: 0, note: "디지털 제품 상세 (oak_table — 원페이지)" },
+  { keywords: ["패션", "시즌 컬렉션", "룩북"], url: "https://www.cdbd.in/templates/catalog/lookbook/viewer", scaleMode: "FILL", yOffset: 0, note: "시즌 룩북 (멀티페이지)" },
+  { keywords: ["신제품", "신상", "신상품"], url: "https://www.cdbd.in/templates/catalog/newarrival/viewer", scaleMode: "FILL", yOffset: 0, note: "신제품 안내 (멀티페이지)" },
+  { keywords: ["화보", "쿠폰", "온라인 쇼핑"], url: "https://www.cdbd.in/templates/catalog/online_lookbook/viewer", scaleMode: "FILL", yOffset: 0, note: "화보 룩북 + 쿠폰 (멀티페이지)" },
+
+  // ─── 초대·예약 (invitation) ───
+  { keywords: ["VIP 행사", "세미나", "초대장 행사"], url: "https://www.cdbd.in/templates/invitation/seminar/viewer", scaleMode: "FILL", yOffset: 0, note: "VIP 맞춤 초대장" },
+  { keywords: ["예약 관리", "예약 캘린더", "방문 예약", "갤러리 예약"], url: "https://www.cdbd.in/templates/invitation/reservation/viewer", scaleMode: "CROP", yOffset: 0.3, note: "예약 캘린더 (중단)" },
+  { keywords: ["RSVP", "참석 관리"], url: "https://www.cdbd.in/templates/invitation/rsvp/viewer", scaleMode: "CROP", yOffset: 0.3, note: "RSVP 접수 폼 (중단)" },
+  { keywords: ["개인화 초대장", "이름 삽입"], url: "https://www.cdbd.in/templates/invitation/personalized/viewer", scaleMode: "FILL", yOffset: 0, note: "개인화 초대장" },
+  { keywords: ["팝업 스토어", "F&B"], url: "https://www.cdbd.in/templates/invitation/buttery_moment/viewer", scaleMode: "FILL", yOffset: 0, note: "팝업 스토어 예약" },
+
+  // ─── 가이드·신청 (guide) ───
+  { keywords: ["서명", "동의서", "가맹", "계약"], url: "https://www.cdbd.in/templates/guide/b2b-contract/viewer", scaleMode: "CROP", yOffset: 0.5, note: "모바일 동의·서명 (하단)" },
+
+  // ─── 일반 명함 (폴백) ───
+  { keywords: ["명함", "모바일 명함"], url: "https://www.cdbd.in/templates/profilelink/corporate/viewer", scaleMode: "FILL", yOffset: 0, note: "명함 일반 (corporate)" },
+  { keywords: ["브로셔"], url: "https://www.cdbd.in/templates/catalog/oak_table/viewer", scaleMode: "FILL", yOffset: 0, note: "브로셔 (oak_table)" },
+];
+
+/**
+ * 타이틀 → cdbd.in viewer 자산 후보 1-2개 추출 (가이드 §1 Step 2)
+ * @returns {Array<{url, scaleMode, yOffset, note}>} 자산 후보 (최대 2개)
+ */
+function selectViewerAssets(blogTitle, blogContent = "") {
+  const text = `${blogTitle} ${blogContent || ""}`;
+  const matched = [];
+  const seenUrls = new Set();
+
+  for (const entry of CDBD_VIEWER_MAP) {
+    for (const kw of entry.keywords) {
+      if (text.includes(kw) && !seenUrls.has(entry.url)) {
+        matched.push(entry);
+        seenUrls.add(entry.url);
+        break;
+      }
+    }
+    if (matched.length >= 2) break;
+  }
+
+  if (matched.length === 0) {
+    console.warn(`[CdBd] viewer 매핑 없음 — 폴백: corporate 명함`);
+    matched.push({
+      url: "https://www.cdbd.in/templates/profilelink/corporate/viewer",
+      scaleMode: "FILL",
+      yOffset: 0,
+      note: "폴백 (corporate)",
+    });
+  }
+
+  console.log(`[CdBd] viewer 자산 후보 ${matched.length}개:`);
+  matched.forEach((m, i) => console.log(`[CdBd]   #${i + 1} ${m.note} → ${m.url}`));
+  return matched;
+}
+
 // 하단 텍스트 슬롯 — 텍스트 채운 후 y=410-height 자동 보정 (1-2-1 §2.2)
 const BOTTOM_SLOT_IDS = new Set([
   "1:1251", "1:1246", // A 하단/하단·서브
@@ -882,32 +955,43 @@ async function createVariantsFromAI(payload) {
   const layoutDecision = selectLayoutType(blogTitle, blogContent);
   console.log(`[CdBd] 유형 사전 판단: ${layoutDecision.type}`);
 
-  // Step 3: 유형별 지원 여부 확인
-  // 가이드 §5.3: 자동화 우선순위 — E·D 우선 (Thiings 인프라만 필요)
-  // A·B·C는 cdbd.in viewer/에디터 캡처가 필요 (Microlink/Playwright 인프라 → 추후 작업)
-  if (["A", "B", "C"].includes(layoutDecision.type)) {
-    figma.notify(`⚠️ ${layoutDecision.type} 유형은 cdbd.in viewer 캡처 필요 — 현재는 E·D만 완전 자동화 지원`);
-    console.warn(`[CdBd] ⚠️ ${layoutDecision.type} 유형은 추후 작업 (Microlink/Playwright 인프라 필요)`);
-  }
-
-  // E·D 유형 — 가이드 §5.4 §5.1 데코 자동 선택
+  // Step 3: 유형별 지원 여부 확인 + 자산 선택
   let decoration = null;
-  if (layoutDecision.type === "E" || layoutDecision.type === "D") {
+  let viewerAssets = null;
+
+  if (layoutDecision.type === "A") {
+    // A 유형 — cdbd.in viewer 캡처 (Microlink) 자동화
+    viewerAssets = selectViewerAssets(blogTitle, blogContent);
+  } else if (layoutDecision.type === "E" || layoutDecision.type === "D") {
+    // E·D 유형 — 가이드 §5.4·§5.1 데코 자동 선택
     decoration = selectDecoration(blogTitle, blogContent);
     console.log(`[CdBd] 데코 선택: ${decoration.slug} (${decoration.note})`);
-    console.log(`[CdBd]   thiings_url: ${decoration.thiings_url || "(없음)"}`);
-    console.log(`[CdBd]   figma_id: ${decoration.figma_id || "(없음)"}`);
+  } else if (["B", "C"].includes(layoutDecision.type)) {
+    // B·C 유형 — 아직 자동화 미지원
+    figma.notify(`⚠️ ${layoutDecision.type} 유형은 자동화 미지원 — 변형 매트릭스 수동 입력 필요`);
+    console.warn(`[CdBd] ⚠️ ${layoutDecision.type} 유형은 자동화 미지원`);
   }
 
-  // Step 4: UI에 키워드 + 데코 정보 전달
-  figma.ui.postMessage({
-    type: "search-openverse",
-    keywords: imageData.keywords,
-    count: imageData.count,
-    decoration: decoration, // Thiings URL과 figma_id 포함
-    blogTitle,
-    blogContent
-  });
+  // Step 4: UI에 작업 요청 (유형별로 다른 source)
+  if (layoutDecision.type === "A" && viewerAssets) {
+    // A 유형 — Microlink으로 viewer 캡처 요청
+    figma.ui.postMessage({
+      type: "capture-viewers",
+      viewerAssets: viewerAssets,
+      blogTitle,
+      blogContent,
+    });
+  } else {
+    // E·D 유형 — Lexica + Thiings
+    figma.ui.postMessage({
+      type: "search-openverse",
+      keywords: imageData.keywords,
+      count: imageData.count,
+      decoration: decoration,
+      blogTitle,
+      blogContent
+    });
+  }
 
   // UI가 처리하므로 여기서는 빈 결과 반환 (실제 처리는 메시지 핸들러에서)
   return [];
@@ -924,14 +1008,21 @@ async function createVariantsFromImageData(payload) {
   const layoutDecision = selectLayoutType(blogTitle, blogContent);
   const selectedType = layoutDecision.type;
 
-  // 가이드 1-2-1 §1.2: 서브타이틀 유무에 따라 슬롯 결정 (두 슬롯 섞지 않음)
-  // E 유형: 서브 없음 → 1:1262만 / 서브 있음 → 1:1294만
+  // 가이드 1-2-1 §1.2: 서브타이틀 유무에 따라 슬롯 결정
   const hasSubtitle = blogContent && blogContent.trim().length > 0;
   let slotIds = TYPE_TO_SLOTS[selectedType];
 
   if (selectedType === "E") {
+    // E 유형: 서브 없음 → 1:1262만 / 서브 있음 → 1:1294만 (두 슬롯 섞지 않음)
     slotIds = hasSubtitle ? ["1:1294"] : ["1:1262"];
     console.log(`[CdBd] E 유형 슬롯 선택: ${slotIds[0]} (서브타이틀 ${hasSubtitle ? "있음" : "없음"})`);
+  } else if (selectedType === "A") {
+    // A 유형: 가이드 §5.3 — 슬롯 변형(상단/하단) 2 = 2-4안
+    // 서브 유무에 따라 상단·하단 또는 상단·서브/하단·서브 사용
+    slotIds = hasSubtitle
+      ? ["1:1269", "1:1246"]  // 상단·서브 + 하단·서브
+      : ["1:1266", "1:1251"]; // 상단 + 하단
+    console.log(`[CdBd] A 유형 슬롯 선택: ${slotIds.join(", ")} (서브타이틀 ${hasSubtitle ? "있음" : "없음"})`);
   }
 
   console.log(`[CdBd] ════════════════════════════════════════`);
