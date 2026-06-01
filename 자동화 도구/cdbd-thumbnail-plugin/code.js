@@ -918,7 +918,16 @@ async function createVariantsFromImageData(payload) {
   // Step 1: 레이아웃 유형 자동 선택
   const layoutDecision = selectLayoutType(blogTitle, blogContent);
   const selectedType = layoutDecision.type;
-  const slotIds = TYPE_TO_SLOTS[selectedType];
+
+  // 가이드 1-2-1 §1.2: 서브타이틀 유무에 따라 슬롯 결정 (두 슬롯 섞지 않음)
+  // E 유형: 서브 없음 → 1:1262만 / 서브 있음 → 1:1294만
+  const hasSubtitle = blogContent && blogContent.trim().length > 0;
+  let slotIds = TYPE_TO_SLOTS[selectedType];
+
+  if (selectedType === "E") {
+    slotIds = hasSubtitle ? ["1:1294"] : ["1:1262"];
+    console.log(`[CdBd] E 유형 슬롯 선택: ${slotIds[0]} (서브타이틀 ${hasSubtitle ? "있음" : "없음"})`);
+  }
 
   console.log(`[CdBd] ════════════════════════════════════════`);
   console.log(`[CdBd] 선택된 유형: ${selectedType} (이유: ${layoutDecision.reason})`);
