@@ -506,9 +506,9 @@ async function createVariants(payload) {
     // E 유형: BG_SLOT (배경) + 보조 VISUAL_SLOT (선택)
     if (slotType === "E") {
       applyBackground(cloned, imageHash);
-      // 보조 아이콘 (데이터에 secondaryImageHash 있으면 사용)
-      if (v.secondaryImageHash) {
-        applySecondaryIcon(cloned, v.secondaryImageHash);
+      // 보조 아이콘 (Thiings hash 있으면 fill, 없으면 Figma 컴포넌트 인스턴스화)
+      if (v.secondaryImageHash || v.secondaryFigmaId) {
+        await applySecondaryIcon(cloned, v.secondaryImageHash, v.secondaryFigmaId);
       }
     } else {
       // A·B·C·D 유형: VISUAL_SLOT 처리
@@ -900,7 +900,7 @@ async function createVariantsFromAI(payload) {
  * — 블로그 제목으로 레이아웃 유형 자동 선택 → 해당 유형 슬롯들로 베리에이션 생성
  */
 async function createVariantsFromImageData(payload) {
-  const { blogTitle, blogContent, imagesData } = payload;
+  const { blogTitle, blogContent, imagesData, decoration } = payload;
 
   // Step 1: 레이아웃 유형 자동 선택
   const layoutDecision = selectLayoutType(blogTitle, blogContent);
@@ -990,11 +990,21 @@ async function createVariantsFromImageData(payload) {
       name: `${selectedType}_${mainImg.name}_${slotId}`
     };
 
-    // E 유형이고 아이콘이 있으면 secondaryImageHash로 페어링
-    if (selectedType === "E" && iconHashes.length > 0) {
-      const iconImg = iconHashes[i % iconHashes.length];
-      variant.secondaryImageHash = iconImg.hash;
-      console.log(`[CdBd]   변형 ${i+1}: 배경(${mainImg.keyword}) + 아이콘(${iconImg.keyword})`);
+    // E 유형이면 보조 아이콘 페어링
+    // 1) Thiings 다운로드된 아이콘 우선 사용 (imageHash로 fill)
+    // 2) Thiings URL 없으면 Figma 컴포넌트 ID 전달 (인스턴스화)
+    if (selectedType === "E") {
+      if (iconHashes.length > 0) {
+        const iconImg = iconHashes[i % iconHashes.length];
+        variant.secondaryImageHash = iconImg.hash;
+        console.log(`[CdBd]   변형 ${i+1}: 배경(${mainImg.keyword}) + Thiings 아이콘(${iconImg.keyword})`);
+      } else if (decoration && decoration.figma_id) {
+        // Thiings URL 없는 데코 (예: magic-wand)는 Figma 컴포넌트로 인스턴스화
+        variant.secondaryFigmaId = decoration.figma_id;
+        console.log(`[CdBd]   변형 ${i+1}: 배경(${mainImg.keyword}) + Figma 컴포넌트 ${decoration.slug} (${decoration.figma_id})`);
+      } else {
+        console.log(`[CdBd]   변형 ${i+1}: 배경(${mainImg.keyword}) — 보조 아이콘 없음`);
+      }
     }
 
     variants.push(variant);
