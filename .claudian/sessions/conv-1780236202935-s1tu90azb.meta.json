@@ -4,8 +4,8 @@
   "title": "Read file and resume work",
   "titleGenerationStatus": "success",
   "createdAt": 1780236202935,
-  "updatedAt": 1780324121785,
-  "lastResponseAt": 1780324121785,
+  "updatedAt": 1780324651212,
+  "lastResponseAt": 1780324651212,
   "sessionId": "5678d4b0-d5ef-4e71-8331-984af5c22461",
   "providerState": {
     "providerSessionId": "5678d4b0-d5ef-4e71-8331-984af5c22461"
@@ -14,11 +14,11 @@
   "usage": {
     "model": "opus",
     "inputTokens": 1,
-    "cacheCreationInputTokens": 1147,
-    "cacheReadInputTokens": 315769,
+    "cacheCreationInputTokens": 160,
+    "cacheReadInputTokens": 328591,
     "contextWindow": 1000000,
-    "contextTokens": 316917,
-    "percentage": 32,
+    "contextTokens": 328752,
+    "percentage": 33,
     "contextWindowIsAuthoritative": true
   }
 }
