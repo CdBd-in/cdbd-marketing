@@ -73,6 +73,15 @@ figma.ui.onmessage = async (msg) => {
       figma.ui.postMessage({ type: "result", success: false, error: err.message });
       figma.notify(`❌ 오류: ${err.message}`, { error: true });
     }
+  } else if (msg.type === "generate-images-ai") {
+    try {
+      const result = await createVariantsFromAI(msg.payload);
+      figma.ui.postMessage({ type: "result", success: true, data: result });
+      figma.notify(`✅ ${result.length}안 생성 완료`);
+    } catch (err) {
+      figma.ui.postMessage({ type: "result", success: false, error: err.message });
+      figma.notify(`❌ 오류: ${err.message}`, { error: true });
+    }
   }
 };
 
@@ -404,4 +413,188 @@ function adjustTextCenterE(parentSlot, slotId) {
   // 수직 중앙 정렬: (전체 높이 - 텍스트 높이) / 2
   const newY = (TEXT_CENTER_HEIGHT_TOTAL - totalHeight) / 2;
   textContainer.y = newY;
+}
+
+/**
+ * ============================================================================
+ * AI 이미지 자동 생성 파이프라인 (v5.0)
+ * ============================================================================
+ * 블로그 제목/콘텐츠 → 키워드 추출 → Unsplash 이미지 검색 → Figma 업로드 → 자동 생성
+ */
+
+// UI: 이미지 생성 버튼 클릭
+document.getElementById('generateImages').onclick = async () => {
+  const blogTitle = document.getElementById('blogTitle').value.trim();
+  const blogContent = document.getElementById('blogContent').value.trim();
+  const imageCount = parseInt(document.getElementById('imageCount').value) || 10;
+
+  if (!blogTitle) {
+    document.getElementById('result').innerHTML = '<span class="err">블로그 제목 필수</span>';
+    return;
+  }
+
+  document.getElementById('result').textContent = '🔄 이미지 생성 중…';
+  parent.postMessage({
+    pluginMessage: {
+      type: 'generate-images-ai',
+      payload: { blogTitle, blogContent, imageCount }
+    }
+  }, '*');
+};
+
+/**
+ * AI 이미지로 썸네일 생성 (메인 파이프라인)
+ * 1. Python 키워드 추출
+ * 2. Unsplash 이미지 URL 생성
+ * 3. 이미지 다운로드 & Figma 업로드
+ * 4. imageHash 추출
+ * 5. E type 자동 생성
+ */
+async function createVariantsFromAI(payload) {
+  const { blogTitle, blogContent, imageCount } = payload;
+
+  // Step 1: Python에서 이미지 URL 생성
+  const imageData = await generateImageCandidates(blogTitle, blogContent, imageCount);
+
+  if (!imageData.images || imageData.images.length === 0) {
+    throw new Error("이미지 생성 실패");
+  }
+
+  // Step 2: 각 이미지를 Figma에 업로드하고 해시 추출
+  const variants = [];
+  for (let i = 0; i < imageData.images.length; i++) {
+    const img = imageData.images[i];
+    try {
+      const imageHash = await downloadAndCreateImage(img.url);
+      variants.push({
+        slotId: "1:1262", // E type 중앙
+        imageHash: imageHash,
+        name: img.name
+      });
+    } catch (e) {
+      console.warn(`이미지 ${img.name} 업로드 실패:`, e.message);
+    }
+  }
+
+  if (variants.length === 0) {
+    throw new Error("유효한 이미지가 없음");
+  }
+
+  // Step 3: E type으로 자동 생성
+  const createPayload = {
+    title: blogTitle,
+    subtitle: blogContent ? blogContent.split('\n')[0] : "",
+    emphasis: "",
+    variants: variants
+  };
+
+  return await createVariants(createPayload);
+}
+
+/**
+ * Python image_generator.py 호출
+ * (또는 온라인 API 호출)
+ */
+async function generateImageCandidates(title, content, count) {
+  // 방법 1: 로컬 Python 호출 (개발 환경에서만 작동)
+  // 방법 2: 온라인 API 호출 (권장)
+
+  // 임시: 하드코딩된 이미지 생성 (테스트용)
+  const keywords = extractKeywordsSimple(title, content);
+
+  const images = [];
+  const baseUrl = "https://source.unsplash.com/600x450";
+
+  for (let i = 0; i < Math.min(keywords.length * 2, count); i++) {
+    const keyword = keywords[i % keywords.length];
+    const variant = i % 3;
+
+    let url;
+    if (variant === 0) {
+      url = `${baseUrl}?${keyword}`;
+    } else if (variant === 1) {
+      url = `${baseUrl}?${keyword}+business`;
+    } else {
+      url = `${baseUrl}?${keyword}+technology`;
+    }
+
+    images.push({
+      url: url,
+      keyword: keyword,
+      name: `안${i + 1}_${keyword}${variant > 0 ? "_v" + variant : ""}`
+    });
+  }
+
+  return {
+    keywords: keywords,
+    images: images.slice(0, count),
+    count: Math.min(images.length, count)
+  };
+}
+
+/**
+ * 간단한 키워드 추출 (JavaScript 판)
+ * Python version과 동일한 결과 반환
+ */
+function extractKeywordsSimple(title, content) {
+  const CDBD_KEYWORDS = {
+    "AI": ["ai", "artificial intelligence"],
+    "자동화": ["automation", "auto"],
+    "초대장": ["invitation", "invite"],
+    "명함": ["card", "contact"],
+    "카탈로그": ["catalog", "portfolio"],
+    "예약": ["booking", "reservation"],
+    "결제": ["payment", "billing"],
+    "보안": ["security", "safe"],
+    "분석": ["analytics", "analysis"],
+    "마케팅": ["marketing", "promotion"],
+  };
+
+  const text = `${title} ${content}`.toLowerCase();
+  const found = [];
+
+  for (const [korean, keywords] of Object.entries(CDBD_KEYWORDS)) {
+    for (const keyword of keywords) {
+      if (text.includes(keyword)) {
+        found.push(korean);
+        break;
+      }
+    }
+  }
+
+  // 일반 단어 추출 (길이 2 이상)
+  const words = text.match(/\b[\w가-힣]+\b/g) || [];
+  const filtered = words.filter(w => w.length > 1 && !STOPWORDS.has(w));
+
+  return [...new Set([...found, ...filtered])].slice(0, 5);
+}
+
+const STOPWORDS = new Set([
+  "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for",
+  "of", "with", "by", "from", "as", "is", "are", "was", "be", "been",
+  "이", "그", "저", "것", "수", "등", "들", "및", "또는", "만",
+]);
+
+/**
+ * 이미지 URL에서 바이너리 다운로드 & Figma에 업로드
+ * → imageHash 반환
+ */
+async function downloadAndCreateImage(imageUrl) {
+  try {
+    // Step 1: 이미지 다운로드
+    const response = await fetch(imageUrl);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const blob = await response.blob();
+    const arrayBuffer = await blob.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+
+    // Step 2: Figma에 이미지 추가 & 해시 추출
+    const image = figma.createImage(uint8Array);
+    return image.hash;
+  } catch (e) {
+    throw new Error(`이미지 다운로드 실패: ${e.message}`);
+  }
 }
