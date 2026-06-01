@@ -1177,6 +1177,8 @@ function autoLineBreak(text, emphasis = "", maxLine = 10) {
   if (words.length <= 1) return text;
 
   // 그리디 알고리즘: 한 줄 누적 길이가 maxLine 초과 직전에 줄바꿈
+  // 공백 가중치는 countDisplayLen과 일치시켜야 함 (= 0.3em)
+  const SPACE_LEN = 0.3;
   const lines = [];
   let current = [];
   let currentLen = 0;
@@ -1184,7 +1186,7 @@ function autoLineBreak(text, emphasis = "", maxLine = 10) {
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
     const wordLen = countDisplayLen(word);
-    const addLen = currentLen === 0 ? wordLen : currentLen + 1 + wordLen;
+    const addLen = currentLen === 0 ? wordLen : currentLen + SPACE_LEN + wordLen;
 
     if (addLen <= maxLine || currentLen === 0) {
       current.push(word);
