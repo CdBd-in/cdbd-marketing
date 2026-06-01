@@ -10,6 +10,11 @@
       "https://lexica.art",
       "https://image.lexica.art",
       "https://*.lexica.art",
+      "https://api.microlink.io",
+      "https://iad.microlink.io",
+      "https://*.microlink.io",
+      "https://www.cdbd.in",
+      "https://cdbd.in",
       "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com",
       "https://*.public.blob.vercel-storage.com",
       "https://thiings.co"
