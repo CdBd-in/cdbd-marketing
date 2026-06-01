@@ -9,12 +9,9 @@
     "allowedDomains": [
       "https://image.pollinations.ai",
       "https://pollinations.ai",
-      "https://api.openverse.org",
-      "https://*.openverse.org",
-      "https://*.flickr.com",
-      "https://*.staticflickr.com",
-      "https://picsum.photos",
-      "https://fastly.picsum.photos"
+      "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com",
+      "https://*.public.blob.vercel-storage.com",
+      "https://thiings.co"
     ]
   }
 }

@@ -81,6 +81,96 @@ const TYPE_TO_SLOTS = {
 };
 
 // ============================================================================
+// Thiings 3D 아이콘 데코 카탈로그 (decorations.json 기반)
+// ============================================================================
+const THIINGS_DECORATIONS = {
+  sparkle: {
+    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-SJcxLxIC8lH8u7d9CvcOGIULgEz7wX.png",
+    figma_id: "4:141",
+    keywords: ["일반", "강조", "기본", "default"],
+    priority: 3,
+  },
+  "magic-wand": {
+    thiings_url: null, // Figma 컴포넌트만 있음
+    figma_id: "4:167",
+    keywords: ["AI", "ai", "인공지능", "자동화", "automation", "스마트", "smart", "artificial intelligence"],
+    priority: 1,
+  },
+  crown: {
+    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-o82qImf0LoNhDhTch7C2G2CwyVj9Ud.png",
+    figma_id: "14:2",
+    keywords: ["프리미엄", "premium", "VIP", "고급", "vip"],
+    priority: 1,
+  },
+  shield: {
+    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-CZxT18DNf12Vjv8rrZv8V0tddRi9Xu.png",
+    figma_id: "14:3",
+    keywords: ["안전", "보안", "신뢰", "security", "safe", "protect", "trust"],
+    priority: 1,
+  },
+  calendar: {
+    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-ij7GEZhfmzLNlLgDJVhkST8FIm5rJV.png",
+    figma_id: "14:4",
+    keywords: ["예약", "이벤트", "일정", "booking", "reservation", "appointment", "schedule", "event"],
+    priority: 1,
+  },
+  globe: {
+    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-KBUXl6AhDj2IsoZnozHL39yX1acqa5.png",
+    figma_id: "14:5",
+    keywords: ["글로벌", "해외", "다국어", "global", "international", "world"],
+    priority: 1,
+  },
+  envelope: {
+    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-lp9vjuXTCqeB9yhVXBoBmyqdy8e9jv.png",
+    figma_id: null,
+    keywords: ["초대장", "invitation", "초대"],
+    priority: 1,
+  },
+  "credit-card": {
+    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-xylXWxjRoBYdaH9IPOx1080olvl5Ur.png",
+    figma_id: null,
+    keywords: ["결제", "금융", "payment", "finance"],
+    priority: 2,
+  },
+};
+
+/**
+ * 키워드 → 가장 적합한 Thiings 데코 선택
+ * @returns {{ slug: string, thiings_url: string|null, figma_id: string|null }}
+ */
+function selectDecoration(blogTitle, blogContent = "", keywords = []) {
+  const text = `${blogTitle} ${blogContent} ${keywords.join(" ")}`.toLowerCase();
+
+  let best = null;
+  let bestScore = 0;
+
+  for (const [slug, deco] of Object.entries(THIINGS_DECORATIONS)) {
+    // sparkle (기본)은 점수 매기지 않음 (폴백용)
+    if (slug === "sparkle") continue;
+
+    let score = 0;
+    for (const kw of deco.keywords) {
+      if (text.includes(kw.toLowerCase())) {
+        score += (10 - deco.priority); // priority 1 = +9점, 2 = +8점
+      }
+    }
+
+    if (score > bestScore) {
+      bestScore = score;
+      best = { slug, ...deco };
+    }
+  }
+
+  // 매칭 안 되면 sparkle (기본)
+  if (!best) {
+    best = { slug: "sparkle", ...THIINGS_DECORATIONS.sparkle };
+  }
+
+  console.log(`[CdBd] 선택된 데코: ${best.slug} (점수: ${bestScore})`);
+  return best;
+}
+
+// ============================================================================
 // 디자인 가이드 §1.1 (1-2-1. 레이아웃 규칙) 기준 유형 분류
 // 우선순위: C(복수) > E(외부주제) > D(주장·이유) > B(에디터) > A(viewer) > 폴백
 // ============================================================================
