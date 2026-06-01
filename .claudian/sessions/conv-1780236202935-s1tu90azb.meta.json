@@ -4,8 +4,8 @@
   "title": "Read file and resume work",
   "titleGenerationStatus": "success",
   "createdAt": 1780236202935,
-  "updatedAt": 1780322264448,
-  "lastResponseAt": 1780322264448,
+  "updatedAt": 1780322829014,
+  "lastResponseAt": 1780322829014,
   "sessionId": "5678d4b0-d5ef-4e71-8331-984af5c22461",
   "providerState": {
     "providerSessionId": "5678d4b0-d5ef-4e71-8331-984af5c22461"
@@ -13,12 +13,12 @@
   "currentNote": "컨텍스트: 강현이/강현이-2026-05-31.md",
   "usage": {
     "model": "opus",
-    "inputTokens": 6,
-    "cacheCreationInputTokens": 3396,
-    "cacheReadInputTokens": 235629,
+    "inputTokens": 1,
+    "cacheCreationInputTokens": 4554,
+    "cacheReadInputTokens": 260360,
     "contextWindow": 1000000,
-    "contextTokens": 239031,
-    "percentage": 24,
+    "contextTokens": 264915,
+    "percentage": 26,
     "contextWindowIsAuthoritative": true
   }
 }
