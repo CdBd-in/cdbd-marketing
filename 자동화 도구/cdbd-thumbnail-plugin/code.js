@@ -794,9 +794,11 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
 
   await figma.loadFontAsync(node.fontName);
 
-  // 자동 줄바꿈 완전 차단: textAutoResize를 NONE으로 변경 후 텍스트 적용
-  // 우리의 \n만 줄바꿈으로 작동, Figma 자동 줄바꿈 (어절 중간 잘림) 방지
-  // D 유형: 350 / 나머지: TITLE 300 · SUBTITLE 285
+  // 폭 강제 고정 (가이드 1-1 §3):
+  //   - A·B·C·E: TITLE 300 / SUBTITLE 285
+  //   - D: TITLE 350 / SUBTITLE 350
+  // 슬롯 템플릿 폭이 다른 경우(예: B 서브 변형 227)에도 코드가 명세대로 보장.
+  // 어절이 폭 넘으면 Figma 자동 줄바꿈 → 의미 단위 끊김 (Claude가 \n 미리 끊는 게 안전)
   const isD = slotType === "D";
   const maxWidth = isD
     ? (isSubtitle ? SUBTITLE_MAX_WIDTH_D : TITLE_MAX_WIDTH_D)
@@ -804,10 +806,12 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
 
   // 1) 텍스트 먼저 설정 (\n 적용)
   node.characters = text;
-  // 2) WIDTH_AND_HEIGHT로 자동 줄바꿈 차단 (텍스트에 맞춰 노드 크기 자동 조정)
-  node.textAutoResize = "WIDTH_AND_HEIGHT";
+  // 2) textAutoResize = HEIGHT → 폭 고정·높이 자동 (자동 줄바꿈 활성)
+  node.textAutoResize = "HEIGHT";
+  // 3) 폭 강제 resize → Figma가 자동 줄바꿈 + height 재계산
+  node.resize(maxWidth, node.height);
 
-  console.log(`[CdBd] fillText 적용: "${text.replace(/\n/g, "/")}" (텍스트 노드 크기: ${node.width}×${node.height})`);
+  console.log(`[CdBd] fillText 적용: "${text.replace(/\n/g, "/")}" (텍스트 노드 크기: ${node.width}×${node.height}, maxWidth=${maxWidth})`);
 
   // 전체 색상 적용 (서브타이틀 또는 E 유형 TITLE)
   if (isSubtitle || (slotType === "E" && !isSubtitle)) {
