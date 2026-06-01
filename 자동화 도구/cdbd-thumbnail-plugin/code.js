@@ -130,8 +130,8 @@ async function createVariants(payload) {
     if (slotType === "E") {
       applyBackground(cloned, imageHash);
       // 보조 아이콘 (데이터에 secondaryImageHash 있으면 사용)
-      if (payload.secondaryImageHash) {
-        applySecondaryIcon(cloned, payload.secondaryImageHash);
+      if (v.secondaryImageHash) {
+        applySecondaryIcon(cloned, v.secondaryImageHash);
       }
     } else {
       // A·B·C·D 유형: VISUAL_SLOT 처리
@@ -322,13 +322,13 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
   node.resize(maxWidth, node.height);
   node.characters = text;
 
-  // 전체 색상 적용 (서브타이틀)
-  if (isSubtitle) {
+  // 전체 색상 적용 (서브타이틀 또는 E 유형 TITLE)
+  if (isSubtitle || (slotType === "E" && !isSubtitle)) {
     node.fills = [{ type: "SOLID", color: color }];
   }
 
-  // 강조어 색상 적용 (타이틀)
-  if (emphasis) {
+  // 강조어 색상 적용 (A·B·C·D 유형 TITLE)
+  if (emphasis && slotType !== "E") {
     const idx = text.indexOf(emphasis);
     if (idx !== -1) {
       node.setRangeFills(idx, idx + emphasis.length, [
