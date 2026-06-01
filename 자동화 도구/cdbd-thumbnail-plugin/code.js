@@ -1043,9 +1043,9 @@ async function createVariantsFromImageData(payload) {
 
   // Step 4: 의미 단위 줄 나누기 (가이드 1-1 §3)
   // 가이드: "한 줄 한글 8-10자 이내, 가장 적은 줄 수를 택한다 (보통 2-4줄)"
-  // E·A·B·C: 폭 300px = 한글 8.3em → maxLine 8.3 (안전마진 -0.3)
-  // D: 폭 350px = 한글 9.7em → maxLine 9.5
-  const maxLine = selectedType === "D" ? 9.5 : 8.0;
+  // 보수적 maxLine (자동 줄바꿈 fallback 완전 회피)
+  // 폰트 메트릭 추정이 부정확해도 안전하도록 -1 마진
+  const maxLine = selectedType === "D" ? 8.5 : 7.3;
   const formattedTitle = autoLineBreak(blogTitle, emphasis, maxLine);
   console.log(`[CdBd] 줄 나누기 결과 (maxLine=${maxLine}):`);
   console.log(formattedTitle);
