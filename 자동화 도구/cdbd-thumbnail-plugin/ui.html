@@ -245,83 +245,97 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
         </div>
         🎨 썸네일 제작 중…`;
     } else if (msg.type === 'search-openverse') {
-      // Pollinations.ai로 AI 이미지 생성 (API key 불필요)
-      const { keywords, count, blogTitle, blogContent } = msg;
+      // 메인 배경 = Pollinations AI / 보조 3D 아이콘 = Thiings 다운로드
+      const { keywords, count, decoration, blogTitle, blogContent } = msg;
       document.getElementById('result').innerHTML =
-        `🎨 AI 이미지 생성 중…<br><span style="font-size:11px;color:#666;">키워드: ${keywords.join(", ")}</span>`;
+        `🎨 이미지 준비 중…<br><span style="font-size:11px;color:#666;">키워드: ${keywords.join(", ")}</span>`;
 
-      // 프롬프트 생성: 메인(배경) + 보조 3D 아이콘 페어로
+      // ════════════════════════════════════════════
+      // Step 1: 보조 3D 아이콘 — Thiings에서 다운로드 (선택)
+      // ════════════════════════════════════════════
+      let thiingsIcon = null;
+      if (decoration && decoration.thiings_url) {
+        try {
+          console.log(`[CdBd] Thiings 다운로드: ${decoration.slug} → ${decoration.thiings_url}`);
+          document.getElementById('result').innerHTML =
+            `📥 Thiings 3D 아이콘 다운로드 중… (${decoration.slug})`;
+
+          const response = await fetch(decoration.thiings_url);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const blob = await response.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          const bytes = Array.from(new Uint8Array(arrayBuffer));
+
+          thiingsIcon = {
+            success: true,
+            bytes: bytes,
+            name: `thiings_${decoration.slug}`,
+            keyword: decoration.slug,
+            isIcon: true
+          };
+          console.log(`[CdBd] ✅ Thiings 다운로드 완료: ${decoration.slug}`);
+        } catch (e) {
+          console.error(`[CdBd] Thiings 다운로드 실패:`, e.message);
+        }
+      } else if (decoration && decoration.figma_id) {
+        console.log(`[CdBd] ⚠️ Thiings URL 없음 (${decoration.slug}). Figma 컴포넌트 ${decoration.figma_id} 사용 예정`);
+      }
+
+      // ════════════════════════════════════════════
+      // Step 2: 메인 배경 이미지 — Pollinations AI 생성
+      // ════════════════════════════════════════════
       const prompts = [];
       const mainKeyword = keywords[0];
       const subKeyword = keywords[1] || keywords[0];
 
-      // 페어 1: 메인 배경(사진) + 보조 3D 아이콘
       prompts.push({
         prompt: `${keywords.join(", ")}, modern, professional, marketing, clean background, cinematic`,
         keyword: mainKeyword,
-        style: "main_bg",
-        isMain: true
+        style: "main_bg"
       });
-      prompts.push({
-        prompt: `${mainKeyword}, 3D claymation icon, isolated on white background, soft lighting, glossy, minimal`,
-        keyword: mainKeyword,
-        style: "icon_3d",
-        isIcon: true
-      });
-
-      // 페어 2: 다른 키워드 배경 + 3D 아이콘
       prompts.push({
         prompt: `${subKeyword}, professional photography, business, minimalist, soft lighting`,
         keyword: subKeyword,
-        style: "photo_bg",
-        isMain: true
+        style: "photo_bg"
       });
-      prompts.push({
-        prompt: `${subKeyword}, 3D claymation icon, isolated on white background, glossy, minimal`,
-        keyword: subKeyword,
-        style: "icon_3d",
-        isIcon: true
-      });
-
-      // 페어 3: 추상·일러스트 배경 + 아이콘
       if (keywords.length >= 2) {
         prompts.push({
           prompt: `${keywords[0]} and ${keywords[1]}, abstract gradient, modern, deep colors`,
           keyword: `${keywords[0]}_${keywords[1]}`,
-          style: "abstract_bg",
-          isMain: true
-        });
-        prompts.push({
-          prompt: `${keywords[0]}, 3D claymation icon, isolated on white background, vibrant, minimal`,
-          keyword: keywords[0],
-          style: "icon_3d_2",
-          isIcon: true
+          style: "abstract_bg"
         });
       }
+      prompts.push({
+        prompt: `${mainKeyword}, illustration, flat design, vibrant gradient`,
+        keyword: mainKeyword,
+        style: "illustration_bg"
+      });
 
-      // count는 페어 수 (실제 이미지는 count * 2)
-      // 메인 이미지 페어로 count개 생성
-      const totalImages = Math.min(prompts.length, count * 2);
-      const selectedPrompts = prompts.slice(0, totalImages);
-      console.log(`[CdBd] 생성할 이미지: ${selectedPrompts.length}개 (메인+아이콘 페어)`);
+      const totalBg = Math.min(prompts.length, count);
+      const selectedPrompts = prompts.slice(0, totalBg);
+      console.log(`[CdBd] 생성할 배경 이미지: ${selectedPrompts.length}개 + Thiings 아이콘 ${thiingsIcon ? 1 : 0}개`);
 
       const imagesData = [];
       let successCount = 0;
 
+      // Thiings 아이콘 먼저 추가 (있으면)
+      if (thiingsIcon) {
+        imagesData.push(thiingsIcon);
+        successCount++;
+      }
+
+      // Pollinations 메인 배경 생성
       for (let i = 0; i < selectedPrompts.length; i++) {
         const p = selectedPrompts[i];
         try {
-          // Pollinations.ai URL
           const promptEncoded = encodeURIComponent(p.prompt);
           const seed = Math.floor(Math.random() * 100000) + i;
-          // 3D 아이콘은 정사각형 / 메인 배경은 600x450
-          const width = p.isIcon ? 512 : 600;
-          const height = p.isIcon ? 512 : 450;
-          const url = `https://image.pollinations.ai/prompt/${promptEncoded}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
+          const url = `https://image.pollinations.ai/prompt/${promptEncoded}?width=600&height=450&seed=${seed}&nologo=true`;
 
-          console.log(`[CdBd] AI 생성 ${i+1}/${selectedPrompts.length} (${p.isIcon ? '3D 아이콘' : '배경'}): "${p.prompt.substring(0, 60)}..."`);
+          console.log(`[CdBd] 배경 생성 ${i+1}/${selectedPrompts.length}: "${p.prompt.substring(0, 60)}..."`);
           document.getElementById('result').innerHTML =
-            `🎨 AI ${p.isIcon ? '3D 아이콘' : '배경'} 생성 중… (${i + 1}/${selectedPrompts.length})<br>` +
+            `🎨 AI 배경 생성 중… (${i + 1}/${selectedPrompts.length})<br>` +
             `<span style="font-size:11px;color:#666;">"${p.prompt.substring(0, 80)}..."</span>`;
 
           const response = await fetch(url);
@@ -336,36 +350,34 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
             bytes: bytes,
             name: `${p.style}_${p.keyword}`,
             keyword: p.keyword,
-            isIcon: p.isIcon || false,
-            isMain: p.isMain || false
+            isMain: true
           });
           successCount++;
         } catch (e) {
-          console.error(`[CdBd] AI 생성 실패:`, e.message);
+          console.error(`[CdBd] 배경 생성 실패:`, e.message);
           imagesData.push({
             success: false,
             error: e.message,
             name: `${p.style}_${p.keyword}`,
-            isIcon: p.isIcon || false,
-            isMain: p.isMain || false
+            isMain: true
           });
         }
       }
 
       if (successCount === 0) {
         document.getElementById('result').innerHTML =
-          '<span class="err">❌ AI 이미지 생성 실패. 콘솔 확인 필요.</span>';
+          '<span class="err">❌ 이미지 생성 실패. 콘솔 확인 필요.</span>';
         return;
       }
 
       document.getElementById('result').innerHTML =
-        `✅ ${successCount}개 AI 이미지 생성 완료. Figma에 업로드 중…`;
+        `✅ 메인 ${successCount - (thiingsIcon ? 1 : 0)}개 + 아이콘 ${thiingsIcon ? 1 : 0}개 준비 완료. Figma에 업로드 중…`;
 
       // 결과를 plugin으로 전달
       parent.postMessage({
         pluginMessage: {
           type: 'images-fetched',
-          payload: { blogTitle, blogContent, imagesData }
+          payload: { blogTitle, blogContent, imagesData, decoration }
         }
       }, '*');
     } else if (msg.type === 'fetch-images') {

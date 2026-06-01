@@ -745,11 +745,23 @@ async function createVariantsFromAI(payload) {
   // Step 1: 키워드 추출
   const imageData = await generateImageCandidates(blogTitle, blogContent, imageCount);
 
-  // Step 2: UI에 키워드 전달 → UI가 Openverse 검색 + 이미지 다운로드
+  // Step 2: 레이아웃 유형 미리 판단 (E면 보조 아이콘 필요)
+  const layoutDecision = selectLayoutType(blogTitle, blogContent);
+  console.log(`[CdBd] 유형 사전 판단: ${layoutDecision.type}`);
+
+  // Step 3: E 유형이면 보조 3D 아이콘 Thiings에서 선택
+  let decoration = null;
+  if (layoutDecision.type === "E" || layoutDecision.type === "D") {
+    decoration = selectDecoration(blogTitle, blogContent, imageData.keywords);
+    console.log(`[CdBd] Thiings 데코 선택: ${decoration.slug} → ${decoration.thiings_url || "(컴포넌트만)"}`);
+  }
+
+  // Step 4: UI에 키워드 + 데코 정보 전달
   figma.ui.postMessage({
     type: "search-openverse",
     keywords: imageData.keywords,
     count: imageData.count,
+    decoration: decoration, // Thiings URL과 figma_id 포함
     blogTitle,
     blogContent
   });
