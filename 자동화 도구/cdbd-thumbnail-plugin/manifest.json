@@ -7,8 +7,9 @@
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": [
-      "https://image.pollinations.ai",
-      "https://pollinations.ai",
+      "https://lexica.art",
+      "https://image.lexica.art",
+      "https://*.lexica.art",
       "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com",
       "https://*.public.blob.vercel-storage.com",
       "https://thiings.co"
