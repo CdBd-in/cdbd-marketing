@@ -7,7 +7,9 @@
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": [
-      "https://source.unsplash.com",
+      "https://loremflickr.com",
+      "https://picsum.photos",
+      "https://fastly.picsum.photos",
       "https://images.unsplash.com",
       "https://api.unsplash.com"
     ]

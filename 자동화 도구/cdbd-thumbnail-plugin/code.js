@@ -508,32 +508,32 @@ async function createVariantsFromImageData(payload) {
  * (또는 온라인 API 호출)
  */
 async function generateImageCandidates(title, content, count) {
-  // 방법 1: 로컬 Python 호출 (개발 환경에서만 작동)
-  // 방법 2: 온라인 API 호출 (권장)
-
-  // 임시: 하드코딩된 이미지 생성 (테스트용)
+  // Lorem Flickr (키워드 기반) + Picsum (랜덤 fallback)
   const keywords = extractKeywordsSimple(title, content);
+  console.log("[CdBd] 추출된 키워드:", keywords);
 
   const images = [];
-  const baseUrl = "https://source.unsplash.com/600x450";
 
-  for (let i = 0; i < Math.min(keywords.length * 2, count); i++) {
+  // Lorem Flickr: 키워드 기반 이미지 (https://loremflickr.com/600/450/keyword)
+  for (let i = 0; i < count; i++) {
     const keyword = keywords[i % keywords.length];
-    const variant = i % 3;
+    const variant = Math.floor(i / keywords.length);
 
+    // 변형: 캐시 무효화 + 키워드 조합
     let url;
     if (variant === 0) {
-      url = `${baseUrl}?${keyword}`;
+      url = `https://loremflickr.com/600/450/${encodeURIComponent(keyword)}?lock=${i}`;
     } else if (variant === 1) {
-      url = `${baseUrl}?${keyword}+business`;
+      url = `https://loremflickr.com/600/450/${encodeURIComponent(keyword + ",business")}?lock=${i + 100}`;
     } else {
-      url = `${baseUrl}?${keyword}+technology`;
+      url = `https://loremflickr.com/600/450/${encodeURIComponent(keyword + ",abstract")}?lock=${i + 200}`;
     }
 
     images.push({
       url: url,
       keyword: keyword,
-      name: `안${i + 1}_${keyword}${variant > 0 ? "_v" + variant : ""}`
+      name: `안${i + 1}_${keyword}${variant > 0 ? "_v" + variant : ""}`,
+      fallbackUrl: `https://picsum.photos/seed/cdbd${i}/600/450` // Picsum fallback (랜덤)
     });
   }
 

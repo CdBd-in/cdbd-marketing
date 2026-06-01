@@ -233,7 +233,12 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
 
       for (let i = 0; i < urls.length; i++) {
         const img = urls[i];
+        let success = false;
+        let lastError = '';
+
+        // 1차 시도: 메인 URL (Lorem Flickr)
         try {
+          console.log(`[CdBd] 다운로드 시도 ${i+1}: ${img.url}`);
           const response = await fetch(img.url);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -248,10 +253,41 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
             keyword: img.keyword
           });
           successCount++;
+          success = true;
         } catch (e) {
+          lastError = e.message;
+          console.warn(`[CdBd] 1차 실패 (${img.name}):`, e.message);
+        }
+
+        // 2차 시도: Fallback URL (Picsum)
+        if (!success && img.fallbackUrl) {
+          try {
+            console.log(`[CdBd] Fallback 시도 ${i+1}: ${img.fallbackUrl}`);
+            const response = await fetch(img.fallbackUrl);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const blob = await response.blob();
+            const arrayBuffer = await blob.arrayBuffer();
+            const bytes = Array.from(new Uint8Array(arrayBuffer));
+
+            imagesData.push({
+              success: true,
+              bytes: bytes,
+              name: img.name + "_fallback",
+              keyword: img.keyword
+            });
+            successCount++;
+            success = true;
+          } catch (e2) {
+            lastError = `메인: ${lastError} / Fallback: ${e2.message}`;
+            console.error(`[CdBd] Fallback도 실패 (${img.name}):`, e2.message);
+          }
+        }
+
+        if (!success) {
           imagesData.push({
             success: false,
-            error: e.message,
+            error: lastError,
             name: img.name
           });
         }
