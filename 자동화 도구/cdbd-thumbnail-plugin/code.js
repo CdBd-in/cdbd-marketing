@@ -607,6 +607,12 @@ async function createVariants(payload) {
           }
         }
       }
+
+      // B 유형 추가 처리: EDITOR_SLOT (에디터 기능 UI 캡쳐)
+      // [[1-2-1. 레이아웃 규칙]] §3.2: 상단형 x195/y250/w260/h154, 하단형 x111/y50
+      if (slotType === "B" && v.editorImageHash) {
+        applyEditor(cloned, v.editorImageHash);
+      }
     }
 
     // 3) 텍스트 처리 (유형별)
@@ -662,6 +668,30 @@ function apply3DIcon(visualSlot, imageHash) {
     { type: "IMAGE", imageHash: imageHash, scaleMode: "FIT" },
   ];
   if ("strokes" in visualSlot) visualSlot.strokes = [];
+  return { success: true };
+}
+
+/**
+ * B 유형 — EDITOR_SLOT (에디터/관리 화면 캡쳐) fill
+ * 1-2-1 §3.2: contain — FIT scaleMode 사용 (캡쳐 비율 보존, 의미 영역 잘리지 않게)
+ * 슬롯 좌표는 슬롯 템플릿이 이미 정의:
+ *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154
+ *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154
+ */
+function applyEditor(parentSlot, editorImageHash) {
+  const editorSlot = parentSlot.findOne((n) => n.name === "EDITOR_SLOT");
+  if (!editorSlot) {
+    console.warn(`[CdBd] B 유형 EDITOR_SLOT 없음 (parent: ${parentSlot.name})`);
+    return { success: false, reason: "no EDITOR_SLOT" };
+  }
+  if (!("fills" in editorSlot)) {
+    return { success: false, reason: "EDITOR_SLOT cannot fill" };
+  }
+  editorSlot.fills = [
+    { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FIT" },
+  ];
+  if ("strokes" in editorSlot) editorSlot.strokes = [];
+  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (FIT)`);
   return { success: true };
 }
 
