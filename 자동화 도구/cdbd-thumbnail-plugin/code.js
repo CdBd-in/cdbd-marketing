@@ -61,6 +61,115 @@ const CENTER_TEXT_SLOT_IDS = new Set([
 ]);
 const TEXT_CENTER_HEIGHT_TOTAL = 450; // 배경(E) 중앙 정렬용
 
+// ============================================================================
+// 레이아웃 유형 자동 분류 (v5.0)
+// 디자인 가이드 §1-2-1, §5.4 기준
+// ============================================================================
+
+// 각 유형별 슬롯 ID (서브타이틀 있음/없음, 상단/하단 변형 포함)
+const TYPE_TO_SLOTS = {
+  // A. 목업 — 제품 소개·기본
+  "A": ["1:1266", "1:1269", "1:1251", "1:1246"],
+  // B. 목업+에디터 — 편집기·도구 사용법
+  "B": ["1:1300", "1:1308", "1:1304", "1:1314"],
+  // C. 멀티 목업 — 비교·여러 제품
+  "C": ["1:1257", "1:1287"],
+  // D. 3D 아이콘 — 특정 기능 강조 (1순위)
+  "D": ["1:1254", "1:1282", "1:1274", "1:1277"],
+  // E. 배경 — 리스티클·트렌드·추천
+  "E": ["1:1262", "1:1294"],
+};
+
+// 유형별 키워드 매칭 규칙 (우선순위: D > B > C > E > A)
+const TYPE_KEYWORDS = {
+  // D 유형 — §5.4 1순위 특정 기능 매칭
+  "D": [
+    "초대장", "invitation",
+    "명함", "business card",
+    "카탈로그", "catalog", "브로셔", "brochure",
+    "예약", "booking", "reservation",
+    "결제", "payment",
+    "상담", "문의", "consultation",
+    "서명", "계약", "signature",
+    "프로필링크", "profile link",
+    "분석", "analytics",
+    "성장", "growth",
+  ],
+  // B 유형 — 편집기·도구·제작
+  "B": [
+    "에디터", "editor",
+    "편집기", "편집",
+    "만들기", "제작", "create",
+    "꾸미기", "디자인하기",
+    "사용법", "튜토리얼", "tutorial",
+  ],
+  // C 유형 — 비교·여러 제품
+  "C": [
+    "비교", "compare",
+    " vs ", "vs.", "대비",
+    "차이점", "차이",
+    "선택", "고르기",
+  ],
+  // E 유형 — 리스티클·트렌드·추천
+  "E": [
+    "트렌드", "trend",
+    "전략", "strategy",
+    "팁", "tip",
+    "추천", "best",
+    "리스티클",
+    "가이드", "guide",  // (D보다 우선순위 낮음 - 특정 기능 없을 때만)
+  ],
+};
+
+/**
+ * 블로그 제목/콘텐츠 분석 → 레이아웃 유형 자동 선택
+ * 우선순위: D > B > C > E > A (기본값)
+ *
+ * @returns {{ type: string, reason: string }}
+ */
+function selectLayoutType(title, content) {
+  const text = `${title} ${content || ""}`.toLowerCase();
+
+  // 1) D 유형 — 특정 기능 매칭 (1순위)
+  for (const kw of TYPE_KEYWORDS["D"]) {
+    if (text.includes(kw.toLowerCase())) {
+      return { type: "D", reason: `"${kw}" 기능 매칭 (§5.4 1순위)` };
+    }
+  }
+
+  // 2) B 유형 — 편집기·도구
+  for (const kw of TYPE_KEYWORDS["B"]) {
+    if (text.includes(kw.toLowerCase())) {
+      return { type: "B", reason: `"${kw}" 편집·제작 콘텐츠` };
+    }
+  }
+
+  // 3) C 유형 — 비교
+  for (const kw of TYPE_KEYWORDS["C"]) {
+    if (text.includes(kw.toLowerCase())) {
+      return { type: "C", reason: `"${kw}" 비교 콘텐츠` };
+    }
+  }
+
+  // 4) E 유형 — 리스티클 패턴 (N가지·N개 + 키워드)
+  if (/\d+\s*(가지|개)/.test(text)) {
+    return { type: "E", reason: "리스티클 패턴 (N가지/N개)" };
+  }
+  for (const kw of TYPE_KEYWORDS["E"]) {
+    if (text.includes(kw.toLowerCase())) {
+      return { type: "E", reason: `"${kw}" 리스티클·트렌드 콘텐츠` };
+    }
+  }
+
+  // 5) 이유·방법 — 리스티클 (D 매칭 안 됐을 때만)
+  if (/이유|방법|why|how/i.test(text)) {
+    return { type: "E", reason: "이유/방법 패턴 (리스티클)" };
+  }
+
+  // 6) 기본값 — A 유형 (제품 소개)
+  return { type: "A", reason: "기본 (제품 소개)" };
+}
+
 figma.showUI(__html__, { width: 500, height: 700 });
 
 figma.ui.onmessage = async (msg) => {
@@ -462,12 +571,31 @@ async function createVariantsFromAI(payload) {
 
 /**
  * UI에서 받은 이미지 바이너리 데이터로 썸네일 생성
+ * — 블로그 제목으로 레이아웃 유형 자동 선택 → 해당 유형 슬롯들로 베리에이션 생성
  */
 async function createVariantsFromImageData(payload) {
   const { blogTitle, blogContent, imagesData } = payload;
 
-  // Step 1: 각 바이너리를 Figma에 등록 → imageHash 추출
+  // Step 1: 레이아웃 유형 자동 선택
+  const layoutDecision = selectLayoutType(blogTitle, blogContent);
+  const selectedType = layoutDecision.type;
+  const slotIds = TYPE_TO_SLOTS[selectedType];
+
+  console.log(`[CdBd] 선택된 유형: ${selectedType} (이유: ${layoutDecision.reason})`);
+  console.log(`[CdBd] 사용할 슬롯: ${slotIds.join(", ")}`);
+
+  // 진행 상황 UI 업데이트
+  figma.ui.postMessage({
+    type: "layout-selected",
+    layoutType: selectedType,
+    reason: layoutDecision.reason,
+    slotCount: slotIds.length
+  });
+
+  // Step 2: 각 바이너리를 Figma에 등록 → imageHash 추출
   const variants = [];
+  let slotIndex = 0;
+
   for (let i = 0; i < imagesData.length; i++) {
     const item = imagesData[i];
     if (!item.success) {
@@ -478,10 +606,15 @@ async function createVariantsFromImageData(payload) {
     try {
       const uint8Array = new Uint8Array(item.bytes);
       const image = figma.createImage(uint8Array);
+
+      // 슬롯을 순환하면서 베리에이션 생성
+      const slotId = slotIds[slotIndex % slotIds.length];
+      slotIndex++;
+
       variants.push({
-        slotId: "1:1262", // E type 중앙
+        slotId: slotId,
         imageHash: image.hash,
-        name: item.name
+        name: `${selectedType}_${item.name}_${slotId}`
       });
     } catch (e) {
       console.warn(`이미지 ${item.name} 등록 실패:`, e.message);
@@ -492,15 +625,40 @@ async function createVariantsFromImageData(payload) {
     throw new Error("유효한 이미지가 없음 (네트워크/CORS 확인 필요)");
   }
 
-  // Step 2: E type으로 자동 생성
+  // Step 3: 자동 선택된 유형으로 생성
   const createPayload = {
     title: blogTitle,
     subtitle: blogContent ? blogContent.split('\n')[0] : "",
-    emphasis: "",
+    // E 유형은 강조어 없음 / 나머지는 첫 3-5글자를 강조어로 (간단한 휴리스틱)
+    emphasis: selectedType === "E" ? "" : extractEmphasis(blogTitle),
     variants: variants
   };
 
   return await createVariants(createPayload);
+}
+
+/**
+ * 제목에서 강조어 자동 추출 (간단 휴리스틱)
+ * 가장 의미있어 보이는 명사구 추출 (3-7글자)
+ */
+function extractEmphasis(title) {
+  // 따옴표나 괄호 안의 내용 우선
+  const quoted = title.match(/[「『"'\[\(]([^」』"'\]\)]+)[」』"'\]\)]/);
+  if (quoted) return quoted[1];
+
+  // 숫자+가지/개 패턴 (예: "7가지 이유")
+  const listicle = title.match(/(\d+가지\s*\S+)/);
+  if (listicle) return listicle[1].trim();
+
+  // 마지막 3-7글자 명사구 (한글)
+  const words = title.split(/\s+/);
+  const lastWord = words[words.length - 1];
+  if (lastWord && lastWord.length >= 3 && lastWord.length <= 8) {
+    return lastWord;
+  }
+
+  // 기본: 빈 문자열 (강조 없음)
+  return "";
 }
 
 /**
