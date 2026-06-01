@@ -691,15 +691,20 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
 
   await figma.loadFontAsync(node.fontName);
 
-  // 폭 강제 + textAutoResize HEIGHT (자동 줄바꿈)
+  // 자동 줄바꿈 완전 차단: textAutoResize를 NONE으로 변경 후 텍스트 적용
+  // 우리의 \n만 줄바꿈으로 작동, Figma 자동 줄바꿈 (어절 중간 잘림) 방지
   // D 유형: 350 / 나머지: TITLE 300 · SUBTITLE 285
   const isD = slotType === "D";
   const maxWidth = isD
     ? (isSubtitle ? SUBTITLE_MAX_WIDTH_D : TITLE_MAX_WIDTH_D)
     : (isSubtitle ? SUBTITLE_MAX_WIDTH : TITLE_MAX_WIDTH);
-  node.textAutoResize = "HEIGHT";
-  node.resize(maxWidth, node.height);
+
+  // 1) 텍스트 먼저 설정 (\n 적용)
   node.characters = text;
+  // 2) WIDTH_AND_HEIGHT로 자동 줄바꿈 차단 (텍스트에 맞춰 노드 크기 자동 조정)
+  node.textAutoResize = "WIDTH_AND_HEIGHT";
+
+  console.log(`[CdBd] fillText 적용: "${text.replace(/\n/g, "/")}" (텍스트 노드 크기: ${node.width}×${node.height})`);
 
   // 전체 색상 적용 (서브타이틀 또는 E 유형 TITLE)
   if (isSubtitle || (slotType === "E" && !isSubtitle)) {
