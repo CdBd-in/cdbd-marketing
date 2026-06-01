@@ -5,6 +5,7 @@
 // 강조색 (1-1 §2)
 const GREEN = { r: 77 / 255, g: 233 / 255, b: 139 / 255 };
 const PURPLE = { r: 143 / 255, g: 128 / 255, b: 255 / 255 };
+const WHITE = { r: 1, g: 1, b: 1 }; // E 유형 텍스트 색상
 
 // 텍스트 자동 줄바꿈 임계 (1-1 §3.텍스트 작성 규칙) — 유형별
 // A·B·C·E: TITLE 300 / SUBTITLE 285 (목업이 우측에 있어 텍스트 영역 좁음)
@@ -53,6 +54,11 @@ const BOTTOM_SLOT_IDS = new Set([
   "1:1274", "1:1277", // D 하단/하단·서브
 ]);
 const TEXT_BOTTOM_Y = 410; // 슬롯 하단(450) - bottom padding(40)
+
+// 중앙 텍스트 슬롯 — E 유형 (1-2-1 §3.5)
+const CENTER_TEXT_SLOT_IDS = new Set([
+  "1:1262", "1:1294", // E 중앙/중앙·서브
+]);
 const TEXT_CENTER_HEIGHT_TOTAL = 450; // 배경(E) 중앙 정렬용
 
 figma.showUI(__html__, { width: 500, height: 700 });
@@ -117,46 +123,68 @@ async function createVariants(payload) {
     if ("clipsContent" in cloned) cloned.clipsContent = true;
     outputPage.appendChild(cloned); // 출력 페이지에 클론 추가
 
-    // 1) VISUAL_SLOT 찾기
-    const visualSlot = cloned.findOne((n) => n.name === "VISUAL_SLOT");
+    // 1) 유형 판단
     const slotType = SLOT_TYPE_MAP[slotId] || "A";
 
-    if (visualSlot) {
-      if (slotType === "D") {
-        // D. 3D 아이콘 — 목업 컴포넌트 없이 VISUAL_SLOT에 직접 PNG fill
-        // (1-2-1 §3.3: w·h 260, contain — 블리드 X)
-        apply3DIcon(visualSlot, imageHash);
-      } else {
-        // A·B·C·E — 공식 목업 컴포넌트 인스턴스 + 내부 #FAFAFA rect에 fill
-        const result = await applyMockup(cloned, visualSlot, mockupId, imageHash);
-        if (!result.success) {
-          // 폴백: 목업 못 찾으면 VISUAL_SLOT에 직접 fill
-          if ("fills" in visualSlot) {
-            visualSlot.fills = [
-              { type: "IMAGE", imageHash: imageHash, scaleMode: "FILL" },
-            ];
-            if ("strokes" in visualSlot) visualSlot.strokes = [];
+    // E 유형: BG_SLOT (배경) + 보조 VISUAL_SLOT (선택)
+    if (slotType === "E") {
+      applyBackground(cloned, imageHash);
+      // 보조 아이콘 (데이터에 secondaryImageHash 있으면 사용)
+      if (payload.secondaryImageHash) {
+        applySecondaryIcon(cloned, payload.secondaryImageHash);
+      }
+    } else {
+      // A·B·C·D 유형: VISUAL_SLOT 처리
+      const visualSlot = cloned.findOne((n) => n.name === "VISUAL_SLOT");
+      if (visualSlot) {
+        if (slotType === "D") {
+          // D. 3D 아이콘 — 목업 컴포넌트 없이 VISUAL_SLOT에 직접 PNG fill
+          // (1-2-1 §3.3: w·h 260, contain — 블리드 X)
+          apply3DIcon(visualSlot, imageHash);
+        } else {
+          // A·B·C — 공식 목업 컴포넌트 인스턴스 + 내부 #FAFAFA rect에 fill
+          const result = await applyMockup(cloned, visualSlot, mockupId, imageHash);
+          if (!result.success) {
+            // 폴백: 목업 못 찾으면 VISUAL_SLOT에 직접 fill
+            if ("fills" in visualSlot) {
+              visualSlot.fills = [
+                { type: "IMAGE", imageHash: imageHash, scaleMode: "FILL" },
+              ];
+              if ("strokes" in visualSlot) visualSlot.strokes = [];
+            }
           }
         }
       }
     }
 
-    // 3) TITLE 텍스트 + 자동 줄바꿈 + 강조어 (slotType 전달 → 유형별 폭)
-    await fillText(cloned, "TITLE", title, emphasis, emphasisColor, false, slotType);
+    // 3) 텍스트 처리 (유형별)
+    if (slotType === "E") {
+      // E 유형: 텍스트 흰색 고정, 강조색 없음 (1-1 §2, 1-2-1 §1.2)
+      await fillText(cloned, "TITLE", title, null, WHITE, false, slotType);
+      if (subtitle) {
+        await fillText(cloned, "SUBTITLE", subtitle, null, WHITE, true, slotType);
+      }
+      // 중앙 정렬 (세로)
+      adjustTextCenterE(cloned, slotId);
+    } else {
+      // A·B·C·D 유형
+      // 4) TITLE 텍스트 + 자동 줄바꿈 + 강조어 (slotType 전달 → 유형별 폭)
+      await fillText(cloned, "TITLE", title, emphasis, emphasisColor, false, slotType);
 
-    // 4) SUBTITLE 텍스트 (전체 그린) + 자동 줄바꿈
-    if (subtitle) {
-      await fillText(cloned, "SUBTITLE", subtitle, null, GREEN, true, slotType);
-    }
+      // 5) SUBTITLE 텍스트 (전체 그린) + 자동 줄바꿈
+      if (subtitle) {
+        await fillText(cloned, "SUBTITLE", subtitle, null, GREEN, true, slotType);
+      }
 
-    // 5) 하단 슬롯 — 텍스트 줄 수 변화에 따른 y 자동 보정 (1-2-1 §2.2)
-    if (BOTTOM_SLOT_IDS.has(slotId)) {
-      // TEXT_BLOCK이 있으면 그것의 y / 없으면 TITLE의 y
-      const tb = cloned.findOne((n) => n.name === "TEXT_BLOCK");
-      const title_node = cloned.findOne((n) => n.type === "TEXT" && n.name === "TITLE");
-      const target = tb || title_node;
-      if (target) {
-        target.y = TEXT_BOTTOM_Y - target.height;
+      // 6) 하단 슬롯 — 텍스트 줄 수 변화에 따른 y 자동 보정 (1-2-1 §2.2)
+      if (BOTTOM_SLOT_IDS.has(slotId)) {
+        // TEXT_BLOCK이 있으면 그것의 y / 없으면 TITLE의 y
+        const tb = cloned.findOne((n) => n.name === "TEXT_BLOCK");
+        const title_node = cloned.findOne((n) => n.type === "TEXT" && n.name === "TITLE");
+        const target = tb || title_node;
+        if (target) {
+          target.y = TEXT_BOTTOM_Y - target.height;
+        }
       }
     }
 
@@ -308,4 +336,72 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
       ]);
     }
   }
+}
+
+/**
+ * E 유형 — 배경 이미지 처리 (BG_SLOT)
+ * (1-2-1 §3.5: BG_SLOT 전체 600×450, opacity 20%)
+ */
+function applyBackground(parentSlot, imageHash) {
+  const bgSlot = parentSlot.findOne((n) => n.name === "BG_SLOT");
+  if (!bgSlot || !("fills" in bgSlot)) return { success: false };
+
+  bgSlot.fills = [
+    {
+      type: "IMAGE",
+      imageHash: imageHash,
+      scaleMode: "FILL",
+    },
+  ];
+
+  // opacity 20% 적용
+  if ("opacity" in bgSlot) {
+    bgSlot.opacity = 0.2;
+  }
+
+  if ("strokes" in bgSlot) bgSlot.strokes = [];
+
+  return { success: true };
+}
+
+/**
+ * E 유형 — 보조 이미지 처리 (VISUAL_SLOT, 선택)
+ * (1-2-1 §3.5: 우측 x320/y110/w·h 230)
+ */
+function applySecondaryIcon(parentSlot, imageHash) {
+  const visualSlot = parentSlot.findOne((n) => n.name === "VISUAL_SLOT");
+  if (!visualSlot || !("fills" in visualSlot)) return { success: false };
+
+  visualSlot.fills = [
+    {
+      type: "IMAGE",
+      imageHash: imageHash,
+      scaleMode: "FIT",
+    },
+  ];
+
+  if ("strokes" in visualSlot) visualSlot.strokes = [];
+
+  return { success: true };
+}
+
+/**
+ * E 유형 — 텍스트 수직 중앙 정렬
+ * (1-2-1 §3.5: 텍스트 좌측 세로 중앙, 전부 흰색)
+ */
+function adjustTextCenterE(parentSlot, slotId) {
+  // TEXT_BLOCK 또는 TITLE 찾기
+  let textContainer = parentSlot.findOne((n) => n.name === "TEXT_BLOCK");
+  if (!textContainer) {
+    textContainer = parentSlot.findOne((n) => n.type === "TEXT" && n.name === "TITLE");
+  }
+
+  if (!textContainer) return;
+
+  // 총 높이 계산
+  const totalHeight = textContainer.height;
+
+  // 수직 중앙 정렬: (전체 높이 - 텍스트 높이) / 2
+  const newY = (TEXT_CENTER_HEIGHT_TOTAL - totalHeight) / 2;
+  textContainer.y = newY;
 }
