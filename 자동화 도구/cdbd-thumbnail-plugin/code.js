@@ -75,7 +75,15 @@ figma.ui.onmessage = async (msg) => {
     }
   } else if (msg.type === "generate-images-ai") {
     try {
-      const result = await createVariantsFromAI(msg.payload);
+      // UI에 이미지 fetch 요청만 보냄 (실제 생성은 images-fetched에서)
+      await createVariantsFromAI(msg.payload);
+    } catch (err) {
+      figma.ui.postMessage({ type: "result", success: false, error: err.message });
+      figma.notify(`❌ 오류: ${err.message}`, { error: true });
+    }
+  } else if (msg.type === "images-fetched") {
+    try {
+      const result = await createVariantsFromImageData(msg.payload);
       figma.ui.postMessage({ type: "result", success: true, data: result });
       figma.notify(`✅ ${result.length}안 생성 완료`);
     } catch (err) {
@@ -423,44 +431,68 @@ function adjustTextCenterE(parentSlot, slotId) {
  */
 
 /**
- * AI 이미지로 썸네일 생성 (메인 파이프라인)
- * 1. Python 키워드 추출
- * 2. Unsplash 이미지 URL 생성
- * 3. 이미지 다운로드 & Figma 업로드
- * 4. imageHash 추출
+ * AI 이미지로 썸네일 생성 (메인 파이프라인) — UI 측 fetch 사용
+ * 1. 키워드 추출 + URL 생성
+ * 2. UI에 URL 리스트 전달 → UI가 fetch (리다이렉트 자동 처리)
+ * 3. UI가 바이너리 데이터를 plugin으로 전달
+ * 4. plugin이 figma.createImage() 호출 → imageHash 추출
  * 5. E type 자동 생성
  */
 async function createVariantsFromAI(payload) {
   const { blogTitle, blogContent, imageCount } = payload;
 
-  // Step 1: Python에서 이미지 URL 생성
+  // Step 1: 이미지 URL 후보 생성
   const imageData = await generateImageCandidates(blogTitle, blogContent, imageCount);
 
   if (!imageData.images || imageData.images.length === 0) {
-    throw new Error("이미지 생성 실패");
+    throw new Error("이미지 후보 생성 실패");
   }
 
-  // Step 2: 각 이미지를 Figma에 업로드하고 해시 추출
+  // Step 2: UI에 URL 리스트 전달 → UI가 fetch
+  figma.ui.postMessage({
+    type: "fetch-images",
+    urls: imageData.images,
+    blogTitle,
+    blogContent
+  });
+
+  // UI가 처리하므로 여기서는 빈 결과 반환 (실제 처리는 메시지 핸들러에서)
+  return [];
+}
+
+/**
+ * UI에서 받은 이미지 바이너리 데이터로 썸네일 생성
+ */
+async function createVariantsFromImageData(payload) {
+  const { blogTitle, blogContent, imagesData } = payload;
+
+  // Step 1: 각 바이너리를 Figma에 등록 → imageHash 추출
   const variants = [];
-  for (let i = 0; i < imageData.images.length; i++) {
-    const img = imageData.images[i];
+  for (let i = 0; i < imagesData.length; i++) {
+    const item = imagesData[i];
+    if (!item.success) {
+      console.warn(`이미지 ${item.name} 다운로드 실패:`, item.error);
+      continue;
+    }
+
     try {
-      const imageHash = await downloadAndCreateImage(img.url);
+      const uint8Array = new Uint8Array(item.bytes);
+      const image = figma.createImage(uint8Array);
       variants.push({
         slotId: "1:1262", // E type 중앙
-        imageHash: imageHash,
-        name: img.name
+        imageHash: image.hash,
+        name: item.name
       });
     } catch (e) {
-      console.warn(`이미지 ${img.name} 업로드 실패:`, e.message);
+      console.warn(`이미지 ${item.name} 등록 실패:`, e.message);
     }
   }
 
   if (variants.length === 0) {
-    throw new Error("유효한 이미지가 없음");
+    throw new Error("유효한 이미지가 없음 (네트워크/CORS 확인 필요)");
   }
 
-  // Step 3: E type으로 자동 생성
+  // Step 2: E type으로 자동 생성
   const createPayload = {
     title: blogTitle,
     subtitle: blogContent ? blogContent.split('\n')[0] : "",

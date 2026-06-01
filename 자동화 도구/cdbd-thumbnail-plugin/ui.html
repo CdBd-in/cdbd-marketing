@@ -211,9 +211,11 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
     }}, '*');
   };
 
-  window.onmessage = (event) => {
+  window.onmessage = async (event) => {
     const msg = event.data.pluginMessage;
-    if (msg && msg.type === 'result') {
+    if (!msg) return;
+
+    if (msg.type === 'result') {
       if (msg.success) {
         document.getElementById('result').innerHTML =
           '<span class="ok">✅ 완료!</span>\n' + JSON.stringify(msg.data, null, 2);
@@ -221,6 +223,53 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
         document.getElementById('result').innerHTML =
           '<span class="err">❌ ' + msg.error + '</span>';
       }
+    } else if (msg.type === 'fetch-images') {
+      // Plugin이 이미지 URL 리스트 전달 → UI가 fetch
+      const { urls, blogTitle, blogContent } = msg;
+      document.getElementById('result').textContent = `🌐 이미지 다운로드 중… (0/${urls.length})`;
+
+      const imagesData = [];
+      let successCount = 0;
+
+      for (let i = 0; i < urls.length; i++) {
+        const img = urls[i];
+        try {
+          const response = await fetch(img.url);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+          const blob = await response.blob();
+          const arrayBuffer = await blob.arrayBuffer();
+          const bytes = Array.from(new Uint8Array(arrayBuffer));
+
+          imagesData.push({
+            success: true,
+            bytes: bytes,
+            name: img.name,
+            keyword: img.keyword
+          });
+          successCount++;
+        } catch (e) {
+          imagesData.push({
+            success: false,
+            error: e.message,
+            name: img.name
+          });
+        }
+
+        document.getElementById('result').textContent =
+          `🌐 이미지 다운로드 중… (${i + 1}/${urls.length}, 성공: ${successCount})`;
+      }
+
+      document.getElementById('result').textContent =
+        `📦 ${successCount}개 이미지 다운로드 완료. Figma에 업로드 중…`;
+
+      // 결과를 plugin으로 다시 전달
+      parent.postMessage({
+        pluginMessage: {
+          type: 'images-fetched',
+          payload: { blogTitle, blogContent, imagesData }
+        }
+      }, '*');
     }
   };
 </script>
