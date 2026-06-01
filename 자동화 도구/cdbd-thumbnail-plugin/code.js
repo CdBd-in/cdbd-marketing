@@ -161,9 +161,17 @@ function selectLayoutType(title, content) {
     }
   }
 
-  // 5) 이유·방법 — 리스티클 (D 매칭 안 됐을 때만)
+  // 5) 이유·방법·질문형 → E 유형 (정보 전달 콘텐츠)
   if (/이유|방법|why|how/i.test(text)) {
-    return { type: "E", reason: "이유/방법 패턴 (리스티클)" };
+    return { type: "E", reason: "이유/방법 패턴 (정보 전달)" };
+  }
+  // 질문형 제목 (한글: ~할까? ~까? ~인가? ~나? / 영문: what, where, when 등)
+  if (/[가-힣]+(까|을까|는가|인가|나)\s*\?|\?\s*$/i.test(title)) {
+    return { type: "E", reason: "질문형 제목 (정보 전달)" };
+  }
+  // 의문사 포함
+  if (/(왜|어떻게|언제|어디|무엇|뭐|어떤)/.test(text)) {
+    return { type: "E", reason: "의문사 포함 (정보 전달)" };
   }
 
   // 6) 기본값 — A 유형 (제품 소개)
