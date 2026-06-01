@@ -517,36 +517,77 @@ async function generateImageCandidates(title, content, count) {
  * Python version과 동일한 결과 반환
  */
 function extractKeywordsSimple(title, content) {
-  const CDBD_KEYWORDS = {
-    "AI": ["ai", "artificial intelligence"],
-    "자동화": ["automation", "auto"],
-    "초대장": ["invitation", "invite"],
-    "명함": ["card", "contact"],
-    "카탈로그": ["catalog", "portfolio"],
-    "예약": ["booking", "reservation"],
-    "결제": ["payment", "billing"],
-    "보안": ["security", "safe"],
-    "분석": ["analytics", "analysis"],
-    "마케팅": ["marketing", "promotion"],
+  // 한글 키워드 → 영문 Unsplash 검색어 매핑
+  const KOREAN_TO_ENGLISH = {
+    "AI": "AI",
+    "ai": "AI",
+    "인공지능": "artificial intelligence",
+    "자동화": "automation",
+    "초대장": "invitation",
+    "명함": "business card",
+    "카탈로그": "catalog",
+    "포트폴리오": "portfolio",
+    "예약": "booking",
+    "결제": "payment",
+    "보안": "security",
+    "분석": "analytics",
+    "마케팅": "marketing",
+    "성장": "growth",
+    "글로벌": "global",
+    "모바일": "mobile",
+    "글쓰기": "writing",
+    "콘텐츠": "content",
+    "블로그": "blog",
+    "비즈니스": "business",
+    "기업": "corporate",
+    "스타트업": "startup",
+    "전략": "strategy",
+    "디자인": "design",
+    "기술": "technology",
+    "데이터": "data",
+    "고객": "customer",
+    "서비스": "service",
+    "브랜드": "brand",
+    "광고": "advertising",
+    "이벤트": "event",
+    "세미나": "seminar",
+    "회의": "meeting",
+    "프레젠테이션": "presentation",
+    "네트워킹": "networking",
+    "협업": "collaboration",
+    "팀": "team",
+    "리더십": "leadership",
+    "트렌드": "trend",
+    "혁신": "innovation",
+    "미래": "future",
+    "도구": "tool",
+    "솔루션": "solution",
   };
 
-  const text = `${title} ${content}`.toLowerCase();
+  const text = `${title} ${content}`;
   const found = [];
 
-  for (const [korean, keywords] of Object.entries(CDBD_KEYWORDS)) {
-    for (const keyword of keywords) {
-      if (text.includes(keyword)) {
-        found.push(korean);
-        break;
-      }
+  // 1) 한글 키워드 → 영문 매핑
+  for (const [korean, english] of Object.entries(KOREAN_TO_ENGLISH)) {
+    if (text.includes(korean) && !found.includes(english)) {
+      found.push(english);
     }
   }
 
-  // 일반 단어 추출 (길이 2 이상)
-  const words = text.match(/\b[\w가-힣]+\b/g) || [];
-  const filtered = words.filter(w => w.length > 1 && !STOPWORDS.has(w));
+  // 2) 영문 키워드 직접 추출 (3글자 이상)
+  const englishWords = text.toLowerCase().match(/[a-z]{3,}/g) || [];
+  for (const word of englishWords) {
+    if (!STOPWORDS.has(word) && !found.includes(word)) {
+      found.push(word);
+    }
+  }
 
-  return [...new Set([...found, ...filtered])].slice(0, 5);
+  // 키워드가 없으면 기본 폴백
+  if (found.length === 0) {
+    found.push("business", "abstract");
+  }
+
+  return found.slice(0, 5);
 }
 
 const STOPWORDS = new Set([
