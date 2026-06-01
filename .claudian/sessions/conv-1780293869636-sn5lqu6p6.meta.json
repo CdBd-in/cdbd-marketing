@@ -4,8 +4,8 @@
   "title": "Continue from previous reference",
   "titleGenerationStatus": "success",
   "createdAt": 1780293869640,
-  "updatedAt": 1780302532390,
-  "lastResponseAt": 1780302532390,
+  "updatedAt": 1780302613528,
+  "lastResponseAt": 1780302613528,
   "sessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88",
   "providerState": {
     "providerSessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88"
@@ -14,10 +14,10 @@
   "usage": {
     "model": "opus",
     "inputTokens": 1,
-    "cacheCreationInputTokens": 1157,
-    "cacheReadInputTokens": 295687,
+    "cacheCreationInputTokens": 113,
+    "cacheReadInputTokens": 302540,
     "contextWindow": 1000000,
-    "contextTokens": 296845,
+    "contextTokens": 302654,
     "percentage": 30,
     "contextWindowIsAuthoritative": true
   }

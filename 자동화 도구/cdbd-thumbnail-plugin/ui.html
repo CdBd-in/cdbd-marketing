@@ -331,7 +331,7 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
         try {
           const promptEncoded = encodeURIComponent(p.prompt);
           const seed = Math.floor(Math.random() * 100000) + i;
-          const url = `https://image.pollinations.ai/prompt/${promptEncoded}?width=600&height=450&seed=${seed}&nologo=true`;
+          const url = `https://image.pollinations.ai/prompt/${promptEncoded}?width=600&height=450&seed=${seed}`;
 
           console.log(`[CdBd] 배경 생성 ${i+1}/${selectedPrompts.length}: "${p.prompt.substring(0, 60)}..."`);
           document.getElementById('result').innerHTML =
