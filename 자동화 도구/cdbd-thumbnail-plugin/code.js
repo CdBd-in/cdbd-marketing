@@ -704,33 +704,73 @@ async function createVariantsFromImageData(payload) {
     slotCount: slotIds.length
   });
 
-  // Step 2: 각 바이너리를 Figma에 등록 → imageHash 추출
+  // Step 2: 메인 이미지와 아이콘을 페어로 처리
+  // E 유형은 isMain 이미지를 배경, isIcon 이미지를 보조 아이콘으로 사용
   const variants = [];
   let slotIndex = 0;
 
-  for (let i = 0; i < imagesData.length; i++) {
-    const item = imagesData[i];
-    if (!item.success) {
-      console.warn(`이미지 ${item.name} 다운로드 실패:`, item.error);
-      continue;
-    }
+  // 메인 이미지와 아이콘을 분리
+  const mainImages = imagesData.filter(item => item.success && item.isMain);
+  const iconImages = imagesData.filter(item => item.success && item.isIcon);
+  const otherImages = imagesData.filter(item => item.success && !item.isMain && !item.isIcon);
 
+  console.log(`[CdBd] 메인 이미지: ${mainImages.length}, 아이콘: ${iconImages.length}, 기타: ${otherImages.length}`);
+
+  // 모든 이미지를 Figma에 등록 (hash 추출)
+  const mainHashes = [];
+  const iconHashes = [];
+
+  for (const item of mainImages) {
     try {
       const uint8Array = new Uint8Array(item.bytes);
       const image = figma.createImage(uint8Array);
-
-      // 슬롯을 순환하면서 베리에이션 생성
-      const slotId = slotIds[slotIndex % slotIds.length];
-      slotIndex++;
-
-      variants.push({
-        slotId: slotId,
-        imageHash: image.hash,
-        name: `${selectedType}_${item.name}_${slotId}`
-      });
+      mainHashes.push({ hash: image.hash, name: item.name, keyword: item.keyword });
     } catch (e) {
-      console.warn(`이미지 ${item.name} 등록 실패:`, e.message);
+      console.warn(`메인 이미지 등록 실패:`, e.message);
     }
+  }
+
+  for (const item of iconImages) {
+    try {
+      const uint8Array = new Uint8Array(item.bytes);
+      const image = figma.createImage(uint8Array);
+      iconHashes.push({ hash: image.hash, name: item.name, keyword: item.keyword });
+    } catch (e) {
+      console.warn(`아이콘 이미지 등록 실패:`, e.message);
+    }
+  }
+
+  // 기타 이미지도 메인으로 처리 (E 유형 외에서 사용)
+  for (const item of otherImages) {
+    try {
+      const uint8Array = new Uint8Array(item.bytes);
+      const image = figma.createImage(uint8Array);
+      mainHashes.push({ hash: image.hash, name: item.name, keyword: item.keyword });
+    } catch (e) {
+      console.warn(`기타 이미지 등록 실패:`, e.message);
+    }
+  }
+
+  // 메인 이미지로 베리에이션 생성, 아이콘은 페어링
+  for (let i = 0; i < mainHashes.length; i++) {
+    const mainImg = mainHashes[i];
+    const slotId = slotIds[slotIndex % slotIds.length];
+    slotIndex++;
+
+    const variant = {
+      slotId: slotId,
+      imageHash: mainImg.hash,
+      name: `${selectedType}_${mainImg.name}_${slotId}`
+    };
+
+    // E 유형이고 아이콘이 있으면 secondaryImageHash로 페어링
+    if (selectedType === "E" && iconHashes.length > 0) {
+      const iconImg = iconHashes[i % iconHashes.length];
+      variant.secondaryImageHash = iconImg.hash;
+      console.log(`[CdBd]   변형 ${i+1}: 배경(${mainImg.keyword}) + 아이콘(${iconImg.keyword})`);
+    }
+
+    variants.push(variant);
   }
 
   if (variants.length === 0) {
