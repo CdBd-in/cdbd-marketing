@@ -749,28 +749,183 @@ async function createVariantsFromImageData(payload) {
   return await createVariants(createPayload);
 }
 
+// ============================================================================
+// 강조 키워드 자동 추출 (가이드 1-1 §3 우선순위)
+// 1순위: 제품·기능명 > 2순위: 가치 제안 동사 > 3순위: 차별점 > 4순위: 핵심 명사
+// ============================================================================
+
+// 1순위: CdBd 제품·기능명 (마케팅 본질)
+const EMPHASIS_PRIORITY_1_PRODUCT = [
+  "CdBd 모바일 명함", "CdBd 모바일 브로셔", "CdBd 모바일 초대장",
+  "모바일 명함", "모바일 브로셔", "모바일 초대장", "모바일 카탈로그",
+  "비공개 초대장", "디지털 카탈로그",
+  "프로필 링크", "프로필링크",
+  "예약 관리", "상담 신청",
+  "페이지 빌더", "AI 디자인",
+  "RSVP", "QR",
+  "CdBd",
+];
+
+// 2순위: 가치 제안 동사·결과
+const EMPHASIS_PRIORITY_2_VALUE = [
+  "끝내기", "끝내세요", "끝내",
+  "사로잡는", "사로잡기",
+  "해결",
+  "기능 업데이트", "업데이트",
+  "갈아타기", "갈아타야", "갈아타",
+  "공유하는 방법", "공유하기",
+];
+
+// 3순위: 차별점·혜택 (형용사·부사)
+const EMPHASIS_PRIORITY_3_DIFF = [
+  "안전하고", "안전한",
+  "예쁘게", "예쁜",
+  "무료로", "무료",
+  "대신",
+  "직접",
+  "한 번에",
+];
+
+// 4순위: 핵심 명사·개념
+const EMPHASIS_PRIORITY_4_NOUN = [
+  "진짜 이유", "고집하는 이유",
+  /\d+가지\s*이유/,  // "7가지 이유"
+  /Best\s*\d+/i,    // "Best 18"
+  /\d+가지/,         // "5가지"
+];
+
 /**
- * 제목에서 강조어 자동 추출 (간단 휴리스틱)
- * 가장 의미있어 보이는 명사구 추출 (3-7글자)
+ * 제목에서 강조 키워드 자동 추출 (가이드 §3 기준)
+ * 우선순위: 제품·기능 > 가치 제안 > 차별점 > 핵심 명사
  */
 function extractEmphasis(title) {
-  // 따옴표나 괄호 안의 내용 우선
-  const quoted = title.match(/[「『"'\[\(]([^」』"'\]\)]+)[」』"'\]\)]/);
-  if (quoted) return quoted[1];
-
-  // 숫자+가지/개 패턴 (예: "7가지 이유")
-  const listicle = title.match(/(\d+가지\s*\S+)/);
-  if (listicle) return listicle[1].trim();
-
-  // 마지막 3-7글자 명사구 (한글)
-  const words = title.split(/\s+/);
-  const lastWord = words[words.length - 1];
-  if (lastWord && lastWord.length >= 3 && lastWord.length <= 8) {
-    return lastWord;
+  // 1순위: 제품·기능명 (정확히 일치)
+  for (const kw of EMPHASIS_PRIORITY_1_PRODUCT) {
+    if (title.includes(kw)) return kw;
   }
 
-  // 기본: 빈 문자열 (강조 없음)
+  // 2순위: 가치 제안 동사
+  for (const kw of EMPHASIS_PRIORITY_2_VALUE) {
+    if (title.includes(kw)) return kw;
+  }
+
+  // 3순위: 차별점·혜택
+  for (const kw of EMPHASIS_PRIORITY_3_DIFF) {
+    if (title.includes(kw)) return kw;
+  }
+
+  // 4순위: 핵심 명사·개념 (정규식 또는 문자열)
+  for (const kw of EMPHASIS_PRIORITY_4_NOUN) {
+    if (kw instanceof RegExp) {
+      const match = title.match(kw);
+      if (match) return match[0];
+    } else if (title.includes(kw)) {
+      return kw;
+    }
+  }
+
+  // 폴백: 가장 의미있어 보이는 명사구 (3-8자, 조사 제거)
+  const words = title.replace(/[,.!?]/g, "").split(/\s+/);
+  // 우측에서 의미있는 단어 찾기 (한국어는 핵심이 뒤에 오는 경향)
+  for (let i = words.length - 1; i >= 0; i--) {
+    const w = words[i];
+    if (w.length >= 3 && w.length <= 8 && !/^(이|그|저|는|은|을|를|에|의)/.test(w)) {
+      return w;
+    }
+  }
+
   return "";
+}
+
+/**
+ * 의미 단위 줄 나누기 (가이드 1-1 §3 줄 나누기 원칙)
+ * - 한 줄 한글 8-10자 이내
+ * - 어절 단위로 끊음 (공백 기준)
+ * - 강조어가 줄 끝에서 쪼개지지 않게
+ * - 각 줄 길이 비슷하게
+ */
+function autoLineBreak(text, emphasis = "", maxLine = 10) {
+  if (!text || text.trim().length === 0) return text;
+
+  // 이미 \n이 있으면 그대로 사용
+  if (text.includes("\n")) return text;
+
+  const words = text.trim().split(/\s+/);
+  if (words.length <= 1) return text;
+
+  // 그리디 알고리즘: 한 줄 누적 길이가 maxLine 초과 직전에 줄바꿈
+  const lines = [];
+  let current = [];
+  let currentLen = 0;
+
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const wordLen = countDisplayLen(word);
+    const addLen = currentLen === 0 ? wordLen : currentLen + 1 + wordLen;
+
+    if (addLen <= maxLine || currentLen === 0) {
+      current.push(word);
+      currentLen = addLen;
+    } else {
+      lines.push(current.join(" "));
+      current = [word];
+      currentLen = wordLen;
+    }
+  }
+
+  if (current.length > 0) {
+    lines.push(current.join(" "));
+  }
+
+  // 강조어가 줄에 쪼개지지 않게 보정
+  // (강조어가 여러 어절이면 한 줄에 묶기)
+  const result = lines.join("\n");
+  if (emphasis && emphasis.includes(" ")) {
+    // 강조어가 줄바꿈으로 쪼개졌는지 확인
+    const emphasisFlat = emphasis.replace(/\s+/g, " ");
+    const resultFlat = result.replace(/\n/g, " ");
+    if (resultFlat.includes(emphasisFlat) && !result.includes(emphasisFlat)) {
+      // 쪼개진 경우 — 강조어를 한 줄로 합치기
+      return mergeEmphasisLine(result, emphasis);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * 글자 표시 길이 계산 (한글=1, 영문/숫자=0.55, 공백=0.5)
+ * Pretendard Bold 36px 기준 대략적인 시각적 폭
+ */
+function countDisplayLen(text) {
+  let len = 0;
+  for (const ch of text) {
+    if (/[가-힣]/.test(ch)) len += 1.0;
+    else if (/[A-Za-z0-9]/.test(ch)) len += 0.55;
+    else if (/\s/.test(ch)) len += 0.5;
+    else len += 0.7;
+  }
+  return len;
+}
+
+/**
+ * 강조어가 줄바꿈으로 쪼개졌을 때 한 줄로 합치기
+ */
+function mergeEmphasisLine(lineBreakText, emphasis) {
+  const flat = lineBreakText.replace(/\n/g, " ");
+  const idx = flat.indexOf(emphasis);
+  if (idx === -1) return lineBreakText;
+
+  // 강조어 위치 기준으로 다시 줄바꿈
+  const before = flat.substring(0, idx).trim();
+  const after = flat.substring(idx + emphasis.length).trim();
+
+  const result = [];
+  if (before) result.push(before);
+  result.push(emphasis);
+  if (after) result.push(after);
+
+  return result.join("\n");
 }
 
 /**
