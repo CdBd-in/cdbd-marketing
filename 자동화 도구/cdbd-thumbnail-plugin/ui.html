@@ -38,8 +38,9 @@
     📂 출력: <b>"💻 AI 블로그 썸네일 제작"</b> 페이지 (26:2) · 슬롯 원본은 건드리지 않음
   </div>
 
-  <button id="fillExample" style="background:#888; margin-top:0;">📋 A 유형 예시 (CdBd 모바일 명함)</button>
-  <button id="fillExampleD" style="background:#888; margin-top:0; margin-left:4px;">📋 D 유형 예시 (envelope·초대장)</button>
+  <button id="fillExample" style="background:#888; margin-top:0;">📋 A 유형 예시 (목업)</button>
+  <button id="fillExampleD" style="background:#888; margin-top:0; margin-left:4px;">📋 D 유형 예시 (3D·초대장)</button>
+  <button id="fillExampleE" style="background:#888; margin-top:0; margin-left:4px;">📋 E 유형 예시 (배경·리스티클)</button>
 
   <label>타이틀 (줄바꿈은 \n)</label>
   <textarea id="title" placeholder="전 세계 파트너를 사로잡는\nCdBd 모바일 명함"></textarea>
@@ -121,6 +122,19 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
       {slotId: "1:1274", imageHash: "1d12e23b16a1a731f301472f653adb56c7761295", name: "안4_envelope_하단"}
     ], null, 2);
     document.getElementById('result').innerHTML = '<span class="ok">✅ D유형 예시 입력 완료 (envelope = 초대장 기능 매칭 §5.4). "4안 자동 제작 ▶" 클릭하세요.</span>';
+  };
+
+  // E 유형 검증 예시 — 배경 (1-2-1 §1.2, §3.5: BG_SLOT opacity 20% + 텍스트 중앙)
+  // 배경 이미지: 리스티클 주제 관련 / 보조 이미지: 선택 (envelope 예시)
+  document.getElementById('fillExampleE').onclick = () => {
+    document.getElementById('title').value = '마케터가 반드시\\n알아야 할\\nGEO 시대의\\n새로운 생존 전략';
+    document.getElementById('subtitle').value = '';
+    document.getElementById('emphasis').value = '새로운 생존 전략';
+    document.getElementById('variants').value = JSON.stringify([
+      {slotId: "1:1262", imageHash: "2dde5a7f2e76e8db41f5e3568b1569e0e5905457", name: "안1_배경·중앙", secondaryImageHash: "1d12e23b16a1a731f301472f653adb56c7761295"},
+      {slotId: "1:1262", imageHash: "f16b122b33a0868edc6902d79e7f12735b12312f", name: "안2_배경·중앙_변형"}
+    ], null, 2);
+    document.getElementById('result').innerHTML = '<span class="ok">✅ E유형 예시 입력 완료 (배경·중앙 = 리스티클·추천). "4안 자동 제작 ▶" 클릭하세요.<br>※ secondaryImageHash: 보조 아이콘 (선택)</span>';
   };
 
   document.getElementById('run').onclick = () => {
