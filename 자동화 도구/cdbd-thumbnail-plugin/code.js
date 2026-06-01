@@ -480,7 +480,20 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
  */
 function applyBackground(parentSlot, imageHash) {
   const bgSlot = parentSlot.findOne((n) => n.name === "BG_SLOT");
-  if (!bgSlot || !("fills" in bgSlot)) return { success: false };
+  if (!bgSlot) {
+    console.error(`[CdBd] ❌ E 유형 BG_SLOT 못 찾음 (parent: ${parentSlot.name})`);
+    // 모든 자식 노드 이름 출력 (디버깅)
+    const allChildren = parentSlot.findAll(() => true).map(n => n.name).slice(0, 20);
+    console.error(`[CdBd]   자식 노드들: ${allChildren.join(", ")}`);
+    return { success: false, reason: "BG_SLOT not found" };
+  }
+
+  if (!("fills" in bgSlot)) {
+    console.error(`[CdBd] ❌ BG_SLOT에 fills 속성 없음 (type: ${bgSlot.type})`);
+    return { success: false, reason: "BG_SLOT has no fills" };
+  }
+
+  console.log(`[CdBd] ✅ BG_SLOT 발견: ${bgSlot.name} (${bgSlot.type}, ${bgSlot.width}×${bgSlot.height})`);
 
   bgSlot.fills = [
     {
@@ -493,10 +506,12 @@ function applyBackground(parentSlot, imageHash) {
   // opacity 20% 적용
   if ("opacity" in bgSlot) {
     bgSlot.opacity = 0.2;
+    console.log(`[CdBd]   opacity 0.2 적용됨`);
   }
 
   if ("strokes" in bgSlot) bgSlot.strokes = [];
 
+  console.log(`[CdBd] ✅ E 유형 배경 이미지 적용 완료`);
   return { success: true };
 }
 
@@ -588,8 +603,21 @@ async function createVariantsFromImageData(payload) {
   const selectedType = layoutDecision.type;
   const slotIds = TYPE_TO_SLOTS[selectedType];
 
+  console.log(`[CdBd] ════════════════════════════════════════`);
   console.log(`[CdBd] 선택된 유형: ${selectedType} (이유: ${layoutDecision.reason})`);
-  console.log(`[CdBd] 사용할 슬롯: ${slotIds.join(", ")}`);
+  console.log(`[CdBd] 사용할 슬롯 ID들: ${slotIds.join(", ")}`);
+  console.log(`[CdBd] ════════════════════════════════════════`);
+
+  // Step 1.5: 슬롯들이 Figma에 실제로 존재하는지 사전 검증
+  await figma.loadAllPagesAsync();
+  for (const sid of slotIds) {
+    const slotNode = await figma.getNodeByIdAsync(sid);
+    if (!slotNode) {
+      console.error(`[CdBd] ⚠️ 슬롯 ${sid} (${selectedType} 유형) Figma에 없음!`);
+    } else {
+      console.log(`[CdBd] ✅ 슬롯 ${sid} 확인: name="${slotNode.name}", type=${slotNode.type}`);
+    }
+  }
 
   // 진행 상황 UI 업데이트
   figma.ui.postMessage({
