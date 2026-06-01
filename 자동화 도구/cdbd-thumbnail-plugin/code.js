@@ -737,12 +737,26 @@ async function createVariantsFromImageData(payload) {
     throw new Error("유효한 이미지가 없음 (네트워크/CORS 확인 필요)");
   }
 
-  // Step 3: 자동 선택된 유형으로 생성
+  // Step 3: 강조 키워드 자동 추출 (가이드 1-1 §3)
+  // E 유형도 강조 키워드는 추출하지만, fillText에서 색상 적용 X (전부 흰색)
+  const emphasis = extractEmphasis(blogTitle);
+  console.log(`[CdBd] 추출된 강조 키워드: "${emphasis}"`);
+
+  // Step 4: 의미 단위 줄 나누기 (가이드 1-1 §3)
+  // 유형별 최대 줄 길이: D=10자 / 나머지=10자 (300px / 350px 모두 비슷)
+  const maxLine = selectedType === "D" ? 11 : 10;
+  const formattedTitle = autoLineBreak(blogTitle, emphasis, maxLine);
+  console.log(`[CdBd] 줄 나누기 결과:\n${formattedTitle}`);
+
+  const formattedSubtitle = blogContent
+    ? autoLineBreak(blogContent.split('\n')[0], "", maxLine)
+    : "";
+
+  // Step 5: 자동 선택된 유형으로 생성
   const createPayload = {
-    title: blogTitle,
-    subtitle: blogContent ? blogContent.split('\n')[0] : "",
-    // E 유형은 강조어 없음 / 나머지는 첫 3-5글자를 강조어로 (간단한 휴리스틱)
-    emphasis: selectedType === "E" ? "" : extractEmphasis(blogTitle),
+    title: formattedTitle,
+    subtitle: formattedSubtitle,
+    emphasis: emphasis,  // E는 fillText 내부에서 색상 무시
     variants: variants
   };
 

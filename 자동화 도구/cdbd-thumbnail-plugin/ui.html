@@ -250,41 +250,60 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
       document.getElementById('result').innerHTML =
         `🎨 AI 이미지 생성 중…<br><span style="font-size:11px;color:#666;">키워드: ${keywords.join(", ")}</span>`;
 
-      // 프롬프트 생성: 제목 + 키워드 조합으로 다양한 변형 만들기
+      // 프롬프트 생성: 메인(배경) + 보조 3D 아이콘 페어로
       const prompts = [];
+      const mainKeyword = keywords[0];
+      const subKeyword = keywords[1] || keywords[0];
 
-      // 변형 1: 키워드들을 조합한 메인 프롬프트
-      const mainPrompt = `${keywords.join(", ")}, modern, professional, marketing, clean background`;
-      prompts.push({ prompt: mainPrompt, keyword: keywords[0], style: "main" });
-
-      // 변형 2: 각 키워드별 단독 프롬프트 (전문 스타일)
-      for (const keyword of keywords) {
-        prompts.push({
-          prompt: `${keyword}, professional photography, business, minimalist`,
-          keyword: keyword,
-          style: "photo"
-        });
-      }
-
-      // 변형 3: 일러스트 스타일
+      // 페어 1: 메인 배경(사진) + 보조 3D 아이콘
       prompts.push({
-        prompt: `${keywords[0]}, illustration, flat design, vibrant colors`,
-        keyword: keywords[0],
-        style: "illustration"
+        prompt: `${keywords.join(", ")}, modern, professional, marketing, clean background, cinematic`,
+        keyword: mainKeyword,
+        style: "main_bg",
+        isMain: true
+      });
+      prompts.push({
+        prompt: `${mainKeyword}, 3D claymation icon, isolated on white background, soft lighting, glossy, minimal`,
+        keyword: mainKeyword,
+        style: "icon_3d",
+        isIcon: true
       });
 
-      // 변형 4: 추상 스타일
+      // 페어 2: 다른 키워드 배경 + 3D 아이콘
+      prompts.push({
+        prompt: `${subKeyword}, professional photography, business, minimalist, soft lighting`,
+        keyword: subKeyword,
+        style: "photo_bg",
+        isMain: true
+      });
+      prompts.push({
+        prompt: `${subKeyword}, 3D claymation icon, isolated on white background, glossy, minimal`,
+        keyword: subKeyword,
+        style: "icon_3d",
+        isIcon: true
+      });
+
+      // 페어 3: 추상·일러스트 배경 + 아이콘
       if (keywords.length >= 2) {
         prompts.push({
-          prompt: `${keywords[0]} and ${keywords[1]}, abstract, gradient, modern`,
-          keyword: `${keywords[0]}+${keywords[1]}`,
-          style: "abstract"
+          prompt: `${keywords[0]} and ${keywords[1]}, abstract gradient, modern, deep colors`,
+          keyword: `${keywords[0]}_${keywords[1]}`,
+          style: "abstract_bg",
+          isMain: true
+        });
+        prompts.push({
+          prompt: `${keywords[0]}, 3D claymation icon, isolated on white background, vibrant, minimal`,
+          keyword: keywords[0],
+          style: "icon_3d_2",
+          isIcon: true
         });
       }
 
-      // count만큼 자르기
-      const selectedPrompts = prompts.slice(0, count);
-      console.log(`[CdBd] 생성할 이미지: ${selectedPrompts.length}개`);
+      // count는 페어 수 (실제 이미지는 count * 2)
+      // 메인 이미지 페어로 count개 생성
+      const totalImages = Math.min(prompts.length, count * 2);
+      const selectedPrompts = prompts.slice(0, totalImages);
+      console.log(`[CdBd] 생성할 이미지: ${selectedPrompts.length}개 (메인+아이콘 페어)`);
 
       const imagesData = [];
       let successCount = 0;
@@ -292,14 +311,18 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
       for (let i = 0; i < selectedPrompts.length; i++) {
         const p = selectedPrompts[i];
         try {
-          // Pollinations.ai URL — seed로 다양성 추가, nologo=true로 워터마크 제거
+          // Pollinations.ai URL
           const promptEncoded = encodeURIComponent(p.prompt);
           const seed = Math.floor(Math.random() * 100000) + i;
-          const url = `https://image.pollinations.ai/prompt/${promptEncoded}?width=600&height=450&seed=${seed}&nologo=true`;
+          // 3D 아이콘은 정사각형 / 메인 배경은 600x450
+          const width = p.isIcon ? 512 : 600;
+          const height = p.isIcon ? 512 : 450;
+          const url = `https://image.pollinations.ai/prompt/${promptEncoded}?width=${width}&height=${height}&seed=${seed}&nologo=true`;
 
-          console.log(`[CdBd] AI 생성 ${i+1}/${selectedPrompts.length}: "${p.prompt}"`);
+          console.log(`[CdBd] AI 생성 ${i+1}/${selectedPrompts.length} (${p.isIcon ? '3D 아이콘' : '배경'}): "${p.prompt.substring(0, 60)}..."`);
           document.getElementById('result').innerHTML =
-            `🎨 AI 이미지 생성 중… (${i + 1}/${selectedPrompts.length})<br><span style="font-size:11px;color:#666;">"${p.prompt}"</span>`;
+            `🎨 AI ${p.isIcon ? '3D 아이콘' : '배경'} 생성 중… (${i + 1}/${selectedPrompts.length})<br>` +
+            `<span style="font-size:11px;color:#666;">"${p.prompt.substring(0, 80)}..."</span>`;
 
           const response = await fetch(url);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -312,7 +335,9 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
             success: true,
             bytes: bytes,
             name: `${p.style}_${p.keyword}`,
-            keyword: p.keyword
+            keyword: p.keyword,
+            isIcon: p.isIcon || false,
+            isMain: p.isMain || false
           });
           successCount++;
         } catch (e) {
@@ -320,7 +345,9 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
           imagesData.push({
             success: false,
             error: e.message,
-            name: `${p.style}_${p.keyword}`
+            name: `${p.style}_${p.keyword}`,
+            isIcon: p.isIcon || false,
+            isMain: p.isMain || false
           });
         }
       }
