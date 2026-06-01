@@ -1041,14 +1041,16 @@ async function createVariantsFromImageData(payload) {
   const emphasis = extractEmphasis(blogTitle);
   console.log(`[CdBd] 추출된 강조 키워드: "${emphasis}"`);
 
-  // Step 4: 의미 단위 줄 나누기 (가이드 1-1 §3 — 한 줄 8~10자)
-  // 가이드: 한 줄 한글 8-10자 이내 (Bold 36px Pretendard / 폭 ≤ 300px)
-  // 안전마진: 자동 줄바꿈 fallback 회피를 위해 8자로 보수적 설정
-  const maxLine = selectedType === "D" ? 10 : 8;
+  // Step 4: 의미 단위 줄 나누기 (가이드 1-1 §3)
+  // 가이드: "한 줄 한글 8-10자 이내, 가장 적은 줄 수를 택한다 (보통 2-4줄)"
+  // E·A·B·C: 폭 300px = 한글 8.3em → maxLine 8.3 (안전마진 -0.3)
+  // D: 폭 350px = 한글 9.7em → maxLine 9.5
+  const maxLine = selectedType === "D" ? 9.5 : 8.0;
   const formattedTitle = autoLineBreak(blogTitle, emphasis, maxLine);
   console.log(`[CdBd] 줄 나누기 결과 (maxLine=${maxLine}):`);
   console.log(formattedTitle);
-  console.log(`[CdBd] 줄 수: ${formattedTitle.split("\n").length}, 각 줄 길이: [${formattedTitle.split("\n").map(l => l.length).join(", ")}]`);
+  const lines = formattedTitle.split("\n");
+  console.log(`[CdBd] 줄 수: ${lines.length}, 각 줄 시각 폭(em): [${lines.map(l => countDisplayLen(l).toFixed(1)).join(", ")}]`);
 
   const formattedSubtitle = blogContent
     ? autoLineBreak(blogContent.split('\n')[0], "", maxLine)
@@ -1210,16 +1212,22 @@ function autoLineBreak(text, emphasis = "", maxLine = 10) {
 }
 
 /**
- * 글자 표시 길이 계산 (한글=1, 영문/숫자=0.55, 공백=0.5)
- * Pretendard Bold 36px 기준 대략적인 시각적 폭
+ * 글자 표시 길이 계산 — Pretendard Bold 36px 시각적 폭 (한글 1em 기준)
+ * 폭 300px = 한글 약 8.3em
+ * 영문 대문자(A,B...) ≈ 0.65em / 소문자(a,b...) ≈ 0.55em / 좁은 글자(i,l) ≈ 0.3em
+ * 숫자 ≈ 0.6em / 공백 ≈ 0.3em / 특수문자 ≈ 0.4em
  */
 function countDisplayLen(text) {
   let len = 0;
   for (const ch of text) {
-    if (/[가-힣]/.test(ch)) len += 1.0;
-    else if (/[A-Za-z0-9]/.test(ch)) len += 0.55;
-    else if (/\s/.test(ch)) len += 0.5;
-    else len += 0.7;
+    if (/[가-힣]/.test(ch)) len += 1.0;                  // 한글
+    else if (/[A-Z]/.test(ch)) len += 0.65;              // 영문 대문자
+    else if (/[ilj]/.test(ch)) len += 0.3;               // 좁은 영문
+    else if (/[a-z]/.test(ch)) len += 0.55;              // 영문 소문자
+    else if (/[0-9]/.test(ch)) len += 0.6;               // 숫자
+    else if (/\s/.test(ch)) len += 0.3;                  // 공백
+    else if (/[.,!?]/.test(ch)) len += 0.3;              // 문장부호
+    else len += 0.5;                                       // 기타
   }
   return len;
 }
