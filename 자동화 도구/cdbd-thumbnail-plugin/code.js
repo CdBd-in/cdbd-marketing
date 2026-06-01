@@ -1,6 +1,6 @@
 // CdBd 블로그 썸네일 자동 제작 Plugin v4
 // vault: 1. 디자인 가이드
-// v4 변경: 공식 목업 컴포넌트 인스턴스 + TITLE/SUBTITLE 자동 줄바꿈 (width 300)
+// v4 변경: 공식 목업 컴포넌트 인스턴스 + TITLE/SUBTITLE 자동 줄바꿈 (TITLE 350 통일)
 
 // 강조색 (1-1 §2)
 const GREEN = { r: 77 / 255, g: 233 / 255, b: 139 / 255 };
@@ -8,9 +8,9 @@ const PURPLE = { r: 143 / 255, g: 128 / 255, b: 255 / 255 };
 const WHITE = { r: 1, g: 1, b: 1 }; // E 유형 텍스트 색상
 
 // 텍스트 자동 줄바꿈 임계 (1-1 §3.텍스트 작성 규칙) — 유형별
-// A·B·C·E: TITLE 300 / SUBTITLE 285 (목업이 우측에 있어 텍스트 영역 좁음)
-// D: TITLE 350 / SUBTITLE 350 (3D 아이콘이 더 작아 텍스트 영역 넓음 — 2026-05-31)
-const TITLE_MAX_WIDTH = 300;
+// 모든 유형 TITLE 350 (2026-06-01 통일) / SUBTITLE: A·B·C·E 285 · D 350
+// (이전: A·B·C·E TITLE 300 → 350으로 확장 — 의미 단위 줄나누기 안정성 ↑)
+const TITLE_MAX_WIDTH = 350;
 const SUBTITLE_MAX_WIDTH = 285;
 const TITLE_MAX_WIDTH_D = 350;
 const SUBTITLE_MAX_WIDTH_D = 350;
