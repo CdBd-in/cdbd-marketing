@@ -785,18 +785,32 @@ async function applySecondaryIcon(parentSlot, imageHash, figmaComponentId) {
   // 2순위: figma_id 있으면 컴포넌트 인스턴스화 (가이드 §1.2.a)
   if (figmaComponentId) {
     try {
+      // 컴포넌트 페이지 로드 보장
+      await figma.loadAllPagesAsync();
       const component = await figma.getNodeByIdAsync(figmaComponentId);
-      if (!component || (component.type !== "COMPONENT" && component.type !== "COMPONENT_SET")) {
-        console.warn(`[CdBd] 데코 컴포넌트 ${figmaComponentId} 찾기 실패`);
+
+      if (!component) {
+        console.warn(`[CdBd] 데코 컴포넌트 ${figmaComponentId} 노드 없음`);
         return { success: false, reason: "component not found" };
       }
+      if (component.type !== "COMPONENT" && component.type !== "COMPONENT_SET") {
+        console.warn(`[CdBd] 데코 노드 ${figmaComponentId} 타입이 컴포넌트 아님: ${component.type}`);
+        return { success: false, reason: `not a component (${component.type})` };
+      }
 
-      const instance = component.createInstance();
+      // 인스턴스 생성 — COMPONENT_SET이면 첫 번째 default variant 사용
+      const sourceComponent = component.type === "COMPONENT_SET" ? component.defaultVariant : component;
+      const instance = sourceComponent.createInstance();
 
       // VISUAL_SLOT 위치·크기에 맞춰 배치 (1-2-1 §3.5: 우측 x320/y110/w·h 230)
       instance.x = visualSlot.x;
       instance.y = visualSlot.y;
-      instance.resize(visualSlot.width, visualSlot.height);
+      if (instance.width && visualSlot.width) {
+        const scale = visualSlot.width / instance.width;
+        if (Math.abs(scale - 1) > 0.001) {
+          instance.rescale(scale);
+        }
+      }
 
       parentSlot.appendChild(instance);
 
@@ -1016,11 +1030,14 @@ async function createVariantsFromImageData(payload) {
   const emphasis = extractEmphasis(blogTitle);
   console.log(`[CdBd] 추출된 강조 키워드: "${emphasis}"`);
 
-  // Step 4: 의미 단위 줄 나누기 (가이드 1-1 §3)
-  // 유형별 최대 줄 길이: D=10자 / 나머지=10자 (300px / 350px 모두 비슷)
-  const maxLine = selectedType === "D" ? 11 : 10;
+  // Step 4: 의미 단위 줄 나누기 (가이드 1-1 §3 — 한 줄 8~10자)
+  // 가이드: 한 줄 한글 8-10자 이내 (Bold 36px Pretendard / 폭 ≤ 300px)
+  // 안전마진: 자동 줄바꿈 fallback 회피를 위해 8자로 보수적 설정
+  const maxLine = selectedType === "D" ? 10 : 8;
   const formattedTitle = autoLineBreak(blogTitle, emphasis, maxLine);
-  console.log(`[CdBd] 줄 나누기 결과:\n${formattedTitle}`);
+  console.log(`[CdBd] 줄 나누기 결과 (maxLine=${maxLine}):`);
+  console.log(formattedTitle);
+  console.log(`[CdBd] 줄 수: ${formattedTitle.split("\n").length}, 각 줄 길이: [${formattedTitle.split("\n").map(l => l.length).join(", ")}]`);
 
   const formattedSubtitle = blogContent
     ? autoLineBreak(blogContent.split('\n')[0], "", maxLine)
