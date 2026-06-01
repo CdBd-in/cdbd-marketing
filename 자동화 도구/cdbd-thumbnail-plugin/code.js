@@ -422,26 +422,6 @@ function adjustTextCenterE(parentSlot, slotId) {
  * 블로그 제목/콘텐츠 → 키워드 추출 → Unsplash 이미지 검색 → Figma 업로드 → 자동 생성
  */
 
-// UI: 이미지 생성 버튼 클릭
-document.getElementById('generateImages').onclick = async () => {
-  const blogTitle = document.getElementById('blogTitle').value.trim();
-  const blogContent = document.getElementById('blogContent').value.trim();
-  const imageCount = parseInt(document.getElementById('imageCount').value) || 10;
-
-  if (!blogTitle) {
-    document.getElementById('result').innerHTML = '<span class="err">블로그 제목 필수</span>';
-    return;
-  }
-
-  document.getElementById('result').textContent = '🔄 이미지 생성 중…';
-  parent.postMessage({
-    pluginMessage: {
-      type: 'generate-images-ai',
-      payload: { blogTitle, blogContent, imageCount }
-    }
-  }, '*');
-};
-
 /**
  * AI 이미지로 썸네일 생성 (메인 파이프라인)
  * 1. Python 키워드 추출

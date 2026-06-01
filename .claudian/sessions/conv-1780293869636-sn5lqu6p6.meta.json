@@ -4,8 +4,8 @@
   "title": "Continue from previous reference",
   "titleGenerationStatus": "success",
   "createdAt": 1780293869640,
-  "updatedAt": 1780298468245,
-  "lastResponseAt": 1780298468245,
+  "updatedAt": 1780298562050,
+  "lastResponseAt": 1780298562050,
   "sessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88",
   "providerState": {
     "providerSessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88"
@@ -14,11 +14,11 @@
   "usage": {
     "model": "haiku",
     "inputTokens": 8,
-    "cacheCreationInputTokens": 593,
-    "cacheReadInputTokens": 106114,
+    "cacheCreationInputTokens": 554,
+    "cacheReadInputTokens": 110352,
     "contextWindow": 200000,
-    "contextTokens": 106715,
-    "percentage": 53,
+    "contextTokens": 110914,
+    "percentage": 55,
     "contextWindowIsAuthoritative": true
   }
 }

@@ -106,6 +106,26 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
   <div id="result"></div>
 
 <script>
+  // AI 이미지 생성 버튼 클릭
+  document.getElementById('generateImages').onclick = async () => {
+    const blogTitle = document.getElementById('blogTitle').value.trim();
+    const blogContent = document.getElementById('blogContent').value.trim();
+    const imageCount = parseInt(document.getElementById('imageCount').value) || 10;
+
+    if (!blogTitle) {
+      document.getElementById('result').innerHTML = '<span class="err">블로그 제목 필수</span>';
+      return;
+    }
+
+    document.getElementById('result').textContent = '🔄 이미지 생성 중…';
+    parent.postMessage({
+      pluginMessage: {
+        type: 'generate-images-ai',
+        payload: { blogTitle, blogContent, imageCount }
+      }
+    }, '*');
+  };
+
   // 슬롯 ID 클릭하면 클립보드에 복사
   document.querySelectorAll('.preset').forEach(el => {
     el.onclick = () => {
