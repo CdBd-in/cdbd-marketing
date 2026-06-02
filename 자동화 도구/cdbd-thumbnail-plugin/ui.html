@@ -61,6 +61,7 @@
 
   <h3 style="font-size: 13px; margin: 16px 0 8px; color: #333;">📋 수동 입력</h3>
   <button id="fillExample" style="background:#888; margin-top:0;">📋 A 유형 예시 (목업)</button>
+  <button id="fillExampleB" style="background:#888; margin-top:0; margin-left:4px;">📋 B 유형 예시 (목업+에디터)</button>
   <button id="fillExampleD" style="background:#888; margin-top:0; margin-left:4px;">📋 D 유형 예시 (3D·초대장)</button>
   <button id="fillExampleE" style="background:#888; margin-top:0; margin-left:4px;">📋 E 유형 예시 (배경·리스티클)</button>
 
@@ -148,6 +149,21 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
       {slotId: "1:1246", imageHash: "f16b122b33a0868edc6902d79e7f12735b12312f", name: "안4_promotion_하단·서브"}
     ], null, 2);
     document.getElementById('result').innerHTML = '<span class="ok">✅ A유형 예시 입력 완료. "4안 자동 제작 ▶" 클릭하세요.</span>';
+  };
+
+  // B 유형 검증 예시 — 목업 + 에디터 기능 UI (1-2-1 §1.1.B, §3.2)
+  // editorImageHash 필드 추가 — EDITOR_SLOT에 에디터 캡쳐 fill
+  document.getElementById('fillExampleB').onclick = () => {
+    document.getElementById('title').value = 'VIP 1:1 예약 관리,\\n고객도 지치는,\\n전화 핑퐁 모바일,\\n초대장으로 끝내기';
+    document.getElementById('subtitle').value = '';
+    document.getElementById('emphasis').value = 'VIP 1:1 예약 관리';
+    document.getElementById('variants').value = JSON.stringify([
+      {slotId: "1:1300", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", editorImageHash: "336c582f7c737d5d6527d7d7022968a7acf3501c", name: "안1_B상단"},
+      {slotId: "1:1304", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", editorImageHash: "336c582f7c737d5d6527d7d7022968a7acf3501c", name: "안2_B하단"},
+      {slotId: "1:1266", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", name: "안3_A상단_비교"},
+      {slotId: "1:1251", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", name: "안4_A하단_비교"}
+    ], null, 2);
+    document.getElementById('result').innerHTML = '<span class="ok">✅ B유형 검증 예시 입력 완료 (B 2안 + A 2안 비교). VIP 1:1 예약 관리 — viewer(reservation) + editor(예약 카드 모달). "4안 자동 제작 ▶" 클릭하세요.</span>';
   };
 
   // D 유형 검증 예시 — 3D 아이콘 (envelope, 1-3-2 §5.4 "초대장" 기능 매칭 1순위)

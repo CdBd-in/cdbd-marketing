@@ -1,6 +1,6 @@
 // CdBd 블로그 썸네일 자동 제작 Plugin v4
 // vault: 1. 디자인 가이드
-// v4 변경: 공식 목업 컴포넌트 인스턴스 + TITLE/SUBTITLE 자동 줄바꿈 (width 300)
+// v4 변경: 공식 목업 컴포넌트 인스턴스 + TITLE/SUBTITLE 자동 줄바꿈 (TITLE 350 통일)
 
 // 강조색 (1-1 §2)
 const GREEN = { r: 77 / 255, g: 233 / 255, b: 139 / 255 };
@@ -8,9 +8,9 @@ const PURPLE = { r: 143 / 255, g: 128 / 255, b: 255 / 255 };
 const WHITE = { r: 1, g: 1, b: 1 }; // E 유형 텍스트 색상
 
 // 텍스트 자동 줄바꿈 임계 (1-1 §3.텍스트 작성 규칙) — 유형별
-// A·B·C·E: TITLE 300 / SUBTITLE 285 (목업이 우측에 있어 텍스트 영역 좁음)
-// D: TITLE 350 / SUBTITLE 350 (3D 아이콘이 더 작아 텍스트 영역 넓음 — 2026-05-31)
-const TITLE_MAX_WIDTH = 300;
+// 모든 유형 TITLE 350 (2026-06-01 통일) / SUBTITLE: A·B·C·E 285 · D 350
+// (이전: A·B·C·E TITLE 300 → 350으로 확장 — 의미 단위 줄나누기 안정성 ↑)
+const TITLE_MAX_WIDTH = 350;
 const SUBTITLE_MAX_WIDTH = 285;
 const TITLE_MAX_WIDTH_D = 350;
 const SUBTITLE_MAX_WIDTH_D = 350;
@@ -607,6 +607,12 @@ async function createVariants(payload) {
           }
         }
       }
+
+      // B 유형 추가 처리: EDITOR_SLOT (에디터 기능 UI 캡쳐)
+      // [[1-2-1. 레이아웃 규칙]] §3.2: 상단형 x195/y250/w260/h154, 하단형 x111/y50
+      if (slotType === "B" && v.editorImageHash) {
+        applyEditor(cloned, v.editorImageHash);
+      }
     }
 
     // 3) 텍스트 처리 (유형별)
@@ -662,6 +668,30 @@ function apply3DIcon(visualSlot, imageHash) {
     { type: "IMAGE", imageHash: imageHash, scaleMode: "FIT" },
   ];
   if ("strokes" in visualSlot) visualSlot.strokes = [];
+  return { success: true };
+}
+
+/**
+ * B 유형 — EDITOR_SLOT (에디터/관리 화면 캡쳐) fill
+ * 1-2-1 §3.2: contain — FIT scaleMode 사용 (캡쳐 비율 보존, 의미 영역 잘리지 않게)
+ * 슬롯 좌표는 슬롯 템플릿이 이미 정의:
+ *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154
+ *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154
+ */
+function applyEditor(parentSlot, editorImageHash) {
+  const editorSlot = parentSlot.findOne((n) => n.name === "EDITOR_SLOT");
+  if (!editorSlot) {
+    console.warn(`[CdBd] B 유형 EDITOR_SLOT 없음 (parent: ${parentSlot.name})`);
+    return { success: false, reason: "no EDITOR_SLOT" };
+  }
+  if (!("fills" in editorSlot)) {
+    return { success: false, reason: "EDITOR_SLOT cannot fill" };
+  }
+  editorSlot.fills = [
+    { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FIT" },
+  ];
+  if ("strokes" in editorSlot) editorSlot.strokes = [];
+  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (FIT)`);
   return { success: true };
 }
 
@@ -764,9 +794,11 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
 
   await figma.loadFontAsync(node.fontName);
 
-  // 자동 줄바꿈 완전 차단: textAutoResize를 NONE으로 변경 후 텍스트 적용
-  // 우리의 \n만 줄바꿈으로 작동, Figma 자동 줄바꿈 (어절 중간 잘림) 방지
-  // D 유형: 350 / 나머지: TITLE 300 · SUBTITLE 285
+  // 폭 강제 고정 (가이드 1-1 §3):
+  //   - A·B·C·E: TITLE 300 / SUBTITLE 285
+  //   - D: TITLE 350 / SUBTITLE 350
+  // 슬롯 템플릿 폭이 다른 경우(예: B 서브 변형 227)에도 코드가 명세대로 보장.
+  // 어절이 폭 넘으면 Figma 자동 줄바꿈 → 의미 단위 끊김 (Claude가 \n 미리 끊는 게 안전)
   const isD = slotType === "D";
   const maxWidth = isD
     ? (isSubtitle ? SUBTITLE_MAX_WIDTH_D : TITLE_MAX_WIDTH_D)
@@ -774,10 +806,12 @@ async function fillText(parent, nodeName, text, emphasis, color, isSubtitle, slo
 
   // 1) 텍스트 먼저 설정 (\n 적용)
   node.characters = text;
-  // 2) WIDTH_AND_HEIGHT로 자동 줄바꿈 차단 (텍스트에 맞춰 노드 크기 자동 조정)
-  node.textAutoResize = "WIDTH_AND_HEIGHT";
+  // 2) textAutoResize = HEIGHT → 폭 고정·높이 자동 (자동 줄바꿈 활성)
+  node.textAutoResize = "HEIGHT";
+  // 3) 폭 강제 resize → Figma가 자동 줄바꿈 + height 재계산
+  node.resize(maxWidth, node.height);
 
-  console.log(`[CdBd] fillText 적용: "${text.replace(/\n/g, "/")}" (텍스트 노드 크기: ${node.width}×${node.height})`);
+  console.log(`[CdBd] fillText 적용: "${text.replace(/\n/g, "/")}" (텍스트 노드 크기: ${node.width}×${node.height}, maxWidth=${maxWidth})`);
 
   // 전체 색상 적용 (서브타이틀 또는 E 유형 TITLE)
   if (isSubtitle || (slotType === "E" && !isSubtitle)) {

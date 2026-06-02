@@ -14,6 +14,7 @@
   "sharedEnvironmentVariables": "",
   "envSnippets": [],
   "customContextLimits": {},
+  "customModelAliases": {},
   "keyboardNavigation": {
     "scrollUpKey": "w",
     "scrollDownKey": "s",
@@ -46,7 +47,11 @@
       "environmentVariables": "",
       "environmentHash": "",
       "installationMethodsByHost": {
+<<<<<<< HEAD
         "device:9e0543e9-d10e-49a4-9eb3-58908b532dd1": "native-windows"
+=======
+        "device:7fedeb29-fd4f-436f-a44a-7ad0acb08b36": "native-windows"
+>>>>>>> origin/main
       },
       "wslDistroOverridesByHost": {}
     },
@@ -61,6 +66,18 @@
       "selectedMode": "",
       "thinkingOptionsByModel": {},
       "visibleModels": []
+    },
+    "pi": {
+      "cliPath": "",
+      "cliPathsByHost": {},
+      "discoveredModels": [],
+      "enabled": false,
+      "environmentHash": "",
+      "environmentVariables": "",
+      "modelAliases": {},
+      "preferredThinkingByModel": {},
+      "toolMode": "all",
+      "visibleModels": []
     }
   },
   "settingsProvider": "claude",
@@ -71,9 +88,7 @@
     "claude": "high"
   },
   "savedProviderServiceTier": {},
-  "savedProviderThinkingBudget": {
-    "claude": "medium"
-  },
+  "savedProviderThinkingBudget": {},
   "savedProviderPermissionMode": {
     "claude": "yolo"
   },
