@@ -34,3 +34,5 @@ blob-report/
 
 .claudian/claudian-settings.json
 .obsidian/workspace.json
+
+.claudian/
