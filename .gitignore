@@ -36,3 +36,7 @@ blob-report/
 .obsidian/workspace.json
 
 .claudian/
+
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/manifest.json
+.obsidian/plugins/*/styles.css
