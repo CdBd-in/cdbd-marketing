@@ -1,0 +1,704 @@
+{
+  "retries": {
+    "텍스트": {
+      "status": "captured",
+      "file": "card-텍스트.png",
+      "method": "fallback-clip"
+    },
+    "위치_위치_안내": {
+      "status": "captured",
+      "file": "card-위치_위치_안내.png",
+      "method": "fallback-clip"
+    }
+  },
+  "exploration": {
+    "editor_elements": [
+      {
+        "tag": "button",
+        "text": "닫기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "저장하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "게시하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "닫기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "게시하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "닫기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "내보내기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "이미지 업로드",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "이미지 업로드",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "이미지 업로드",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "이미지 업로드",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "카드 추가하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "카드 메뉴",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "구글맵\n네이버맵",
+        "aria": "지도 종류",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "구글맵",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "네이버맵",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "지도 모양",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "",
+        "aria": "aspect ratio",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "1 / 1",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "3 / 2",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "",
+        "aria": "text alignment",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "원형",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "각진",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "둥근",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "주소 텍스트",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "버튼 디자인",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "",
+        "aria": "text alignment",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "카드 디자인",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "",
+        "aria": "text alignment",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "각진",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "둥근",
+        "title": ""
+      },
+      {
+        "tag": "div",
+        "text": "레이어 추가",
+        "aria": "",
+        "title": ""
+      }
+    ],
+    "dashboard_elements": [
+      {
+        "tag": "button",
+        "text": "새 페이지",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "전체",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "원페이지",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "멀티페이지",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "메뉴 열기",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "메뉴 열기",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "재개하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "1",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "2",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "3",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "4",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "5",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "전체",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "원페이지",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "멀티페이지",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "메뉴 열기",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "",
+        "aria": "메뉴 열기",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "통계보기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "재개하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "수정하기",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "1",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "2",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "3",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "4",
+        "aria": "",
+        "title": ""
+      },
+      {
+        "tag": "button",
+        "text": "5",
+        "aria": "",
+        "title": ""
+      }
+    ],
+    "keyword_matches": {
+      "게시": [
+        {
+          "tag": "button",
+          "text": "게시하기",
+          "aria": "",
+          "title": ""
+        },
+        {
+          "tag": "button",
+          "text": "게시하기",
+          "aria": "",
+          "title": ""
+        }
+      ],
+      "디자인": [
+        {
+          "tag": "div",
+          "text": "버튼 디자인",
+          "aria": "",
+          "title": ""
+        },
+        {
+          "tag": "div",
+          "text": "카드 디자인",
+          "aria": "",
+          "title": ""
+        }
+      ]
+    }
+  }
+}
