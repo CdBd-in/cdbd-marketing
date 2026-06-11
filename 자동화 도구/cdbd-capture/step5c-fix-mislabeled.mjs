@@ -25,17 +25,32 @@ async function addCardVerified(editor, cardName) {
   await editor.keyboard.press("Escape").catch(() => {});
   await editor.waitForTimeout(500);
 
-  // 1) 모달 열기
-  const addBtn = editor.locator("text=카드 추가하기").first();
-  await addBtn.click({ force: true });
-  await editor.waitForTimeout(2000);
+  // 1) 모달 열기 — role 기반 selector (text= 는 누적된 카드 label과 충돌)
+  const addBtnCandidates = [
+    () => editor.getByRole("button", { name: "카드 추가하기" }).first(),
+    () => editor.locator('button:has-text("카드 추가하기")').first(),
+  ];
 
-  // 모달 열렸나 확인
-  const dialog = editor.locator('[role="dialog"]').first();
-  const dialogCount = await dialog.count();
-  if (dialogCount === 0) {
+  let modalOpened = false;
+  for (const getBtn of addBtnCandidates) {
+    try {
+      const btn = getBtn();
+      await btn.scrollIntoViewIfNeeded({ timeout: 3000 }).catch(() => {});
+      await btn.click({ force: true, timeout: 5000 });
+      await editor.waitForTimeout(2000);
+      const dlgCount = await editor.locator('[role="dialog"]').count();
+      if (dlgCount > 0) {
+        modalOpened = true;
+        break;
+      }
+    } catch (e) {}
+  }
+
+  if (!modalOpened) {
     return { status: "modal_not_opened" };
   }
+
+  const dialog = editor.locator('[role="dialog"]').first();
 
   // 2) 모달 내부에서만 정확히 매칭 — getByRole 우선
   // 카드는 보통 button 또는 클릭 가능한 div. role=button + exact name.

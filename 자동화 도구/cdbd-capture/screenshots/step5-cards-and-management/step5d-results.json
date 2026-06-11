@@ -1,0 +1,20 @@
+{
+  "attempts": {
+    "텍스트": {
+      "name": "텍스트",
+      "status": "modal_failed"
+    },
+    "이미지": {
+      "name": "이미지",
+      "status": "modal_failed"
+    },
+    "버튼": {
+      "name": "버튼",
+      "status": "modal_failed"
+    },
+    "코드": {
+      "name": "코드",
+      "status": "modal_failed"
+    }
+  }
+}

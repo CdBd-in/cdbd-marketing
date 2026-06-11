@@ -1,0 +1,11 @@
+[
+  {
+    "type": "class-modal",
+    "i": 3,
+    "cls": "w-full h-full relative overflow-hidden desk:max-w-[1600px] d",
+    "x": 48,
+    "y": 80,
+    "w": 1344,
+    "h": 740
+  }
+]
