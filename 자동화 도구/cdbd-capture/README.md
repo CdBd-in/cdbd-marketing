@@ -36,7 +36,7 @@ npx playwright install chromium
 npm run login-poc
 ```
 
-성공하면 `screenshots/01-login-page.png ~ 04-editor.png` 4장 생성됨.
+성공하면 `cdbd-에디터 캡처본/01-login-page.png ~ 04-editor.png` 4장 생성됨.
 실패하면 `error.png` 에 에러 시점 화면 저장.
 
 ---
@@ -52,7 +52,7 @@ npm run login-poc
 ├── login-poc.mjs         ← 로그인 + 에디터 진입 PoC
 ├── capture-all.mjs       ← (TBD) § 3.2의 8개 화면 일괄 캡처
 ├── lib/                  ← 공통 모듈 (login helper 등)
-└── screenshots/          ← 캡처 결과 (git 무시)
+└── cdbd-에디터 캡처본/          ← 캡처 결과 (git 무시)
 ```
 
 ---
@@ -62,7 +62,7 @@ npm run login-poc
 ### 로그인 실패 시
 - `.env` 의 `HEADLESS=false` 로 변경 → 브라우저 창이 열려서 시각 확인 가능
 - `SLOW_MO=500` 추가 → 각 동작 0.5초 간격으로 천천히 (단계 확인)
-- `screenshots/error.png` 확인 — 실패 시점 화면
+- `cdbd-에디터 캡처본/error.png` 확인 — 실패 시점 화면
 
 ### CdBd 측이 봇 차단을 한다면
 - User-Agent 변경 시도
