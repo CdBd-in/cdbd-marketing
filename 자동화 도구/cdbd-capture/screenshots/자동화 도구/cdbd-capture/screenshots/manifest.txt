@@ -1,0 +1,40 @@
+# CdBd Capture — 자체 Playwright 캡쳐 (2026-06-04 기능별 재정리)
+# 출처: 자동화 도구/cdbd-capture/ 스크립트로 cdbd.in 직접 캡쳐
+# 빈 데이터 / 중복 14개 제거 → 핵심 10개만 유지
+
+# === 1. 대시보드 ===
+1.대시보드/대시보드-내페이지목록.png        | 내 페이지 (2개 데모 카드 — FREE / 만료/연장하기) — 약한 데모
+
+# === 2. 에디터 ===
+2.에디터/에디터-기본화면.png                | 에디터 기본 UI (좌: 페이지 미리보기 / 중앙: 카드 빌더 텍스트·이미지·버튼 / 우: 페이지 테마 색상·서체 패널)
+
+# === 3. 카드 (UI 명세용) ===
+3.카드/카드-추가-모달.png                   | "+ 카드 추가하기" 모달 — 기본 카드 13종 + 2단 카드 6종 한 화면
+3.카드/갤러리-카드.png                      | 갤러리 카드 (레이아웃: 나열·넘겨보기·그리드)
+3.카드/질문과답변-카드.png                  | Q&A 카드 (프리셋 4종)
+3.카드/예약-카드.png                        | 예약 카드 자체 UI
+3.카드/예약-카드-패널.png                   | 예약 카드 우측 설정 패널
+3.카드/예약-카드-1크레딧다이얼로그.png      | 예약 카드 추가 시 1크레딧 결제 동의 다이얼로그
+3.카드/2단-카드모달.png                     | 2단 카드 모달 (6종 조합)
+3.카드/2단-텍스트+이미지.png                | 2단 텍스트+이미지 카드
+
+# === 별도 폴더 ===
+gitbook-demo/                              | Gitbook 데모 (17개, 별도 manifest.txt 참고) ⭐ 데모 데이터 풍부
+metadata/                                  | Playwright 캡쳐 step별 UI 텍스트 메타데이터 (참조용)
+viewer-analysis/                           | viewer DOM 구조 분석 결과
+viewer-crops/                              | viewer 크롭본 (RSVP)
+
+# === 제거된 캡쳐 (2026-06-04) ===
+# 빈 데이터 (8) — 사용자 계정에 데이터 0건 상태 캡쳐
+# - stats-full / stats-viewport (페이지뷰 0 라인차트 평탄)
+# - stats-pageview-full / stats-submissions-full / stats-subscriptions-full / stats-reservations-full
+# - sidebar-saved-pages / sidebar-invited-pages
+#
+# 중복 (6) — md5 동일 또는 근접
+# - dashboard-viewport (md5 == dashboard-full)
+# - dashboard-topright (timestamp만 다른 같은 view)
+# - editor-viewport (editor-full 근접)
+# - card-add-modal-viewport (card-add-modal-full 근접)
+# - step2b-error (md5 == card-예약-panel-full)
+#
+# 향후 Phase 2 (CdBd 데모 페이지 진짜 데이터 채워 재캡쳐): 예약 현황 with 진짜 예약 / 답변 with 진짜 답변 / 통계 with 진짜 페이지뷰
