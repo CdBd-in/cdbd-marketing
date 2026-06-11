@@ -676,11 +676,11 @@ function apply3DIcon(visualSlot, imageHash) {
  * 1-3-1 §1.1 (2026-06-04): 기능 이미지 규칙
  *   - cornerRadius = 16
  *   - fit-by-height (이미지 비율 유지, 슬롯 세로 채움)
- *   - scaledW > slotW 면 CROP + 우측 정렬 (좌측 overflow 잘림, 우측 데이터 보존)
- *   - scaledW <= slotW 면 FIT (중앙 정렬, 좌우 padding)
+ *   - scaledW > slotW: CROP + 우측 정렬 (좌측 overflow 잘림)
+ *   - scaledW ≤ slotW: 슬롯 자체를 scaledW로 resize + mockup left edge 또는 원 슬롯 right edge에 우측 정렬, FILL
  * 슬롯 좌표 (슬롯 템플릿 정의):
- *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154
- *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154
+ *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154 (mockup x=395에 overlap)
+ *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154  (mockup x=399에 non-overlap)
  */
 async function applyEditor(parentSlot, editorImageHash) {
   const editorSlot = parentSlot.findOne((n) => n.name === "EDITOR_SLOT");
@@ -692,45 +692,67 @@ async function applyEditor(parentSlot, editorImageHash) {
     return { success: false, reason: "EDITOR_SLOT cannot fill" };
   }
 
-  // 이미지 자연 크기 조회 → fit-by-height 계산
-  let mode = "FIT";
-  let xform = null;
+  let modeApplied = "FIT";
   try {
     const image = figma.getImageByHash(editorImageHash);
     const { width: imgW, height: imgH } = await image.getSizeAsync();
     const slotW = editorSlot.width;
     const slotH = editorSlot.height;
-    const scaledW = imgW * (slotH / imgH); // height-fit 후 width
+    const slotRightEdge = editorSlot.x + slotW;
+    const scaledW = imgW * (slotH / imgH);
+
     if (scaledW > slotW) {
-      // 우측 정렬 — 좌측 overflow 잘림
-      const r = slotW / scaledW; // visible width ratio in image coords
+      // 1) overflow — CROP 우측 정렬 (슬롯 dims 유지)
+      const r = slotW / scaledW;
       const xOffset = 1 - r;
-      mode = "CROP";
-      xform = [
-        [r, 0, xOffset],
-        [0, 1, 0],
+      editorSlot.fills = [
+        {
+          type: "IMAGE",
+          imageHash: editorImageHash,
+          scaleMode: "CROP",
+          imageTransform: [
+            [r, 0, xOffset],
+            [0, 1, 0],
+          ],
+        },
       ];
+      modeApplied = "CROP";
       console.log(
-        `[CdBd]   EDITOR fit-by-height overflow → CROP 우측 정렬 (r=${r.toFixed(3)})`
+        `[CdBd]   EDITOR overflow → CROP 우측 정렬 (r=${r.toFixed(3)})`
       );
     } else {
+      // 2) non-overflow — 슬롯 resize + 우측 정렬, FILL
+      // mockup-aware: mockup left edge가 원 슬롯 안에 있으면 mockup edge에 정렬
+      const mockup = parentSlot.findOne((n) =>
+        n.name && n.name.includes("목업")
+      );
+      let rightAnchor = slotRightEdge;
+      if (mockup && mockup.x < slotRightEdge && mockup.x > editorSlot.x) {
+        rightAnchor = mockup.x; // mockup 좌측 정렬
+      }
+      editorSlot.resize(scaledW, slotH);
+      editorSlot.x = rightAnchor - scaledW;
+      editorSlot.fills = [
+        { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FILL" },
+      ];
+      modeApplied = "FILL";
       console.log(
-        `[CdBd]   EDITOR fit-by-height (scaledW=${scaledW.toFixed(0)} ≤ slotW=${slotW}) → FIT 중앙`
+        `[CdBd]   EDITOR resize → ${scaledW.toFixed(0)}×${slotH}, x=${editorSlot.x.toFixed(0)} (우측 anchor=${rightAnchor})`
       );
     }
   } catch (e) {
+    // 실패 시 fallback — 슬롯 dims 유지, FIT 중앙
     console.warn(`[CdBd]   이미지 크기 조회 실패, FIT fallback: ${e.message}`);
+    editorSlot.fills = [
+      { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FIT" },
+    ];
   }
-
-  const fill = { type: "IMAGE", imageHash: editorImageHash, scaleMode: mode };
-  if (xform) fill.imageTransform = xform;
-  editorSlot.fills = [fill];
 
   if ("strokes" in editorSlot) editorSlot.strokes = [];
   if ("cornerRadius" in editorSlot) editorSlot.cornerRadius = 16;
 
-  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (${mode} + cornerRadius=16)`);
-  return { success: true, scaleMode: mode };
+  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (${modeApplied} + cornerRadius=16)`);
+  return { success: true, scaleMode: modeApplied };
 }
 
 /**
