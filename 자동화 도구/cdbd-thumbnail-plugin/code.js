@@ -611,7 +611,7 @@ async function createVariants(payload) {
       // B 유형 추가 처리: EDITOR_SLOT (에디터 기능 UI 캡쳐)
       // [[1-2-1. 레이아웃 규칙]] §3.2: 상단형 x195/y250/w260/h154, 하단형 x111/y50
       if (slotType === "B" && v.editorImageHash) {
-        applyEditor(cloned, v.editorImageHash);
+        await applyEditor(cloned, v.editorImageHash);
       }
     }
 
@@ -673,13 +673,16 @@ function apply3DIcon(visualSlot, imageHash) {
 
 /**
  * B 유형 — EDITOR_SLOT (에디터/관리 화면 캡쳐) fill
- * 1-2-1 §3.2: contain — FIT scaleMode 사용 (캡쳐 비율 보존, 의미 영역 잘리지 않게)
- * 1-3-1 §1.1 (2026-06-04): 기능 이미지 cornerRadius = 16 적용
- * 슬롯 좌표는 슬롯 템플릿이 이미 정의:
+ * 1-3-1 §1.1 (2026-06-04): 기능 이미지 규칙
+ *   - cornerRadius = 16
+ *   - fit-by-height (이미지 비율 유지, 슬롯 세로 채움)
+ *   - scaledW > slotW 면 CROP + 우측 정렬 (좌측 overflow 잘림, 우측 데이터 보존)
+ *   - scaledW <= slotW 면 FIT (중앙 정렬, 좌우 padding)
+ * 슬롯 좌표 (슬롯 템플릿 정의):
  *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154
  *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154
  */
-function applyEditor(parentSlot, editorImageHash) {
+async function applyEditor(parentSlot, editorImageHash) {
   const editorSlot = parentSlot.findOne((n) => n.name === "EDITOR_SLOT");
   if (!editorSlot) {
     console.warn(`[CdBd] B 유형 EDITOR_SLOT 없음 (parent: ${parentSlot.name})`);
@@ -688,16 +691,46 @@ function applyEditor(parentSlot, editorImageHash) {
   if (!("fills" in editorSlot)) {
     return { success: false, reason: "EDITOR_SLOT cannot fill" };
   }
-  editorSlot.fills = [
-    { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FIT" },
-  ];
-  if ("strokes" in editorSlot) editorSlot.strokes = [];
-  // 기능 이미지 모서리 — [[1-3-1. 이미지 규칙]] §1.1 (2026-06-04)
-  if ("cornerRadius" in editorSlot) {
-    editorSlot.cornerRadius = 16;
+
+  // 이미지 자연 크기 조회 → fit-by-height 계산
+  let mode = "FIT";
+  let xform = null;
+  try {
+    const image = figma.getImageByHash(editorImageHash);
+    const { width: imgW, height: imgH } = await image.getSizeAsync();
+    const slotW = editorSlot.width;
+    const slotH = editorSlot.height;
+    const scaledW = imgW * (slotH / imgH); // height-fit 후 width
+    if (scaledW > slotW) {
+      // 우측 정렬 — 좌측 overflow 잘림
+      const r = slotW / scaledW; // visible width ratio in image coords
+      const xOffset = 1 - r;
+      mode = "CROP";
+      xform = [
+        [r, 0, xOffset],
+        [0, 1, 0],
+      ];
+      console.log(
+        `[CdBd]   EDITOR fit-by-height overflow → CROP 우측 정렬 (r=${r.toFixed(3)})`
+      );
+    } else {
+      console.log(
+        `[CdBd]   EDITOR fit-by-height (scaledW=${scaledW.toFixed(0)} ≤ slotW=${slotW}) → FIT 중앙`
+      );
+    }
+  } catch (e) {
+    console.warn(`[CdBd]   이미지 크기 조회 실패, FIT fallback: ${e.message}`);
   }
-  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (FIT + cornerRadius=16)`);
-  return { success: true };
+
+  const fill = { type: "IMAGE", imageHash: editorImageHash, scaleMode: mode };
+  if (xform) fill.imageTransform = xform;
+  editorSlot.fills = [fill];
+
+  if ("strokes" in editorSlot) editorSlot.strokes = [];
+  if ("cornerRadius" in editorSlot) editorSlot.cornerRadius = 16;
+
+  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (${mode} + cornerRadius=16)`);
+  return { success: true, scaleMode: mode };
 }
 
 /**
