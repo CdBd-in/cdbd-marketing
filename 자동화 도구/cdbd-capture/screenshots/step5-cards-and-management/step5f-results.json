@@ -1,0 +1,49 @@
+{
+  "attempts": {
+    "텍스트": {
+      "name": "텍스트",
+      "headers": [
+        "위치"
+      ],
+      "exactMatch": false,
+      "status": "header_mismatch",
+      "debug_file": "card-텍스트-DEBUG.png"
+    },
+    "이미지": {
+      "name": "이미지",
+      "headers": [
+        "이미지"
+      ],
+      "exactMatch": true,
+      "status": "captured",
+      "file": "card-이미지.png"
+    },
+    "버튼": {
+      "name": "버튼",
+      "headers": [
+        "이미지"
+      ],
+      "exactMatch": false,
+      "status": "header_mismatch",
+      "debug_file": "card-버튼-DEBUG.png"
+    },
+    "코드": {
+      "name": "코드",
+      "headers": [
+        "코드"
+      ],
+      "exactMatch": true,
+      "status": "captured",
+      "file": "card-코드.png"
+    },
+    "상품": {
+      "name": "상품",
+      "headers": [
+        "상품"
+      ],
+      "exactMatch": true,
+      "status": "captured",
+      "file": "card-상품.png"
+    }
+  }
+}
