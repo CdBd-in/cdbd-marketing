@@ -674,6 +674,7 @@ function apply3DIcon(visualSlot, imageHash) {
 /**
  * B 유형 — EDITOR_SLOT (에디터/관리 화면 캡쳐) fill
  * 1-2-1 §3.2: contain — FIT scaleMode 사용 (캡쳐 비율 보존, 의미 영역 잘리지 않게)
+ * 1-3-1 §1.1 (2026-06-04): 기능 이미지 cornerRadius = 16 적용
  * 슬롯 좌표는 슬롯 템플릿이 이미 정의:
  *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154
  *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154
@@ -691,7 +692,11 @@ function applyEditor(parentSlot, editorImageHash) {
     { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FIT" },
   ];
   if ("strokes" in editorSlot) editorSlot.strokes = [];
-  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (FIT)`);
+  // 기능 이미지 모서리 — [[1-3-1. 이미지 규칙]] §1.1 (2026-06-04)
+  if ("cornerRadius" in editorSlot) {
+    editorSlot.cornerRadius = 16;
+  }
+  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (FIT + cornerRadius=16)`);
   return { success: true };
 }
 
