@@ -758,7 +758,7 @@ async function applyEditor(parentSlot, editorImageHash) {
 /**
  * 공식 목업 컴포넌트 인스턴스 생성 + VISUAL_SLOT 위치에 배치 + 내부 #FFFFFF rect에 imageHash fill
  */
-async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
+async function applyMockup(parentSlot, visualSlot, mockupId, imageHash, cropTy) {
   const mockupComponent = await figma.getNodeByIdAsync(mockupId);
   if (
     !mockupComponent ||
@@ -812,13 +812,29 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
   });
 
   if (screen) {
-    // CROP + imageTransform — Microlink 캡쳐 외곽 검정 padding을 Figma 단에서 잘라냄
-    // (Python 측에서 픽셀 처리할 필요 없음, 원본 캡쳐 그대로 사용 가능)
+    // 🆕 2026-06-12: CROP imageTransform 분기 (1-3-1 §1.1.c)
+    // - viewer 풀페이지 캡처 (aspect ≥ 5): 비율 보존 매트릭스 [[1,0,0],[0,yScale,ty]]
+    // - viewer hero 캡처 (aspect ≈ 2.x): 기존 VIEWER_CAPTURE_TRANSFORM (외곽 padding 자르기)
+    let transform = VIEWER_CAPTURE_TRANSFORM;
+    try {
+      const imgSize = await figma.getImageByHash(imageHash).getSizeAsync();
+      const imgAspect = imgSize.height / imgSize.width;
+      const slotAspect = screen.height / screen.width;
+      // 이미지가 슬롯보다 훨씬 길면 (aspect 2.5배 이상) 비율 보존 매트릭스 사용
+      if (imgAspect > slotAspect * 2.5) {
+        const yScale = slotAspect / imgAspect;
+        // ty는 인자 (cropTy) 우선, 없으면 0 (이미지 상단)
+        const ty = (typeof cropTy === "number") ? cropTy : 0;
+        transform = [[1, 0, 0], [0, yScale, Math.max(0, Math.min(ty, 1 - yScale))]];
+      }
+    } catch (e) {
+      // 이미지 size 측정 실패 시 기본 VIEWER_CAPTURE_TRANSFORM 유지
+    }
     screen.fills = [{
       type: "IMAGE",
       imageHash: imageHash,
       scaleMode: "CROP",
-      imageTransform: VIEWER_CAPTURE_TRANSFORM,
+      imageTransform: transform,
     }];
   }
 
