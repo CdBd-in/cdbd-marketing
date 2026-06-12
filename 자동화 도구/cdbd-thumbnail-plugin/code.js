@@ -789,6 +789,13 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
 
   parentSlot.appendChild(instance);
 
+  // 🆕 2026-06-12: VISUAL_SLOT placeholder의 effects를 instance에 전파
+  // (보라 글로우 #6C4CFF blur 20 등 슬롯 페이지에 박힌 effect 자동 적용)
+  // 향후 새 effect도 슬롯에만 박으면 자동으로 따라감 — code 수정 불필요
+  if (visualSlot.effects && visualSlot.effects.length > 0) {
+    instance.effects = visualSlot.effects;
+  }
+
   // 내부 흰색/거의 흰색 rect 찾기 (#FFFFFF·#FAFAFA 등) — 1-3-1 §1.1.a
   // Vector 베젤은 VECTOR 타입이므로 RECTANGLE/FRAME만 허용
   const screen = instance.findOne((n) => {
