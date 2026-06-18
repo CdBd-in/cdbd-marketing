@@ -1,0 +1,15 @@
+=== viewer-lookbook ===
+{"success":true,"imageHash":"7f291c439e59d5d66655752c8a1d08fcc2eec7bb","sizeBytes":667896,"contentType":"image/png","placedOnNodeId":"427:2"}
+
+=== viewer-newarrival ===
+{"success":true,"imageHash":"9e169cf256fd988c7c981c36e63e14055a207eb4","sizeBytes":759384,"contentType":"image/png","placedOnNodeId":"425:2"}
+
+=== thiings-document ===
+{"success":true,"imageHash":"ccd19f0a43ea49294c4f54fada4e5e5aca8e1e5e","sizeBytes":1509755,"contentType":"image/png","placedOnNodeId":"424:2"}
+
+=== viewer-oak_table ===
+{"success":true,"imageHash":"47a52cd92d62aa56c4af95f15ec10d0a8e4ad1f7","sizeBytes":541622,"contentType":"image/png","placedOnNodeId":"426:2"}
+
+=== thiings-mobile-phone ===
+{"success":true,"imageHash":"498161057c43c9a317fb1ec1bce26c42de4a1983","sizeBytes":1229804,"contentType":"image/png","placedOnNodeId":"428:2"}
+
