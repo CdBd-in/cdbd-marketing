@@ -32,14 +32,30 @@ const OUT_DIR = resolve('./screenshots/blog-image-A');
 if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
 
 // 섹션 키워드 — 텍스트 매칭으로 의미 영역 자동 탐지
-// 사용자 ref 1:12129 (Heritage Summit) 기준 3 distinct 섹션
+// ⚠️ 같은 키워드가 hero에도 나오는 경우가 많아 (예: "참석하시어" in hero text)
+// 페이지 height를 3등분해서 **각 zone에서만** 키워드 검색 (zone 충돌 방지)
 const SECTION_HINTS = [
-  // Section 1: 인사말 / 메시지 (hero — 거의 항상 y=0 부근)
-  { name: '1-hero', keywords: ['회장님께', '님께', 'Welcome', '환영', '안녕하십니까', '초대합니다'], fallbackY: 0 },
-  // Section 2: 참석 / RSVP / 정보 등록
-  { name: '2-rsvp', keywords: ['참석', 'RSVP', '사전 정보', '정보 등록', '참석 여부', '응답', 'register', 'reply'], fallbackY: null },
-  // Section 3: 문의처 / 연락처
-  { name: '3-contact', keywords: ['문의', '연락', 'contact', '문의처', '문의하기', '전화'], fallbackY: null },
+  // Section 1: 인사말 / 메시지 (zone 0: 상단 1/3) — hero 영역
+  {
+    name: '1-hero',
+    zone: [0.0, 0.35], // 페이지 상단 0~35%
+    keywords: ['회장님께', '님께', 'Welcome', '환영', '안녕하십니까', '초대합니다'],
+    fallbackY: 0,
+  },
+  // Section 2: 참석 / RSVP / 정보 등록 (zone 1: 중간 1/3)
+  {
+    name: '2-rsvp',
+    zone: [0.30, 0.75], // 페이지 중간 30~75%
+    keywords: ['참석 및 사전', '정보 등록', 'RSVP', '참석 여부', '응답하기', '신청하기', 'register', 'reply', '제출'],
+    fallbackY: null, // null이면 zone 중앙
+  },
+  // Section 3: 문의처 / 연락처 (zone 2: 하단 1/3)
+  {
+    name: '3-contact',
+    zone: [0.65, 1.0], // 페이지 하단 65~100%
+    keywords: ['문의처', '문의하기', '전화', 'contact', 'CONTACT', '연락처', '주소', '오시는 길'],
+    fallbackY: null,
+  },
 ];
 
 const browser = await chromium.launch({ headless: true });
@@ -86,12 +102,15 @@ try {
   await page.screenshot({ path: fullPath, fullPage: true });
   console.log(`   📸 전체 캡처: ${fullPath}`);
 
-  // 섹션 자동 탐지 — 각 키워드와 매칭되는 element의 y 찾기
-  console.log('\n▶ 의미 섹션 자동 탐지');
+  // 섹션 자동 탐지 — zone-restricted 키워드 매칭
+  console.log('\n▶ 의미 섹션 자동 탐지 (zone-restricted)');
   const detectedSections = [];
   for (const hint of SECTION_HINTS) {
-    const matchedY = await page.evaluate((keywords) => {
-      // 모든 텍스트 노드 순회, 키워드 첫 매칭의 y 반환
+    const zoneStart = Math.round(pageHeight * hint.zone[0]);
+    const zoneEnd = Math.round(pageHeight * hint.zone[1]);
+
+    const matchedY = await page.evaluate(({ keywords, zoneStart, zoneEnd }) => {
+      // 모든 텍스트 노드 순회, zone 안에서만 키워드 검색
       const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
       let node;
       while ((node = walker.nextNode())) {
@@ -99,33 +118,39 @@ try {
         if (!text) continue;
         for (const kw of keywords) {
           if (text.includes(kw)) {
-            // 가장 가까운 element의 위치
             let el = node.parentElement;
             while (el && el.offsetHeight < 50) el = el.parentElement;
             if (!el) continue;
             const rect = el.getBoundingClientRect();
-            return Math.max(0, Math.round(rect.top + window.scrollY - 40)); // 40px 여유
+            const absY = rect.top + window.scrollY;
+            // zone 범위 안에 있어야만 매칭
+            if (absY >= zoneStart && absY <= zoneEnd) {
+              return Math.max(0, Math.round(absY - 40));
+            }
           }
         }
       }
       return null;
-    }, hint.keywords);
+    }, { keywords: hint.keywords, zoneStart, zoneEnd });
+
     detectedSections.push({
       name: hint.name,
+      zone: hint.zone,
+      zoneRange: [zoneStart, zoneEnd],
       keywords: hint.keywords,
-      y: matchedY ?? hint.fallbackY,
+      y: matchedY,
       matched: matchedY !== null,
     });
-    console.log(`   ${hint.name}: ${matchedY !== null ? `y=${matchedY} (✓ matched)` : '(미탐지 — fallback 또는 균등분할 시도)'}`);
+    console.log(`   ${hint.name} (zone ${zoneStart}~${zoneEnd}px): ${matchedY !== null ? `y=${matchedY} (✓ matched)` : '(미탐지 — zone 중앙 fallback)'}`);
   }
 
-  // 미탐지 섹션은 균등분할 fallback
+  // 미탐지 섹션은 해당 zone 중앙으로 fallback
   for (let i = 0; i < detectedSections.length; i++) {
     if (detectedSections[i].y === null) {
-      const fraction = (i + 1) / (detectedSections.length + 1);
-      detectedSections[i].y = Math.round(pageHeight * fraction);
+      const [zStart, zEnd] = detectedSections[i].zoneRange;
+      detectedSections[i].y = Math.round((zStart + zEnd) / 2);
       detectedSections[i].fallbackUsed = true;
-      console.log(`   ${detectedSections[i].name}: fallback y=${detectedSections[i].y} (${Math.round(fraction*100)}% 위치)`);
+      console.log(`   ${detectedSections[i].name}: fallback y=${detectedSections[i].y} (zone 중앙)`);
     }
   }
 

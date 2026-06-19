@@ -1,0 +1,58 @@
+{
+  "viewer_url": "https://www.cdbd.in/templates/invitation/seminar/viewer",
+  "pageHeight": 5081,
+  "viewport": {
+    "width": 390,
+    "height": 838
+  },
+  "aspect_target": 0.46539379474940334,
+  "sections": [
+    {
+      "name": "1-hero",
+      "keywords": [
+        "회장님께",
+        "님께",
+        "Welcome",
+        "환영",
+        "안녕하십니까",
+        "초대합니다"
+      ],
+      "y": 393,
+      "matched": true,
+      "capturedY": 393,
+      "file": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/blog-image-A/seminar-1-hero.png"
+    },
+    {
+      "name": "2-rsvp",
+      "keywords": [
+        "참석",
+        "RSVP",
+        "사전 정보",
+        "정보 등록",
+        "참석 여부",
+        "응답",
+        "register",
+        "reply"
+      ],
+      "y": 393,
+      "matched": true,
+      "capturedY": 393,
+      "file": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/blog-image-A/seminar-2-rsvp.png"
+    },
+    {
+      "name": "3-contact",
+      "keywords": [
+        "문의",
+        "연락",
+        "contact",
+        "문의처",
+        "문의하기",
+        "전화"
+      ],
+      "y": 393,
+      "matched": true,
+      "capturedY": 393,
+      "file": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/blog-image-A/seminar-3-contact.png"
+    }
+  ]
+}
