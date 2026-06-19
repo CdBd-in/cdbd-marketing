@@ -1,7 +1,59 @@
-# CdBd Capture — 에디터·관리자 화면 자동 캡처
+# CdBd Capture — 에디터·관리자 화면 자동 캡처 + 블로그 이미지 viewer 캡처
 
-> CdBd 에디터·관리자 페이지(로그인 필요)를 Playwright로 자동 캡처하는 도구.
-> [[1-3-2. 이미지 리소스 북]] § 3.2 (에디터 유래 기능) 자동 보충을 위한 인프라.
+> Playwright 기반 CdBd 자동 캡처 인프라.
+> - **에디터·관리자 캡처** (로그인 필요): 썸네일 [[1-3-2. 이미지 리소스 북]] § 3.2
+> - **블로그 이미지 viewer 섹션 캡처** (로그인 불필요): 블로그/이미지/1-3. 이미지 규칙 §4.1
+
+## ⚡ 블로그 이미지 — viewer 3 섹션 캡처 (NEW 2026-06-19)
+
+> A 유형 블로그 이미지 (3개 폰)의 SCREEN_1/2/3에 들어갈 viewer 3 섹션을 한 번에 캡처.
+
+### 사용법
+
+```bash
+cd "자동화 도구/cdbd-capture"
+npm install                                    # 첫 번째 1회만
+npx playwright install chromium                # 첫 번째 1회만 (~150MB)
+
+# seminar viewer 3 섹션 자동 캡처
+node capture-seminar-3sections.mjs
+
+# 다른 viewer 사용
+node capture-seminar-3sections.mjs https://www.cdbd.in/templates/invitation/personalized/viewer trintas
+```
+
+### 동작
+
+1. viewer 진입 → **천천히 풀스크롤** (lazy-load 모두 트리거)
+2. 키워드 기반으로 의미 섹션 자동 탐지:
+   - **`1-hero`**: "회장님께", "Welcome", "초대합니다" 등 → 인사말 섹션
+   - **`2-rsvp`**: "참석", "RSVP", "정보 등록" 등 → RSVP 폼 섹션
+   - **`3-contact`**: "문의", "연락", "contact" 등 → 연락처 섹션
+3. 각 섹션을 **A 유형 SCREEN aspect (0.4654)** 에 맞춘 viewport (390×838)로 캡처
+4. `screenshots/blog-image-A/` 에 3장 + 풀페이지 + 메타 저장
+
+### 출력
+
+```
+screenshots/blog-image-A/
+├── seminar-1-hero.png        ← 블로그 이미지 SCREEN_1에 fill
+├── seminar-2-rsvp.png        ← SCREEN_2에 fill
+├── seminar-3-contact.png     ← SCREEN_3에 fill
+├── seminar-fullpage.png      ← 전체 페이지 (참고용)
+└── seminar-sections.json     ← 탐지된 섹션 y 좌표 메타
+```
+
+### Claude에게 전달
+
+```
+"자동화 도구/cdbd-capture/screenshots/blog-image-A/seminar-1-hero.png, 
+seminar-2-rsvp.png, seminar-3-contact.png 3장을 
+블로그 이미지 A 유형(15:25)에 적용해줘"
+```
+
+---
+
+## 🛠 에디터·관리자 화면 캡처 (기존)
 
 ---
 

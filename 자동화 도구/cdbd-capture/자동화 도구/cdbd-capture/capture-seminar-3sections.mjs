@@ -1,0 +1,169 @@
+// CdBd viewer 3개 의미 섹션 자동 캡처 — A 유형 블로그 이미지용
+//
+// 사용:
+//   node capture-seminar-3sections.mjs [viewer-url] [out-prefix]
+//
+// 예:
+//   node capture-seminar-3sections.mjs https://www.cdbd.in/templates/invitation/seminar/viewer seminar
+//
+// 결과: ./screenshots/blog-image-A/
+//   - {prefix}-1-hero.png       (인사말 / 메시지)
+//   - {prefix}-2-rsvp.png       (RSVP form / 핵심 정보)
+//   - {prefix}-3-contact.png    (문의처 / 액션)
+//   - {prefix}-fullpage.png     (전체 풀페이지 참고용)
+//   - {prefix}-sections.json    (탐지된 섹션 메타데이터)
+//
+// 블로그 이미지 A 유형 슬롯 (15:25)의 SCREEN_1/2/3 매칭 비율:
+//   - SCREEN aspect ≈ 457/982 = 0.4654
+//   - 모바일 viewport: width 390 → height 838 (838 = 390/0.4654)
+
+import { chromium } from 'playwright';
+import { mkdirSync, existsSync, writeFileSync } from 'fs';
+import { resolve, join } from 'path';
+
+const VIEWER_URL = process.argv[2] || 'https://www.cdbd.in/templates/invitation/seminar/viewer';
+const PREFIX = process.argv[3] || 'seminar';
+
+// A 유형 SCREEN 비율 매칭 (457/982 ≈ 0.4654)
+const VIEWPORT_W = 390;
+const VIEWPORT_H = 838; // 390 / 0.4654
+
+const OUT_DIR = resolve('./screenshots/blog-image-A');
+if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
+
+// 섹션 키워드 — 텍스트 매칭으로 의미 영역 자동 탐지
+// 사용자 ref 1:12129 (Heritage Summit) 기준 3 distinct 섹션
+const SECTION_HINTS = [
+  // Section 1: 인사말 / 메시지 (hero — 거의 항상 y=0 부근)
+  { name: '1-hero', keywords: ['회장님께', '님께', 'Welcome', '환영', '안녕하십니까', '초대합니다'], fallbackY: 0 },
+  // Section 2: 참석 / RSVP / 정보 등록
+  { name: '2-rsvp', keywords: ['참석', 'RSVP', '사전 정보', '정보 등록', '참석 여부', '응답', 'register', 'reply'], fallbackY: null },
+  // Section 3: 문의처 / 연락처
+  { name: '3-contact', keywords: ['문의', '연락', 'contact', '문의처', '문의하기', '전화'], fallbackY: null },
+];
+
+const browser = await chromium.launch({ headless: true });
+const context = await browser.newContext({
+  viewport: { width: VIEWPORT_W, height: VIEWPORT_H },
+  locale: 'ko-KR',
+  deviceScaleFactor: 2,
+});
+const page = await context.newPage();
+
+try {
+  console.log(`▶ viewer 진입: ${VIEWER_URL}`);
+  await page.goto(VIEWER_URL, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(4000); // 초기 렌더링
+
+  // 풀페이지 스크롤로 lazy-load 트리거 (천천히 스크롤 — 모든 섹션 렌더링)
+  console.log('   ⏳ 풀페이지 스크롤 (lazy-load 트리거)...');
+  const pageHeight = await page.evaluate(async () => {
+    let lastH = 0;
+    let stableCount = 0;
+    while (stableCount < 3) {
+      const currentH = document.body.scrollHeight;
+      if (currentH === lastH) {
+        stableCount++;
+      } else {
+        stableCount = 0;
+        lastH = currentH;
+      }
+      // 천천히 스크롤
+      for (let y = 0; y <= currentH; y += 300) {
+        window.scrollTo(0, y);
+        await new Promise(r => setTimeout(r, 200));
+      }
+      await new Promise(r => setTimeout(r, 800));
+    }
+    return document.body.scrollHeight;
+  });
+  console.log(`   ✓ 페이지 전체 높이: ${pageHeight}px`);
+
+  // 전체 페이지 캡처 (참고용)
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForTimeout(1000);
+  const fullPath = join(OUT_DIR, `${PREFIX}-fullpage.png`);
+  await page.screenshot({ path: fullPath, fullPage: true });
+  console.log(`   📸 전체 캡처: ${fullPath}`);
+
+  // 섹션 자동 탐지 — 각 키워드와 매칭되는 element의 y 찾기
+  console.log('\n▶ 의미 섹션 자동 탐지');
+  const detectedSections = [];
+  for (const hint of SECTION_HINTS) {
+    const matchedY = await page.evaluate((keywords) => {
+      // 모든 텍스트 노드 순회, 키워드 첫 매칭의 y 반환
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walker.nextNode())) {
+        const text = (node.textContent || '').trim();
+        if (!text) continue;
+        for (const kw of keywords) {
+          if (text.includes(kw)) {
+            // 가장 가까운 element의 위치
+            let el = node.parentElement;
+            while (el && el.offsetHeight < 50) el = el.parentElement;
+            if (!el) continue;
+            const rect = el.getBoundingClientRect();
+            return Math.max(0, Math.round(rect.top + window.scrollY - 40)); // 40px 여유
+          }
+        }
+      }
+      return null;
+    }, hint.keywords);
+    detectedSections.push({
+      name: hint.name,
+      keywords: hint.keywords,
+      y: matchedY ?? hint.fallbackY,
+      matched: matchedY !== null,
+    });
+    console.log(`   ${hint.name}: ${matchedY !== null ? `y=${matchedY} (✓ matched)` : '(미탐지 — fallback 또는 균등분할 시도)'}`);
+  }
+
+  // 미탐지 섹션은 균등분할 fallback
+  for (let i = 0; i < detectedSections.length; i++) {
+    if (detectedSections[i].y === null) {
+      const fraction = (i + 1) / (detectedSections.length + 1);
+      detectedSections[i].y = Math.round(pageHeight * fraction);
+      detectedSections[i].fallbackUsed = true;
+      console.log(`   ${detectedSections[i].name}: fallback y=${detectedSections[i].y} (${Math.round(fraction*100)}% 위치)`);
+    }
+  }
+
+  // 각 섹션 캡처
+  console.log('\n▶ 섹션별 viewport 캡처');
+  const results = [];
+  for (const sec of detectedSections) {
+    // y가 너무 끝에 가까우면 보정
+    const maxY = Math.max(0, pageHeight - VIEWPORT_H);
+    const y = Math.min(sec.y, maxY);
+
+    await page.evaluate(yPos => window.scrollTo(0, yPos), y);
+    await page.waitForTimeout(1500); // 스크롤 후 lazy-load 마무리
+
+    const outPath = join(OUT_DIR, `${PREFIX}-${sec.name}.png`);
+    await page.screenshot({ path: outPath, clip: { x: 0, y: 0, width: VIEWPORT_W, height: VIEWPORT_H } });
+    results.push({ ...sec, capturedY: y, file: outPath });
+    console.log(`   📸 ${sec.name} (y=${y}): ${outPath}`);
+  }
+
+  // 메타 저장
+  const meta = {
+    viewer_url: VIEWER_URL,
+    pageHeight,
+    viewport: { width: VIEWPORT_W, height: VIEWPORT_H },
+    aspect_target: VIEWPORT_W / VIEWPORT_H,
+    sections: results,
+  };
+  writeFileSync(join(OUT_DIR, `${PREFIX}-sections.json`), JSON.stringify(meta, null, 2));
+  console.log(`\n   📄 메타: ${join(OUT_DIR, `${PREFIX}-sections.json`)}`);
+
+  console.log('\n✅ 완료!');
+  console.log('\n다음 단계 — Claude에게 캡처 결과 전달:');
+  console.log(`  "자동화 도구/cdbd-capture/screenshots/blog-image-A/ 안의 ${PREFIX}-1-hero.png, ${PREFIX}-2-rsvp.png, ${PREFIX}-3-contact.png 3장을 블로그 이미지 A 유형(15:25)에 적용해줘"`);
+} catch (err) {
+  console.error('❌ 에러:', err.message);
+  console.error(err.stack);
+  process.exit(1);
+} finally {
+  await browser.close();
+}
