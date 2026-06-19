@@ -35,24 +35,23 @@ if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
 // ⚠️ 같은 키워드가 hero에도 나오는 경우가 많아 (예: "참석하시어" in hero text)
 // 페이지 height를 3등분해서 **각 zone에서만** 키워드 검색 (zone 충돌 방지)
 const SECTION_HINTS = [
-  // Section 1: 인사말 / 메시지 (zone 0: 상단 1/3) — hero 영역
+  // Section 1: 히어로 — ⭐ 항상 y=0 (페이지 진짜 상단, 잘림 없음)
+  // 키워드 검색 안 함. 로고·타이틀 보호.
   {
     name: '1-hero',
-    zone: [0.0, 0.35], // 페이지 상단 0~35%
-    keywords: ['회장님께', '님께', 'Welcome', '환영', '안녕하십니까', '초대합니다'],
-    fallbackY: 0,
+    forceY: 0, // 무조건 y=0 — 키워드 매칭 스킵
   },
-  // Section 2: 참석 / RSVP / 정보 등록 (zone 1: 중간 1/3)
+  // Section 2: 참석 / RSVP / 정보 등록 (zone 1: 중간)
   {
     name: '2-rsvp',
-    zone: [0.30, 0.75], // 페이지 중간 30~75%
+    zone: [0.30, 0.75],
     keywords: ['참석 및 사전', '정보 등록', 'RSVP', '참석 여부', '응답하기', '신청하기', 'register', 'reply', '제출'],
-    fallbackY: null, // null이면 zone 중앙
+    fallbackY: null,
   },
-  // Section 3: 문의처 / 연락처 (zone 2: 하단 1/3)
+  // Section 3: 문의처 / 연락처 (zone 2: 하단)
   {
     name: '3-contact',
-    zone: [0.65, 1.0], // 페이지 하단 65~100%
+    zone: [0.65, 1.0],
     keywords: ['문의처', '문의하기', '전화', 'contact', 'CONTACT', '연락처', '주소', '오시는 길'],
     fallbackY: null,
   },
@@ -102,10 +101,22 @@ try {
   await page.screenshot({ path: fullPath, fullPage: true });
   console.log(`   📸 전체 캡처: ${fullPath}`);
 
-  // 섹션 자동 탐지 — zone-restricted 키워드 매칭
-  console.log('\n▶ 의미 섹션 자동 탐지 (zone-restricted)');
+  // 섹션 자동 탐지 — zone-restricted 키워드 매칭 (+ forceY 우선)
+  console.log('\n▶ 의미 섹션 자동 탐지');
   const detectedSections = [];
   for (const hint of SECTION_HINTS) {
+    // forceY가 있으면 키워드 매칭 스킵 (예: hero는 항상 y=0)
+    if (hint.forceY !== undefined) {
+      detectedSections.push({
+        name: hint.name,
+        y: hint.forceY,
+        matched: true,
+        forced: true,
+      });
+      console.log(`   ${hint.name}: y=${hint.forceY} (⭐ forced — 키워드 스킵)`);
+      continue;
+    }
+
     const zoneStart = Math.round(pageHeight * hint.zone[0]);
     const zoneEnd = Math.round(pageHeight * hint.zone[1]);
 
