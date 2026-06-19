@@ -9,25 +9,10 @@
   "sections": [
     {
       "name": "1-hero",
-      "zone": [
-        0,
-        0.35
-      ],
-      "zoneRange": [
-        0,
-        1778
-      ],
-      "keywords": [
-        "회장님께",
-        "님께",
-        "Welcome",
-        "환영",
-        "안녕하십니까",
-        "초대합니다"
-      ],
-      "y": 393,
+      "y": 0,
       "matched": true,
-      "capturedY": 393,
+      "forced": true,
+      "capturedY": 0,
       "file": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/blog-image-A/seminar-1-hero.png"
     },
     {
