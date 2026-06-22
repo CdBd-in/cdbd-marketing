@@ -103,6 +103,7 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
   </div>
 
   <button id="run">4안 자동 제작 ▶</button>
+  <button id="cleanup" style="background:#888; margin-top:8px;">🧹 잔재 프레임 정리</button>
 
   <div id="result"></div>
 
@@ -228,9 +229,27 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
     }}, '*');
   };
 
+  // 잔재 프레임 수동 정리 버튼
+  document.getElementById('cleanup').onclick = () => {
+    document.getElementById('result').textContent = '잔재 프레임 정리 중…';
+    parent.postMessage({ pluginMessage: { type: 'cleanup-strays' } }, '*');
+  };
+
   window.onmessage = async (event) => {
     const msg = event.data.pluginMessage;
     if (!msg) return;
+
+    if (msg.type === 'cleanup-result') {
+      if (msg.success) {
+        document.getElementById('result').innerHTML = msg.removed > 0
+          ? '🧹 잔재 프레임 <b>' + msg.removed + '개</b> 정리 완료'
+            + '<div style="font-size:11px; color:#666; margin-top:4px;">' + (msg.names || []).join(', ') + '</div>'
+          : '🧹 정리할 잔재 프레임이 없습니다.';
+      } else {
+        document.getElementById('result').innerHTML = '<span class="err">정리 오류: ' + msg.error + '</span>';
+      }
+      return;
+    }
 
     if (msg.type === 'result') {
       if (msg.success) {
