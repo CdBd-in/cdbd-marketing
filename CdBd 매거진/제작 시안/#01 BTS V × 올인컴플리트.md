@@ -30,10 +30,10 @@ updated: 2026-06-22
 |---|------|------|---------------|--------|
 | 1 | HOOK | **Cover-IMG BG** | 제목: **BTS V가 산 그 모자, 첫 매장 문 여는 날** · 설명: (없음) | `allincomplete-cover.jpg` (네이비 볼캡 착용 모델) |
 | 2 | 누가 | **Body-Half** (이미지↑/텍스트↓) | 소제목: **올인컴플리트** · 본문: BTS V가 착용해 화제가 된 모자 브랜드. 첫 플래그십 매장을 연다. | `allincomplete-product.jpg` (네이비 볼캡 제품컷) |
-| 3 | 문제 | **Body-Texture BG-Illust** | 소제목: 기존 방식의 벽 · 본문(3): ① 종이 초대장 — 인쇄·발송·재고 ② SNS 공지 — 누가 올지 모름 ③ 자체 페이지 — 개발 2주 | Thiings 아이콘 ×3 (아래 키워드) |
+| 3 | 문제 | **Body-Texture BG-Illust** | 소제목: 기존 방식의 벽 · 본문(3): ① 종이 초대장 — 인쇄·발송·재고 ② SNS 공지 — 누가 올지 모름 ③ 자체 페이지 — 개발 2주 | Thiings ×3: `envelope`·`megaphone`·`hourglass` |
 | 4 | 데이터 | **Body-Half** (이미지↑/텍스트↓) | 소제목: 한 페이지에 다 담았다 · 본문: 초대장 + 룩북 + RSVP 응답 카드까지, 하나의 모바일 페이지로. | `allincomplete-cdbd-page.png` (**CdBd 실제 제작 페이지** 목업, 상단 모서리 각짐) — 상단 슬롯에 모서리 맞춰 위에서 블리드. tight 옵션: `allincomplete-cdbd-page-hero.png` |
 | 5 | 결과 | **Body-Full Bleed** (제목 오버레이) | 제목: **매장 오픈 전, 모든 정보를 모바일 한 페이지로** · 본문: 룩북·초대·예약을 따로 두지 않고. | `allincomplete-lookbook2.jpg` (라이트블루 볼캡 화보) |
-| 6 | 해법 | **Body-Texture BG-Illust** | 소제목: **CdBd가 한 일** · 본문(3): ① 초대 + 룩북 한 페이지 ② 응답 카드로 RSVP 자동 수집 ③ 디자이너 없이 5분 제작 | Thiings 아이콘 ×3 (아래 키워드) |
+| 6 | 해법 | **Body-Texture BG-Illust** | 소제목: **CdBd가 한 일** · 본문(3): ① 초대 + 룩북 한 페이지 ② 응답 카드로 RSVP 자동 수집 ③ 디자이너 없이 5분 제작 | Thiings ×3: `mobile-phone`·`clipboard`·`stopwatch` |
 | 7 | 일반화 | **Body-Texture BG-Article** | 제목: 브랜드 런칭·플래그십 오픈을 준비 중이라면 · 본문: **페이지부터.** | (텍스트 중심 · 이미지 없음 또는 텍스처만) |
 | 8 | CTA | **BackCover-IMG BG** | 마무리: **전체 사례 → 프로필 링크** · 로고 `CdBd mag.` · (작게) home.cdbd.in | `allincomplete-cover.jpg` (표지와 수미상관, 디밍) |
 
@@ -57,17 +57,19 @@ updated: 2026-06-22
 - 브랜드 공식몰: <https://www.allincomplete.com/>
 - 카드뉴스 본문/캡션에 표기할 출처 문구(예): `*출처: ALLINCOMPLETE`
 
-### Thiings 3D 아이콘 (3·6번 페이지)
-[[CdBd 매거진/02. 본문(Body).md|본문]] Illust 규칙대로 Thiings에서 소싱 (`~/Downloads/{slug}.png`, 1:1).
+### Thiings 3D 아이콘 (3·6번 페이지) — ✅ 확정·다운로드 완료
+[[CdBd 매거진/02. 본문(Body).md|본문]] Illust 규칙대로 Thiings에서 소싱. 저장: `~/Downloads/cdbd-allincomplete/thiings-{slug}.png` (1024×1024, 투명 배경).
 
-| 페이지 | 슬롯 | Thiings 키워드(후보) |
-|--------|------|----------------------|
-| 3 문제 | ① 종이 초대장 | `envelope` / `letter` |
-| 3 문제 | ② SNS 공지 | `smartphone` / `megaphone` |
-| 3 문제 | ③ 개발 2주 | `laptop` / `code` |
-| 6 해법 | ① 한 페이지 | `document` / `mobile` |
-| 6 해법 | ② RSVP 자동 수집 | `checklist` / `inbox` |
-| 6 해법 | ③ 5분 제작 | `stopwatch` / `magic-wand` |
+| 페이지 | 슬롯 | 아이콘 | 파일 |
+|--------|------|--------|------|
+| 3 문제 | ① 종이 초대장 — 인쇄·발송·재고 | 봉투 | `thiings-envelope.png` |
+| 3 문제 | ② SNS 공지 — 누가 올지 모름 | 확성기 | `thiings-megaphone.png` |
+| 3 문제 | ③ 자체 페이지 — 개발 2주 | 모래시계 | `thiings-hourglass.png` |
+| 6 해법 | ① 초대+룩북 한 페이지 | 스마트폰 | `thiings-mobile-phone.png` |
+| 6 해법 | ② RSVP 자동 수집 | 클립보드 체크리스트 | `thiings-clipboard.png` |
+| 6 해법 | ③ 디자이너 없이 5분 제작 | 스톱워치 | `thiings-stopwatch.png` |
+
+> 출처: [Thiings](https://www.thiings.co/things) (무료 3D 아이콘). 아이콘은 출처 표기 대상 아님(상징 모티프).
 
 ---
 
