@@ -53,6 +53,53 @@ seminar-2-rsvp.png, seminar-3-contact.png 3장을
 
 ---
 
+## 📚 C 멀티목업 — 카탈로그 페이지별 캡처 (NEW 2026-06-22)
+
+> **C 유형(멀티 목업)** 은 카탈로그의 **서로 다른 페이지**를 여러 목업에 나란히 보여주는 레이아웃.
+> ⚠️ 표지 1장을 상·하로 쪼개는 것 ❌ / **페이지를 넘겨가며 각 페이지 캡처** ⭕
+
+### 왜 Playwright가 필요한가
+- 카탈로그 viewer는 **화살표 없는 가로 스와이프 캐러셀**("1/4") 구조
+- **Microlink는 1페이지만** 캡처 (캐러셀을 못 넘김)
+- 일부 카탈로그(oak_table·lookbook)는 Microlink 봇 환경에서 **백지 렌더링** (lazy-load 실패)
+- → Playwright 마우스 드래그로 페이지를 넘기고, 콘텐츠 영역만 클립
+
+### 사용법
+
+```bash
+cd "자동화 도구/cdbd-capture"
+node capture-catalog-pages.mjs <viewer-url> <outPrefix> [pageCount]
+
+# 예: newarrival 카탈로그 4페이지 캡처
+node capture-catalog-pages.mjs https://www.cdbd.in/templates/catalog/newarrival/viewer nvc 4
+```
+
+### 동작
+1. viewer 진입 (로그인 불필요) → 렌더 대기
+2. 하단 페이저 바("N/M") 숨김
+3. 페이지별로:
+   - **채도 있는 콘텐츠 영역만 클립** (회색 여백·페이저 제거)
+   - 마우스 드래그(우→좌)로 다음 페이지 넘김 → 페이저 텍스트 변화로 확인
+   - 실패 시 키보드 ArrowRight fallback
+4. `screenshots/catalog-pages/{prefix}-page{N}.png` 저장
+
+### 출력 (newarrival 예시)
+```
+screenshots/catalog-pages/
+├── nvc-page1.png   ← 표지 (BEYOND LIQUID)
+├── nvc-page2.png   ← 제품 상세 (ROSE QUARTZ GLOW + 가격 + 구매)
+├── nvc-page3.png   ← 주문 (프리오더 6+3 증정)
+└── nvc-page4.png   ← 추가 페이지
+```
+
+### Figma 적용 (MCP)
+1. `upload_assets`로 각 페이지 업로드 → imageHash 획득
+2. C 슬롯(`1:1287`) clone → VISUAL_SLOT_1/2/3에 멀티페이지 목업(`1:1370`) 인스턴스
+3. 각 목업 내부 흰색 rect를 페이지 imageHash로 fill (scaleMode FILL)
+4. 좌→우 순서 = 카탈로그 흐름 (표지→제품→주문), 중앙 목업이 돌출
+
+---
+
 ## 🛠 에디터·관리자 화면 캡처 (기존)
 
 ---

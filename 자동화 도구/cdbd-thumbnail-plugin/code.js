@@ -24,6 +24,11 @@ const DEFAULT_MOCKUP_ID = "75:34"; // 원페이지 목업-1 (신규)
 const SLOT_TEMPLATE_PAGE_ID = "1:1245"; // 슬롯 16종 원본 (clone 소스, 건드리지 않음)
 const OUTPUT_PAGE_ID = "26:2"; // "💻 AI 블로그 썸네일 제작" — 자동 생성된 안 출력 위치
 
+// 출력 기준 좌표 (규칙: 새 썸네일은 항상 이 앵커 기준으로 생성 — 위치 변동 방지)
+// y는 23537 밑(이상)으로 고정해 기존 작업물과 겹치지 않게 한다.
+const OUTPUT_BASE_X = -3500;
+const OUTPUT_BASE_Y = 23537;
+
 // Microlink 캡쳐 외곽 검정 padding을 Figma 내장 crop으로 잘라내는 변환 매트릭스
 // (사용자 ref frame 83:186에서 추출 — 위 8.59% / 좌우 4.61% / 아래 2.34% crop)
 // 원본 v8 캡쳐(검정 padding 포함)에 CROP scaleMode와 함께 사용.
@@ -587,8 +592,8 @@ async function createVariants(payload) {
   // 2026-05-31: 강조어는 항상 Purple (서브 유무 무관). SUBTITLE 색은 fillText에서 별도 GREEN 적용.
   const emphasisColor = PURPLE;
   const results = [];
-  const baseX = -3500;
-  const baseY = 4000;
+  const baseX = OUTPUT_BASE_X;
+  const baseY = OUTPUT_BASE_Y; // 규칙: y=23537 밑으로 고정 생성
 
   for (let i = 0; i < variants.length; i++) {
     const v = variants[i];
