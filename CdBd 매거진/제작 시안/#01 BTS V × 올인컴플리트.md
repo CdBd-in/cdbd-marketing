@@ -42,7 +42,7 @@ updated: 2026-06-22
 | 5 | 결과 | **Body-Half** (이미지↑/텍스트↓) | 소제목: **매장 오픈 전, 모바일 한 페이지로** · 본문: 룩북·초대·예약을 따로 두지 않고, 흩어진 정보를 한 곳에서. · 출처 | `allincomplete-lookbook2.jpg` (라이트블루 볼캡 화보) |
 | 6 | 해법 | **Body-Texture BG-Illust** | 소제목: **CdBd가 한 일** · 본문(3): ① 초대 + 룩북 한 페이지 ② 응답 카드로 RSVP 자동 수집 ③ 디자이너 없이 5분 제작 | Thiings ×3 **컬러**: `mobile-phone`·`clipboard`·`lightning` |
 | 7 | 일반화 | **Body-Texture BG-Article** | 제목: 브랜드의 시작은 페이지부터 · 본문(아티클) · `7/8` | `allincomplete-lookbook1.jpg` (라이트블루 볼캡 화보) |
-| 8 | CTA | **BackCover-IMG BG** | 마무리: **전체 사례 → 프로필 링크 · home.cdbd.in** · 로고 `CdBd mag.`(화이트) | `allincomplete-navy-2.jpg` (네이비 볼캡 측면 — 표지와 다른 컷) |
+| 8 | CTA | **BackCover-IMG BG** | 마무리: **인사이트가 필요할 때, CdBd mag** (템플릿 기본 문구 — 임의 변경 ❌) · 로고 `CdBd mag.`(화이트) | 데님 사파리햇 모델 (표지와 다른 제품) |
 
 > **장수 조절 메모**: 표준 8장 풀스토리. 더 짧게(6장) 가려면 §기획가이드 깊이전략대로 4·7 비트를 통합·생략.
 
