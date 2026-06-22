@@ -2,7 +2,7 @@
 import { chromium } from 'playwright';
 import { mkdirSync, existsSync } from 'fs';
 import { resolve, join } from 'path';
-const RATIO=0.6484;
+const RATIO=0.6531;
 const CATALOGS=[
   ['https://www.cdbd.in/templates/catalog/lookbook-offline/viewer','lookbook-offline'],
   ['https://www.cdbd.in/templates/catalog/newarrival/viewer','newarrival'],

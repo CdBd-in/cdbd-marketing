@@ -3,7 +3,7 @@
 import { chromium } from 'playwright';
 import { mkdirSync, existsSync } from 'fs';
 import { resolve, join } from 'path';
-const RATIO = 0.6484;                 // Rectangle 3424 (#FFFFFF) 비율
+const RATIO = 0.6531;                 // Rectangle 3424 (#FFFFFF) 비율
 const W = 390, H = Math.round(W / RATIO); // 390 x 602
 const CATALOGS = [
   ['https://www.cdbd.in/templates/catalog/lookbook-offline/viewer', 'lookbook-offline'],

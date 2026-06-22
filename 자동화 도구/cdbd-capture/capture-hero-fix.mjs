@@ -1,6 +1,6 @@
 import { chromium } from 'playwright';
 import { resolve, join } from 'path';
-const RATIO=0.6484;
+const RATIO=0.6531;
 const CATALOGS=[
   ['https://www.cdbd.in/templates/catalog/lookbook-offline/viewer','lookbook-offline'],
   ['https://www.cdbd.in/templates/catalog/lookbook-online/viewer','lookbook-online'],
