@@ -6,7 +6,7 @@
   "effortLevel": "high",
   "serviceTier": "default",
   "enableAutoTitleGeneration": true,
-  "titleGenerationModel": "",
+  "titleGenerationModel": "opus",
   "excludedTags": [],
   "mediaFolder": "",
   "systemPrompt": "",
@@ -26,7 +26,9 @@
     "claude": {
       "safeMode": "acceptEdits",
       "cliPath": "",
-      "cliPathsByHost": {},
+      "cliPathsByHost": {
+        "device:9e0543e9-d10e-49a4-9eb3-58908b532dd1": "/opt/homebrew/bin/claude"
+      },
       "loadUserSettings": true,
       "enableChrome": false,
       "enableBangBash": false,

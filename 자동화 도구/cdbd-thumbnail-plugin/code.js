@@ -24,6 +24,11 @@ const DEFAULT_MOCKUP_ID = "75:34"; // 원페이지 목업-1 (신규)
 const SLOT_TEMPLATE_PAGE_ID = "1:1245"; // 슬롯 16종 원본 (clone 소스, 건드리지 않음)
 const OUTPUT_PAGE_ID = "26:2"; // "💻 AI 블로그 썸네일 제작" — 자동 생성된 안 출력 위치
 
+// 출력 기준 좌표 (규칙: 새 썸네일은 항상 이 앵커 기준으로 생성 — 위치 변동 방지)
+// y는 23537 밑(이상)으로 고정해 기존 작업물과 겹치지 않게 한다.
+const OUTPUT_BASE_X = -3500;
+const OUTPUT_BASE_Y = 23537;
+
 // Microlink 캡쳐 외곽 검정 padding을 Figma 내장 crop으로 잘라내는 변환 매트릭스
 // (사용자 ref frame 83:186에서 추출 — 위 8.59% / 좌우 4.61% / 아래 2.34% crop)
 // 원본 v8 캡쳐(검정 padding 포함)에 CROP scaleMode와 함께 사용.
@@ -46,6 +51,10 @@ const SLOT_TYPE_MAP = {
   // E. 배경
   "1:1262": "E", "1:1294": "E",
 };
+
+// 템플릿 페이지(1:1245)에 정상적으로 존재해야 하는 정식 슬롯 16종 ID.
+// 이 목록에 없는 최상위 FRAME = 자산 가져오기 잔재(캡처·미리보기) → 자동 정리 대상.
+const TEMPLATE_SLOT_IDS = new Set(Object.keys(SLOT_TYPE_MAP));
 
 // ============================================================================
 // cdbd.in viewer URL 매핑 (가이드 [[1-3-2. 이미지 출처]] §3.1·§2 기반)
@@ -488,6 +497,40 @@ function selectLayoutType(title, content) {
 
 figma.showUI(__html__, { width: 500, height: 700 });
 
+/**
+ * 자산 가져오기 잔재 프레임 자동 정리.
+ * — 템플릿 페이지(SLOT_TEMPLATE_PAGE_ID)에서 정식 슬롯 16종(TEMPLATE_SLOT_IDS)이
+ *   아닌 최상위 FRAME(캡처·미리보기 잔재)을 모두 제거한다.
+ * — 슬롯 16종은 ID 허용목록으로 보존하므로 안전하다.
+ * @returns {Promise<{removed: number, names: string[]}>}
+ */
+async function cleanupStrayFrames() {
+  await figma.loadAllPagesAsync();
+  const templatePage =
+    figma.root.children.find((p) => p.id === SLOT_TEMPLATE_PAGE_ID) ||
+    figma.root.children.find((p) => p.name.includes("슬롯"));
+  if (!templatePage) {
+    console.warn("[CdBd] 🧹 템플릿 페이지를 찾지 못해 잔재 정리 건너뜀");
+    return { removed: 0, names: [] };
+  }
+
+  const removedNames = [];
+  // remove() 중 라이브 컬렉션이 변형되므로 스냅샷 후 순회
+  for (const node of [...templatePage.children]) {
+    if (node.type !== "FRAME") continue;        // 프레임만 대상 (컴포넌트 등 보존)
+    if (TEMPLATE_SLOT_IDS.has(node.id)) continue; // 정식 슬롯 16종 보존
+    removedNames.push(node.name);
+    node.remove();
+  }
+
+  if (removedNames.length > 0) {
+    console.log(`[CdBd] 🧹 잔재 프레임 ${removedNames.length}개 정리: ${removedNames.join(", ")}`);
+  } else {
+    console.log("[CdBd] 🧹 정리할 잔재 프레임 없음");
+  }
+  return { removed: removedNames.length, names: removedNames };
+}
+
 figma.ui.onmessage = async (msg) => {
   if (msg.type === "create-variants") {
     try {
@@ -497,6 +540,16 @@ figma.ui.onmessage = async (msg) => {
     } catch (err) {
       figma.ui.postMessage({ type: "result", success: false, error: err.message });
       figma.notify(`❌ 오류: ${err.message}`, { error: true });
+    }
+  } else if (msg.type === "cleanup-strays") {
+    // 수동 정리 — UI 버튼에서 호출
+    try {
+      const { removed, names } = await cleanupStrayFrames();
+      figma.ui.postMessage({ type: "cleanup-result", success: true, removed, names });
+      figma.notify(removed > 0 ? `🧹 잔재 프레임 ${removed}개 정리 완료` : "🧹 정리할 잔재 프레임 없음");
+    } catch (err) {
+      figma.ui.postMessage({ type: "cleanup-result", success: false, error: err.message });
+      figma.notify(`❌ 정리 오류: ${err.message}`, { error: true });
     }
   } else if (msg.type === "generate-images-ai") {
     try {
@@ -522,6 +575,8 @@ async function createVariants(payload) {
   const { title, subtitle, emphasis, variants } = payload;
 
   await figma.loadAllPagesAsync();
+  // 자산 가져오기 잔재 프레임 자동 정리 (생성 전 템플릿 페이지 청소)
+  await cleanupStrayFrames();
   // 슬롯 템플릿 페이지 (clone 소스, 건드리지 않음)
   const templatePage =
     figma.root.children.find((p) => p.id === SLOT_TEMPLATE_PAGE_ID) ||
@@ -537,8 +592,8 @@ async function createVariants(payload) {
   // 2026-05-31: 강조어는 항상 Purple (서브 유무 무관). SUBTITLE 색은 fillText에서 별도 GREEN 적용.
   const emphasisColor = PURPLE;
   const results = [];
-  const baseX = -3500;
-  const baseY = 4000;
+  const baseX = OUTPUT_BASE_X;
+  const baseY = OUTPUT_BASE_Y; // 규칙: y=23537 밑으로 고정 생성
 
   for (let i = 0; i < variants.length; i++) {
     const v = variants[i];
@@ -611,7 +666,7 @@ async function createVariants(payload) {
       // B 유형 추가 처리: EDITOR_SLOT (에디터 기능 UI 캡쳐)
       // [[1-2-1. 레이아웃 규칙]] §3.2: 상단형 x195/y250/w260/h154, 하단형 x111/y50
       if (slotType === "B" && v.editorImageHash) {
-        applyEditor(cloned, v.editorImageHash);
+        await applyEditor(cloned, v.editorImageHash);
       }
     }
 
@@ -673,12 +728,16 @@ function apply3DIcon(visualSlot, imageHash) {
 
 /**
  * B 유형 — EDITOR_SLOT (에디터/관리 화면 캡쳐) fill
- * 1-2-1 §3.2: contain — FIT scaleMode 사용 (캡쳐 비율 보존, 의미 영역 잘리지 않게)
- * 슬롯 좌표는 슬롯 템플릿이 이미 정의:
- *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154
- *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154
+ * 1-3-1 §1.1 (2026-06-04): 기능 이미지 규칙
+ *   - cornerRadius = 16
+ *   - fit-by-height (이미지 비율 유지, 슬롯 세로 채움)
+ *   - scaledW > slotW: CROP + 우측 정렬 (좌측 overflow 잘림)
+ *   - scaledW ≤ slotW: 슬롯 자체를 scaledW로 resize + mockup left edge 또는 원 슬롯 right edge에 우측 정렬, FILL
+ * 슬롯 좌표 (슬롯 템플릿 정의):
+ *   - 상단형 (1:1300/1:1308): x195/y250/w260/h154 (mockup x=395에 overlap)
+ *   - 하단형 (1:1304/1:1314): x111/y50/w260/h154  (mockup x=399에 non-overlap)
  */
-function applyEditor(parentSlot, editorImageHash) {
+async function applyEditor(parentSlot, editorImageHash) {
   const editorSlot = parentSlot.findOne((n) => n.name === "EDITOR_SLOT");
   if (!editorSlot) {
     console.warn(`[CdBd] B 유형 EDITOR_SLOT 없음 (parent: ${parentSlot.name})`);
@@ -687,18 +746,74 @@ function applyEditor(parentSlot, editorImageHash) {
   if (!("fills" in editorSlot)) {
     return { success: false, reason: "EDITOR_SLOT cannot fill" };
   }
-  editorSlot.fills = [
-    { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FIT" },
-  ];
+
+  let modeApplied = "FIT";
+  try {
+    const image = figma.getImageByHash(editorImageHash);
+    const { width: imgW, height: imgH } = await image.getSizeAsync();
+    const slotW = editorSlot.width;
+    const slotH = editorSlot.height;
+    const slotRightEdge = editorSlot.x + slotW;
+    const scaledW = imgW * (slotH / imgH);
+
+    if (scaledW > slotW) {
+      // 1) overflow — CROP 우측 정렬 (슬롯 dims 유지)
+      const r = slotW / scaledW;
+      const xOffset = 1 - r;
+      editorSlot.fills = [
+        {
+          type: "IMAGE",
+          imageHash: editorImageHash,
+          scaleMode: "CROP",
+          imageTransform: [
+            [r, 0, xOffset],
+            [0, 1, 0],
+          ],
+        },
+      ];
+      modeApplied = "CROP";
+      console.log(
+        `[CdBd]   EDITOR overflow → CROP 우측 정렬 (r=${r.toFixed(3)})`
+      );
+    } else {
+      // 2) non-overflow — 슬롯 resize + 우측 정렬, FILL
+      // mockup-aware: mockup left edge가 원 슬롯 안에 있으면 mockup edge에 정렬
+      const mockup = parentSlot.findOne((n) =>
+        n.name && n.name.includes("목업")
+      );
+      let rightAnchor = slotRightEdge;
+      if (mockup && mockup.x < slotRightEdge && mockup.x > editorSlot.x) {
+        rightAnchor = mockup.x; // mockup 좌측 정렬
+      }
+      editorSlot.resize(scaledW, slotH);
+      editorSlot.x = rightAnchor - scaledW;
+      editorSlot.fills = [
+        { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FILL" },
+      ];
+      modeApplied = "FILL";
+      console.log(
+        `[CdBd]   EDITOR resize → ${scaledW.toFixed(0)}×${slotH}, x=${editorSlot.x.toFixed(0)} (우측 anchor=${rightAnchor})`
+      );
+    }
+  } catch (e) {
+    // 실패 시 fallback — 슬롯 dims 유지, FIT 중앙
+    console.warn(`[CdBd]   이미지 크기 조회 실패, FIT fallback: ${e.message}`);
+    editorSlot.fills = [
+      { type: "IMAGE", imageHash: editorImageHash, scaleMode: "FIT" },
+    ];
+  }
+
   if ("strokes" in editorSlot) editorSlot.strokes = [];
-  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (FIT)`);
-  return { success: true };
+  if ("cornerRadius" in editorSlot) editorSlot.cornerRadius = 16;
+
+  console.log(`[CdBd]   EDITOR_SLOT fill 완료 (${modeApplied} + cornerRadius=16)`);
+  return { success: true, scaleMode: modeApplied };
 }
 
 /**
  * 공식 목업 컴포넌트 인스턴스 생성 + VISUAL_SLOT 위치에 배치 + 내부 #FFFFFF rect에 imageHash fill
  */
-async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
+async function applyMockup(parentSlot, visualSlot, mockupId, imageHash, cropTy) {
   const mockupComponent = await figma.getNodeByIdAsync(mockupId);
   if (
     !mockupComponent ||
@@ -729,6 +844,13 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
 
   parentSlot.appendChild(instance);
 
+  // 🆕 2026-06-12: VISUAL_SLOT placeholder의 effects를 instance에 전파
+  // (보라 글로우 #6C4CFF blur 20 등 슬롯 페이지에 박힌 effect 자동 적용)
+  // 향후 새 effect도 슬롯에만 박으면 자동으로 따라감 — code 수정 불필요
+  if (visualSlot.effects && visualSlot.effects.length > 0) {
+    instance.effects = visualSlot.effects;
+  }
+
   // 내부 흰색/거의 흰색 rect 찾기 (#FFFFFF·#FAFAFA 등) — 1-3-1 §1.1.a
   // Vector 베젤은 VECTOR 타입이므로 RECTANGLE/FRAME만 허용
   const screen = instance.findOne((n) => {
@@ -745,13 +867,29 @@ async function applyMockup(parentSlot, visualSlot, mockupId, imageHash) {
   });
 
   if (screen) {
-    // CROP + imageTransform — Microlink 캡쳐 외곽 검정 padding을 Figma 단에서 잘라냄
-    // (Python 측에서 픽셀 처리할 필요 없음, 원본 캡쳐 그대로 사용 가능)
+    // 🆕 2026-06-12: CROP imageTransform 분기 (1-3-1 §1.1.c)
+    // - viewer 풀페이지 캡처 (aspect ≥ 5): 비율 보존 매트릭스 [[1,0,0],[0,yScale,ty]]
+    // - viewer hero 캡처 (aspect ≈ 2.x): 기존 VIEWER_CAPTURE_TRANSFORM (외곽 padding 자르기)
+    let transform = VIEWER_CAPTURE_TRANSFORM;
+    try {
+      const imgSize = await figma.getImageByHash(imageHash).getSizeAsync();
+      const imgAspect = imgSize.height / imgSize.width;
+      const slotAspect = screen.height / screen.width;
+      // 이미지가 슬롯보다 훨씬 길면 (aspect 2.5배 이상) 비율 보존 매트릭스 사용
+      if (imgAspect > slotAspect * 2.5) {
+        const yScale = slotAspect / imgAspect;
+        // ty는 인자 (cropTy) 우선, 없으면 0 (이미지 상단)
+        const ty = (typeof cropTy === "number") ? cropTy : 0;
+        transform = [[1, 0, 0], [0, yScale, Math.max(0, Math.min(ty, 1 - yScale))]];
+      }
+    } catch (e) {
+      // 이미지 size 측정 실패 시 기본 VIEWER_CAPTURE_TRANSFORM 유지
+    }
     screen.fills = [{
       type: "IMAGE",
       imageHash: imageHash,
       scaleMode: "CROP",
-      imageTransform: VIEWER_CAPTURE_TRANSFORM,
+      imageTransform: transform,
     }];
   }
 
@@ -1066,6 +1204,8 @@ async function createVariantsFromImageData(payload) {
 
   // Step 1.5: 슬롯들이 Figma에 실제로 존재하는지 사전 검증
   await figma.loadAllPagesAsync();
+  // 자산 가져오기 잔재 프레임 자동 정리 (생성 전 템플릿 페이지 청소)
+  await cleanupStrayFrames();
   for (const sid of slotIds) {
     const slotNode = await figma.getNodeByIdAsync(sid);
     if (!slotNode) {

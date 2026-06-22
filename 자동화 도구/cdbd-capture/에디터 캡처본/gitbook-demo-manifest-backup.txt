@@ -1,0 +1,27 @@
+# Gitbook demo screenshots
+# Source: https://cdbd.gitbook.io/guide (CdBd 공식 가이드북)
+# Downloaded: 2026-06-04
+
+data#01 | uploads/DhHbSxErQjKUMxqBMRi8 | DhHbSxErQjKUMxqBMRi8
+data#02 | uploads/wkJHAjFp906ulyVjWQUT | wkJHAjFp906ulyVjWQUT
+data#03 | uploads/7MXCyT1hzLsBF2GMMJXF | 7MXCyT1hzLsBF2GMMJXF
+data#04 | uploads/pxjRsPGgpVRMlej7O4Kz | pxjRsPGgpVRMlej7O4Kz
+data#05 | uploads/b5C4qI7mvTPDn6fLhPXz | b5C4qI7mvTPDn6fLhPXz
+data#06 | uploads/ZrBiB7FWkKDuAqbFIfMc | ZrBiB7FWkKDuAqbFIfMc
+data#07 | uploads/tLXhs54eEAQQs6Mje5Ex | 질문과_답변_-_카드_선택
+data#08 | uploads/yNtFL29bCPFzDcplvRzZ | 질문과_답변_-_결과_확인
+reserve#01 | uploads/j1Gq4BeuHnl2bt08IiH7 | 제목_입력
+reserve#02 | uploads/uLGCsPpGqJSfgERrQqWQ | 장소_입력
+reserve#03 | uploads/f2pvhqhUbBpMVSiM256U | 호스트_이름_입력
+reserve#04 | uploads/SmGCTYZlUoEFeGx8Q3qv | 호스트_연락처_입력
+reserve#05 | uploads/ErSW2UcF7tQfbmHXRVAQ | 날짜_선택
+reserve#06 | uploads/e1HjFKXNMElEInGIjsVD | 시간_선택
+reserve#07 | uploads/fJqRmR3Zs8K772QkScsZ | 인원_선택
+reserve#08 | uploads/qKnAI9PxEGldKfrsisIu | 버튼_디자인
+reserve#09 | uploads/O4haPak2Eu5tljkWdeEY | 예약현황_확인하기
+reserve#10 | uploads/EhWXZzUbC8ndQiiCectO | 예약_카드_선택
+reserve#11 | uploads/kXOiIoLGNtUqTDvZysux | 정렬_설정
+reserve#12 | uploads/Wh9grjtW7iohT8H3tVTS | 예약_취소하기
+reserve#13 | uploads/PW5V0vXG6EEiJj6wZFQW | 현황_다운로드
+qna#01 | uploads/rf5fEfPC1VKst3IGbr8z | 1
+qna#02 | uploads/c21MMuvYpADsLVYPOUwG | 2

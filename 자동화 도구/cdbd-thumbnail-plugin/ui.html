@@ -103,6 +103,7 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
   </div>
 
   <button id="run">4안 자동 제작 ▶</button>
+  <button id="cleanup" style="background:#888; margin-top:8px;">🧹 잔재 프레임 정리</button>
 
   <div id="result"></div>
 
@@ -154,16 +155,17 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
   // B 유형 검증 예시 — 목업 + 에디터 기능 UI (1-2-1 §1.1.B, §3.2)
   // editorImageHash 필드 추가 — EDITOR_SLOT에 에디터 캡쳐 fill
   document.getElementById('fillExampleB').onclick = () => {
-    document.getElementById('title').value = 'VIP 1:1 예약 관리,\\n고객도 지치는,\\n전화 핑퐁 모바일,\\n초대장으로 끝내기';
+    // 원본 텍스트 보존 — 첫 줄 쉼표는 원본이라 유지, 나머지 줄 끝 쉼표 추가 ❌ (2026-06-04 원칙)
+    document.getElementById('title').value = 'VIP 1:1 예약 관리,\\n고객도 지치는\\n전화 핑퐁 모바일\\n초대장으로 끝내기';
     document.getElementById('subtitle').value = '';
-    document.getElementById('emphasis').value = 'VIP 1:1 예약 관리';
+    document.getElementById('emphasis').value = '초대장';
     document.getElementById('variants').value = JSON.stringify([
-      {slotId: "1:1300", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", editorImageHash: "336c582f7c737d5d6527d7d7022968a7acf3501c", name: "안1_B상단"},
-      {slotId: "1:1304", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", editorImageHash: "336c582f7c737d5d6527d7d7022968a7acf3501c", name: "안2_B하단"},
+      {slotId: "1:1300", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", editorImageHash: "7e12d3d8bdd8515ce7f8e63e8095fb803c782320", name: "안1_B상단"},
+      {slotId: "1:1304", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", editorImageHash: "7e12d3d8bdd8515ce7f8e63e8095fb803c782320", name: "안2_B하단"},
       {slotId: "1:1266", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", name: "안3_A상단_비교"},
       {slotId: "1:1251", imageHash: "0de2ec3c8b98c465969192c4196881cdb5b15696", name: "안4_A하단_비교"}
     ], null, 2);
-    document.getElementById('result').innerHTML = '<span class="ok">✅ B유형 검증 예시 입력 완료 (B 2안 + A 2안 비교). VIP 1:1 예약 관리 — viewer(reservation) + editor(예약 카드 모달). "4안 자동 제작 ▶" 클릭하세요.</span>';
+    document.getElementById('result').innerHTML = '<span class="ok">✅ B유형 검증 예시 입력 완료 (B 2안 + A 2안 비교). VIP 1:1 예약 관리 — viewer(reservation) + editor(qna-01 답변 pie chart 11명, gitbook 데모). "4안 자동 제작 ▶" 클릭하세요.</span>';
   };
 
   // D 유형 검증 예시 — 3D 아이콘 (envelope, 1-3-2 §5.4 "초대장" 기능 매칭 1순위)
@@ -227,9 +229,27 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 1:1370(멀티
     }}, '*');
   };
 
+  // 잔재 프레임 수동 정리 버튼
+  document.getElementById('cleanup').onclick = () => {
+    document.getElementById('result').textContent = '잔재 프레임 정리 중…';
+    parent.postMessage({ pluginMessage: { type: 'cleanup-strays' } }, '*');
+  };
+
   window.onmessage = async (event) => {
     const msg = event.data.pluginMessage;
     if (!msg) return;
+
+    if (msg.type === 'cleanup-result') {
+      if (msg.success) {
+        document.getElementById('result').innerHTML = msg.removed > 0
+          ? '🧹 잔재 프레임 <b>' + msg.removed + '개</b> 정리 완료'
+            + '<div style="font-size:11px; color:#666; margin-top:4px;">' + (msg.names || []).join(', ') + '</div>'
+          : '🧹 정리할 잔재 프레임이 없습니다.';
+      } else {
+        document.getElementById('result').innerHTML = '<span class="err">정리 오류: ' + msg.error + '</span>';
+      }
+      return;
+    }
 
     if (msg.type === 'result') {
       if (msg.success) {
