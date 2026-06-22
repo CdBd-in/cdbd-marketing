@@ -4,8 +4,8 @@
   "title": "Continue from previous reference",
   "titleGenerationStatus": "success",
   "createdAt": 1780293869640,
-  "updatedAt": 1782098508410,
-  "lastResponseAt": 1782098508410,
+  "updatedAt": 1782098587014,
+  "lastResponseAt": 1782098587014,
   "sessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88",
   "providerState": {
     "providerSessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88"
@@ -13,12 +13,12 @@
   "currentNote": "블로그/썸네일/1. 디자인 가이드/1-2. 레이아웃/1-2-1. 레이아웃 규칙.md",
   "usage": {
     "model": "opus",
-    "inputTokens": 339,
-    "cacheCreationInputTokens": 309107,
+    "inputTokens": 1418,
+    "cacheCreationInputTokens": 317389,
     "cacheReadInputTokens": 17466,
     "contextWindow": 1000000,
-    "contextTokens": 326912,
-    "percentage": 33,
+    "contextTokens": 336273,
+    "percentage": 34,
     "contextWindowIsAuthoritative": true
   }
 }
