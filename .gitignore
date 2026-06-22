@@ -40,3 +40,4 @@ blob-report/
 .obsidian/plugins/*/main.js
 .obsidian/plugins/*/manifest.json
 .obsidian/plugins/*/styles.css
+.gstack/
