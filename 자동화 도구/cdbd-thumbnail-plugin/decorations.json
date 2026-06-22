@@ -1,11 +1,12 @@
 {
-  "_comment": "CdBd 썸네일 데코 자산 카탈로그. Figma 컴포넌트로 정의됨. Thiings에서 필요 시 직접 다운로드.",
+  "_comment": "CdBd 썸네일 데코 자산 카탈로그. Figma 컴포넌트(figma_component_id) 또는 Thiings 직접 다운로드(thiings_url) 후 이미지 fill로 사용.",
   "_format": {
     "slug": "Thiings 슬러그 (URL의 /things/{slug})",
     "thiings_url": "원본 PNG URL (vercel-storage)",
-    "figma_component_id": "Figma 컴포넌트 ID",
+    "figma_component_id": "Figma 컴포넌트 ID (없으면 null → thiings_url 다운로드 후 직접 image fill)",
     "match": "§5.4 매칭 기능명 (CdBd 제품) 또는 §5.1 톤 키워드",
-    "priority": "⭐⭐⭐ | ⭐⭐ | ⭐"
+    "priority": "⭐⭐⭐ | ⭐⭐ | ⭐",
+    "_사용법": "figma_component_id 있으면 createInstance / 없으면 thiings_url 다운로드 → upload_assets → VISUAL_SLOT에 image fill (D 유형 FIT)"
   },
   "decorations": {
     "sparkle": {
@@ -55,18 +56,49 @@
       "figma_component_id": null,
       "match": "결제·금융 (※ 명함은 id-card 등 별도 시도)",
       "priority": "⭐⭐"
+    },
+    "book": {
+      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-QhvfavmoGfPmREwwvl4XtqTIORARDz.png",
+      "figma_component_id": null,
+      "match": "카탈로그·브로셔 (catalog 4종) §5.4 ⭐⭐⭐",
+      "priority": "⭐⭐⭐"
+    },
+    "gift": {
+      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-yqO1RPHoOjuNAvqMy997ClCPIwICsb.png",
+      "figma_component_id": null,
+      "match": "추석·명절·선물·이벤트·혜택",
+      "priority": "⭐⭐"
+    },
+    "bar-chart": {
+      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-73pNGHJBFF75t0zRsAgQInW9DAM4vd.png",
+      "figma_component_id": null,
+      "match": "영업 데이터·분석·통계·매출·성장·비교 (§5.4 분석)",
+      "priority": "⭐⭐"
+    },
+    "piggy-bank": {
+      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-yXrodRQ1tufqDh2wXeFl82sDXZBv3c.png",
+      "figma_component_id": null,
+      "match": "비용 절감·예산·인쇄비 제거·절약",
+      "priority": "⭐⭐"
+    },
+    "qr-code": {
+      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-hheqtvAvZLesg9WYTVCosfDrtUtC7H.png",
+      "figma_component_id": null,
+      "match": "QR·배포·박람회·로드쇼·링크",
+      "priority": "⭐⭐"
+    },
+    "leaf": {
+      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-emC1BR5ljWANScSXgr4K8nwvA1f0aW.png",
+      "figma_component_id": null,
+      "match": "ESG·환경·친환경·디지털 전환·지속가능",
+      "priority": "⭐⭐"
     }
   },
   "needed": {
-    "_comment": "§5.4 1순위 자산 — Thiings에서 직접 다운로드 후 Figma에 컴포넌트 등록",
+    "_comment": "§5.4 1순위 자산 — Thiings에서 직접 다운로드 후 사용 (book·chart는 2026-06-22 완료)",
     "card": {
       "thiings_slug": "card",
       "match": "명함 (profilelink 7종)",
-      "priority": "⭐⭐⭐"
-    },
-    "book": {
-      "thiings_slug": "book",
-      "match": "카탈로그·브로셔 (catalog 4종)",
       "priority": "⭐⭐⭐"
     },
     "chat-bubble": {
@@ -78,11 +110,12 @@
       "thiings_slug": "pen",
       "match": "서명·계약 (guide)",
       "priority": "⭐⭐⭐"
-    },
-    "chart-up": {
-      "thiings_slug": "chart-up",
-      "match": "성장·분석·매출 (§5.1)",
-      "priority": "⭐⭐"
     }
+  },
+  "_추가_후보": {
+    "_comment": "이번 세션 탐색 중 발견한 추가 Thiings 슬러그 (미사용, 필요 시 활용)",
+    "money": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-IeKGYKeLd25OWlrmd5WrSsfbD7OIPA.png",
+    "coin": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-S70eRKwGghbWrxnQFigJARrNiDgtR2.png",
+    "recycle": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-3oO1FdYezMT0TBNCoEM47udBNFPzer.png"
   }
 }
