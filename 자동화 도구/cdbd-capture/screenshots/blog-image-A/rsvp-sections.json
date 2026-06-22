@@ -1,0 +1,71 @@
+{
+  "viewer_url": "https://www.cdbd.in/templates/invitation/rsvp/viewer",
+  "pageHeight": 5596,
+  "viewport": {
+    "width": 390,
+    "height": 838
+  },
+  "aspect_target": 0.46539379474940334,
+  "sections": [
+    {
+      "name": "1-hero",
+      "y": 0,
+      "matched": true,
+      "forced": true,
+      "capturedY": 0,
+      "file": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/blog-image-A/rsvp-1-hero.png"
+    },
+    {
+      "name": "2-rsvp",
+      "zone": [
+        0.3,
+        0.75
+      ],
+      "zoneRange": [
+        1679,
+        4197
+      ],
+      "keywords": [
+        "참석 및 사전",
+        "정보 등록",
+        "RSVP",
+        "참석 여부",
+        "응답하기",
+        "신청하기",
+        "register",
+        "reply",
+        "제출"
+      ],
+      "y": 2938,
+      "matched": false,
+      "fallbackUsed": true,
+      "capturedY": 2938,
+      "file": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/blog-image-A/rsvp-2-rsvp.png"
+    },
+    {
+      "name": "3-contact",
+      "zone": [
+        0.65,
+        1
+      ],
+      "zoneRange": [
+        3637,
+        5596
+      ],
+      "keywords": [
+        "문의처",
+        "문의하기",
+        "전화",
+        "contact",
+        "CONTACT",
+        "연락처",
+        "주소",
+        "오시는 길"
+      ],
+      "y": 3950,
+      "matched": true,
+      "capturedY": 3950,
+      "file": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/blog-image-A/rsvp-3-contact.png"
+    }
+  ]
+}
