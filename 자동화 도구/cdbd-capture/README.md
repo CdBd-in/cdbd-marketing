@@ -53,50 +53,37 @@ seminar-2-rsvp.png, seminar-3-contact.png 3장을
 
 ---
 
-## 📚 C 멀티목업 — 카탈로그 페이지별 캡처 (NEW 2026-06-22)
+## 📚 C 멀티목업 — 카탈로그 표지 캡처 (정정 2026-06-22)
 
-> **C 유형(멀티 목업)** 은 카탈로그의 **서로 다른 페이지**를 여러 목업에 나란히 보여주는 레이아웃.
-> ⚠️ 표지 1장을 상·하로 쪼개는 것 ❌ / **페이지를 넘겨가며 각 페이지 캡처** ⭕
+> **C 유형(멀티 목업)** 은 **서로 다른 카탈로그**(예: BLUE NOTE·ELVE Lab·SUNGROVE CLUB)를 3개 목업에 나란히 보여주는 레이아웃.
+> 각 카탈로그를 **표지 상단부터(로고/헤드배너 다 보이게)** 캡처 → 멀티페이지 목업(`1:1370`)의 **#FFFFFF screen**에 fill.
 
-### 왜 Playwright가 필요한가
-- 카탈로그 viewer는 **화살표 없는 가로 스와이프 캐러셀**("1/4") 구조
-- **Microlink는 1페이지만** 캡처 (캐러셀을 못 넘김)
-- 일부 카탈로그(oak_table·lookbook)는 Microlink 봇 환경에서 **백지 렌더링** (lazy-load 실패)
-- → Playwright 마우스 드래그로 페이지를 넘기고, 콘텐츠 영역만 클립
+### ⚠️ 핵심 규칙 (가이드 [[1-3-1. 이미지 규칙]] §1.1.a)
+- **fill 대상 = `Rectangle 3424` (#ffffff, 비율 0.648)** ⭐ — 멀티페이지 목업의 진짜 screen
+- **`image 167` (비율 0.439, IMAGE) = 폰 본체 기본 이미지 → 절대 건드리지 않음** (마스터 기본 유지)
+- 캡처 비율도 **0.648** 로 맞춤 → FILL 시 잘림·왜곡 0
+- **상단부터 캡처** — 로고·헤드배너가 다 보이도록 (viewer 콘텐츠 top부터)
 
 ### 사용법
 
 ```bash
 cd "자동화 도구/cdbd-capture"
-node capture-catalog-pages.mjs <viewer-url> <outPrefix> [pageCount]
-
-# 예: newarrival 카탈로그 4페이지 캡처
-node capture-catalog-pages.mjs https://www.cdbd.in/templates/catalog/newarrival/viewer nvc 4
+node capture-catalog-cover.mjs    # 3개 카탈로그 일괄 (lookbook-offline·newarrival·lookbook-online)
 ```
-
-### 동작
-1. viewer 진입 (로그인 불필요) → 렌더 대기
-2. 하단 페이저 바("N/M") 숨김
-3. 페이지별로:
-   - **채도 있는 콘텐츠 영역만 클립** (회색 여백·페이저 제거)
-   - 마우스 드래그(우→좌)로 다음 페이지 넘김 → 페이저 텍스트 변화로 확인
-   - 실패 시 키보드 ArrowRight fallback
-4. `screenshots/catalog-pages/{prefix}-page{N}.png` 저장
-
-### 출력 (newarrival 예시)
-```
-screenshots/catalog-pages/
-├── nvc-page1.png   ← 표지 (BEYOND LIQUID)
-├── nvc-page2.png   ← 제품 상세 (ROSE QUARTZ GLOW + 가격 + 구매)
-├── nvc-page3.png   ← 주문 (프리오더 6+3 증정)
-└── nvc-page4.png   ← 추가 페이지
-```
+- viewport 390×602 (= 비율 0.648) 로 콘텐츠 top부터 클립 → `screenshots/catalog-covers/{slug}.png`
+- 다른 카탈로그는 스크립트 상단 `CATALOGS` 배열 수정
 
 ### Figma 적용 (MCP)
-1. `upload_assets`로 각 페이지 업로드 → imageHash 획득
+1. `upload_assets`로 표지 3장 업로드 → imageHash 획득
 2. C 슬롯(`1:1287`) clone → VISUAL_SLOT_1/2/3에 멀티페이지 목업(`1:1370`) 인스턴스
-3. 각 목업 내부 흰색 rect를 페이지 imageHash로 fill (scaleMode FILL)
-4. 좌→우 순서 = 카탈로그 흐름 (표지→제품→주문), 중앙 목업이 돌출
+3. 각 인스턴스의 **#ffffff SOLID rect(`Rectangle 3424`)만** 찾아 표지 hash로 fill (scaleMode **FILL**)
+   - ⚠️ `IMAGE` fill rect(`image 167` 폰 본체)는 건드리지 않음 — SOLID 흰색만 타겟
+4. 좌→우 = 다른 카탈로그, 중앙 목업이 돌출
+
+> ✅ **검증**: 추석 카탈로그 C 멀티목업 — BLUE NOTE·ELVE Lab·SUNGROVE CLUB 3종 표지 → #FFFFFF screen fill 성공 (2026-06-22)
+
+### 보조: 카탈로그 페이지별 캡처 (`capture-catalog-pages.mjs`)
+한 카탈로그의 **여러 페이지**(표지→제품→주문)를 넘겨가며 캡처해야 할 때 사용 (가로 스와이프 캐러셀 → 마우스 드래그). 단, C 멀티목업 기본은 **서로 다른 카탈로그 표지** 방식 권장.
 
 ---
 
