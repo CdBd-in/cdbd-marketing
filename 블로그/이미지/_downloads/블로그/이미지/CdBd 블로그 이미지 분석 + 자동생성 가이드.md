@@ -2,27 +2,32 @@
 title: CdBd 블로그 이미지 분석 + 자동 생성 가이드
 created: 2026-06-22
 updated: 2026-06-22
-source: https://home.cdbd.in/blog (page 1~8)
-scope: 게시물 48개 / 이미지 176장 직접 다운로드·분석
+source: https://home.cdbd.in/blog (page 1~15 전체)
+scope: 게시물 약 90개 / 이미지 390장 직접 다운로드·분석
 purpose: 블로그 글 → 이미지 자동 생성 자동화를 위한 패턴 학습 자료
 tags: [cdbd, blog, image, automation, design-guide]
 ---
 
 # CdBd 블로그 이미지 분석 + 자동 생성 가이드
 
-> 블로그 **8페이지 / 게시물 48개 / 이미지 176장**을 직접 다운로드해 한 장씩 눈으로 분석한 결과.
+> 블로그 **15페이지 전체 / 게시물 약 90개 / 이미지 390장**을 직접 다운로드해 한 장씩 눈으로 분석한 결과.
 > 원본 이미지: `블로그/이미지/_downloads/` (게시물별 폴더: `p1~p6_*`=초기 6개, `pg2_1`~`pg8_6`=나머지 42개)
 > 목적: "블로그 글을 던지면 자동으로 이미지를 만든다"를 위한 **이미지 타입 분류 + 디자인 토큰 + 글→이미지 매핑 규칙 + 자동화 설계서**.
 > 상세 게시물별 분류: [[블로그/이미지/_분석원본_게시물별 이미지 분류.md]]
 
 ---
 
-## 0. 한 줄 결론 (48개 분석 후 갱신)
+## 0. 한 줄 결론 (약 90개 분석 후 최종 갱신)
 
-CdBd 블로그 이미지는 **12종의 정해진 아키타입의 반복**이다.
-초기 6종(A~F)은 "제품/UI 마케팅 그래픽"이었고, 글 범위를 넓히니 **케이스 스터디·소트리더십·시리즈물용 6종(G~L)**이 추가로 드러났다.
-**글의 "장르"가 이미지 세트를 결정한다** — 사례글은 실사진, 가이드글은 UI 스크린샷, 비교글은 Before/After, 비용글은 수치 그래픽, 소트리더십은 브랜드 실사진+인포그래픽.
+CdBd 블로그 이미지는 **16종의 정해진 아키타입의 반복**이다.
+- 초기 6종(A~F) = 제품/UI 마케팅 그래픽
+- 사례·소트리더십·시리즈용 6종(G~L) = 커버·실사진·인포그래픽·문제신·갤러리·관련글
+- **프로필링크/링크트리대안/라운드업 구간에서 4종(M~P) 추가** = 외부 스크린샷·가격표·스티커콜라주·인스타앱화면
+
+**글의 "장르"가 이미지 세트를 결정한다** — 사례글=실사진, 가이드=UI 스크린샷, 비교글=Before/After, 비용글=수치, 소트리더십=실사진+인포그래픽, **링크/툴 라운드업글=외부 스크린샷(M) 다수**.
 → 자동화 = **(1) 글 장르 판별 → (2) 장르별 이미지 세트 템플릿 선택 → (3) 섹션별 타입 배정 → (4) 고정 디자인 토큰으로 렌더**.
+
+> ⚠️ **중대 발견**: 전체의 상당수(M·N·P·H)는 **생성 불가, 캡처/촬영해야 하는 이미지**다. (경쟁사·외부툴 화면, 인스타 화면, 실사진) → 자동화는 "생성"보다 "**실 캡처 + 데코 합성 + 에셋 재사용**"이 중심이어야 한다. 실제로 동일 에디터 스크린샷·publish GIF·더미 브랜드가 글마다 대량 재사용됨이 확인됨.
 
 ---
 
@@ -89,6 +94,19 @@ CdBd 블로그 이미지는 **12종의 정해진 아키타입의 반복**이다.
 **TYPE L. 관련글 추천 카드** — ⚠️ **본문 콘텐츠 아님. 자동화 제외 대상.**
 - 다크 사진 위 제목 오버레이(넷플릭스/레드불/성심당/GEO 등). 여러 글에서 ID 재사용. 스크랩 시 반드시 필터링.
 
+### ▍그룹 3 — 외부 캡처·표·콜라주 (프로필링크·링크트리대안·라운드업·인사이트글) 〔신규〕
+
+**TYPE M. 외부 툴/앱/웹사이트 스크린샷** — ⚠️ **생성 불가, 캡처 필요.**
+- 경쟁사(링크트리·리틀리·인포크링크), SaaS 툴(Jasper·Surfer·Midjourney·Lexica·Manychat·Vrew), 레퍼런스 사이트(Pexels·Pixabay 등), 구글 AI Overview(소셜프루프, CdBd 빨간박스 강조), 실제 브랜드 사이트. 라운드업/비교/인사이트글의 주력(한 항목당 1장).
+
+**TYPE N. 가격 비교 표** — 경쟁 요금제 카드($4/$7.5/$19.5 + 원화 알약) + 기능 리스트. (링크트리 무료vs유료 등)
+
+**TYPE O. 스티커 콜라주** — 흰 배경에 폰트/이미지모양 샘플칩·3D 구미(gummy) 로고·메모지 신체부위·말풍선을 기울여 흩뿌린 구도. 정적/gif 모두. (폰트 소개, 올리브영 패러디 프로모 등)
+
+**TYPE P. 인스타 앱 화면 스트립** — 실제 IG 프로필/피드/릴스 화면 폰 2~3개. ⚠️ 캡처 필요. (프로필링크 한계 설명·실브랜드 케이스)
+
+> **변형/추가 관찰**: ① I(인포그래픽)에 **라벤더격자 3D 컨셉아이콘 세트**(팔레트·매직완드+시계·차트+영수증 = "N가지 조건") 변형 추가 ② H(실사진)에 **흑백 권위자 인물사진**(Jakob Nielsen 등) 변형 ③ C/G **하이브리드 인사이트 커버**(다크 배경 + 아이소메트릭/3D메모지 일러스트 + 좌하단 헤드라인, CTA·AI글쓰기 글).
+
 ---
 
 ## 3. 글 장르 → 이미지 세트 매핑 (자동화 핵심 규칙)
@@ -102,6 +120,9 @@ CdBd 블로그 이미지는 **12종의 정해진 아키타입의 반복**이다.
 | **소트리더십 / 인사이트** (레드불·넷플릭스·성심당·GEO) | **H(브랜드 실사진)** + I(인포그래픽) | CdBd 목업 거의 안 씀 |
 | **기능 출시 / 업데이트** ("출시","업데이트","NEW","소개") | E(단계흐름) + C + F(플로팅카드) | NEW 옐로배지 |
 | **시리즈물** ("시리즈 #N") | **다크 커버 Hero**(보라 "시리즈 #N" 라벨 + 2줄 제목) + 위 장르별 | 시리즈 라벨 토큰 고정 |
+| **프로필링크 / 링크인바이오** ("프로필 링크","링크트리","미니홈페이지") | 다크 Hero(A) + **C(에디터 UI 다수)** + D(구글폼/카톡 vs CdBd) + F(완성 프로필) + 경쟁사 **M** | 그룹3 등장 시작 구간 |
+| **라운드업 / 리스티클** ("추천 N가지","Best 18","비교","툴") | **M(외부 스크린샷, 항목당 1장)** + 가끔 N(가격표)·O(콜라주) | 거의 캡처. 생성 X |
+| **인사이트 / 소트리더십** (CTA카피·AI글쓰기·알고리즘·성심당·레드불) | C/G 하이브리드 커버 + **I(아이소메트릭/개념도)** + H(실사진) + P(인스타) | CdBd 목업 적음 |
 | (모든 글 공통) | **G. 커버 썸네일 1장**(og:image) | 목록/SNS 카드용, 항상 생성 |
 
 **배치 관행**: 글 1편 ≈ 이미지 2~9장. 커버 G(1) → 도입 Hero A(1) → 본문 섹션별 C/D/E/F/H/I → (비용글) B(1).
@@ -121,9 +142,13 @@ CdBd 블로그 이미지는 **12종의 정해진 아키타입의 반복**이다.
 - **F 플로팅카드**: `lavender purple grid bg, 3 overlapping content cards labeled 제품상세/영상/문의, magic-wand + sparkles.`
 - **G 커버**: `near-black bg, big 2-line Korean headline (one accent-color phrase), 1 3D object + sparkle, footer "# CdBd · home.cdbd.in".`
 - **H**: ⚠️ 생성보다 **실제 현장 사진** 권장 (사례글은 실사 필수).
-- **I**: `grid bg, hand-drawn wavy connectors, purple node boxes; branching {URL} → A/B/C/D 고객 personalized links` 또는 `2x2 quadrant, center pill "{N}조건", one 3D icon per cell`.
+- **I**: `grid bg, hand-drawn wavy connectors, purple node boxes; branching {URL} → A/B/C/D 고객 personalized links` 또는 `2x2 quadrant, center pill "{N}조건", one 3D icon per cell` 또는 `lavender grid, single glossy 3D concept icon (palette / magic-wand+clock / chart+receipt)`.
 - **J**: `chaos scene — Google-Form + spreadsheet + KakaoTalk collage + flying papers + stressed 3D memoji` 또는 `gray bg, scattered monochrome 3D legacy icons + thought clouds around a thinking memoji`.
 - **K**: `4-5 finished invitation/card phone screens side by side, each a different style.`
+- **M**: ⚠️ 생성 X — 경쟁사/외부툴 **실제 화면 캡처**. (필요 시 소셜프루프용 구글 AI Overview 캡처 + CdBd 빨간박스)
+- **N**: `competitor pricing cards (plan name + $price + KRW pill + feature checklist), clean table layout` — 또는 실제 요금표 캡처.
+- **O**: `scattered tilted sticker chips on white (font/shape samples or promo words), glossy 3D gummy logo, memoji body parts, squiggle accent.`
+- **P**: ⚠️ 생성 X — **실제 Instagram 앱 화면** 캡처(프로필/피드/릴스) 폰 스트립.
 
 ---
 
@@ -167,37 +192,61 @@ CdBd 블로그 이미지는 **12종의 정해진 아키타입의 반복**이다.
   "dashed": ["purple", "blue"],
   "footer": "# CdBd · home.cdbd.in",
   "types": ["A_hero","B_stat","C_ui","D_compare","E_flow","F_result",
-            "G_cover","H_photo","I_infographic","J_painscene","K_gallery","L_relatedcard_EXCLUDE"],
+            "G_cover","H_photo","I_infographic","J_painscene","K_gallery","L_relatedcard_EXCLUDE",
+            "M_external_capture","N_pricing_table","O_sticker_collage","P_instagram_strip"],
+  "capture_only_types": ["M","N","P","H"],
+  "generatable_types": ["A","B","D","G","I","J","O","K"],
+  "composite_types": ["C","E","F"],
   "genres": {
     "case_study":   ["A","F","H","G"],
     "guide_howto":  ["A_dark","C","E","G"],
     "comparison":   ["D","J","C","G"],
     "cost_roi":     ["B","A","C","G"],
-    "thought_lead": ["H","I","G"],
+    "thought_lead": ["H","I","G","P"],
     "feature_launch":["E","C","F","G"],
-    "series_any":   ["A_dark_cover"]
+    "series_any":   ["A_dark_cover"],
+    "profile_link": ["A_dark","C","D","F","M","G"],
+    "roundup_listicle": ["M","N","O","G"],
+    "insight":      ["G","I","H","P"]
   }
 }
 ```
 
-### 5.4 권장 결론
-- **완전 생성형은 한계**: UI 스크린샷(C/E/F = 전체의 절반 이상)은 생성 모델로 정확히 못 만든다. → **"실 캡처 + 데코 합성" 템플릿 엔진**이 현실적 핵심. 생성 모델은 A/B/D/G/I/J 같은 일러스트·구도형에만.
-- **장르 분류가 80%**: 글 장르만 맞히면 이미지 세트가 거의 결정된다. 분류기 정확도에 투자.
+### 5.4 권장 결론 (90개 분석 후 확정)
+타입을 **3트랙**으로 나눠야 한다 (§5.3 JSON에 분류됨):
+- **생성 트랙** `A·B·D·G·I·J·O·K` — 이미지 생성 모델 + §4 프롬프트 + §1 토큰. (일러스트·구도형)
+- **합성 트랙** `C·E·F` — 실제 CdBd 에디터/페이지 스크린샷 위에 커서·점선·배지·프레임 합성. 전체의 ~40%. **여기 정확도가 시스템 품질을 좌우.**
+- **캡처 트랙** `M·N·P·H` — 생성 불가. 경쟁사/외부툴/인스타/실사진은 **수집·촬영**해야 함. (라운드업·인사이트·사례글에서 큰 비중)
+
+핵심:
+- **장르 분류가 80%**: 글 장르만 맞히면 이미지 세트가 거의 결정된다(§3). 분류기 정확도에 최우선 투자.
+- **에셋 재사용이 실제 운영 방식**: 동일 에디터 스크린샷·publish GIF·더미 브랜드(ORRIS·소록·Jina Park·THE SAGE…)가 글마다 반복 사용됨. → **공용 에셋 라이브러리 + 더미 브랜드 사전**이 생성보다 효율적·일관적.
 - **토큰 고정 = 브랜드 일관성**: §5.3을 단일 소스로 두고 모든 렌더가 참조.
+- **캡처 트랙 비중 과소평가 금지**: "글 던지면 다 자동생성"은 불가능. 캡처가 필요한 타입은 사람/스크래퍼 개입 단계를 파이프라인에 명시해야 함.
+
+### 5.5 더미 브랜드/데이터 라이브러리 (관측 누적 — 일관성·법적 안전용)
+- **명함/B2B**: 에스원(실고객)·STech Energy·FINDERS·네스코·한화 ANTO·A1 Security · 인물 김현수/박지훈/이지원/Myungwoo Lee
+- **초대장/행사**: THE SAGE「The Heritage Summit」· TRINTAS/TRINTAYE「The Signature Day」/SOVEREIGN · GALLERY VARESE SEOUL/큐레이터 MICHAEL LANG · Scotify「2024 Wrapped」· MK 법무법인 · 인물 황영기 회장/김성은 (+ BTS 멤버 본명 명단)
+- **카탈로그/커머스**: BLUE NOTE · ELVE Lab · SUNCOVE CLUB · VIEW MEDIA(뷰미디어) · 귤메달/prika · 30M Diamond Club
+- **프로필링크**: ORRIS(향수) · 소록(한식) · Lumα Pilates · Designer Jina Park · Kasing Lung/Wacky Mart「The Monsters」· 쇼호스트 박지나 · IC클리닉 강남 · OLICE YOUNG(올리브영 패러디)
+- **더미 통계**: 66.7/33.3% · 90% 절감 · 17그루 · 80/88% · 페이지뷰 12,708/클릭 9,062/71.3% · URL slug `cdbd.in/brand/26spring`
 
 ---
 
 ## 6. 커버리지 / 한계
 
-- **분석 완료**: 48개 글 중 47개, 176장.
-- **누락**: ① `레드불`(pg6_2) 이미지 — WebFetch가 lazy-load HTML을 못 받아 실패(레드불/F1 실사진 추정). ② `전사 모바일 명함 일괄발급`(pg3_3) 단계 이미지 4장 lazy-load 누락.
-- **원인**: Wix 사이트가 본문 이미지를 지연 로딩 → 정적 HTML에 일부 미노출. 필요 시 렌더링 기반 재수집(헤드리스 브라우저) 권장.
+- **분석 완료**: 15페이지 전체, 게시물 약 90개, **이미지 390장**.
+- **누락(부분)**: ① `레드불`(pg6_2) 이미지 전체 — lazy-load 실패. ② `전사명함 일괄발급`(pg3_3) 단계 4장 ③ `프로모션 올리브영`(pg13_2) 단계 갤러리 ④ 일부 본문 이미지가 og:image/썸네일만 노출.
+- **원인**: Wix가 본문 이미지를 JS 지연로딩 → 정적 HTML 미노출. **헤드리스 브라우저(렌더링 기반) 재수집**이면 100% 회수 가능.
+- **GIF 주의**: 기능 데모 gif는 첫 프레임이 전환 중(빈 화면)일 수 있음 → 명시적으로 frame 0 또는 후반 프레임 추출 필요.
 
 ---
 
 ## 부록. 원본 폴더 인덱스
 ```
 블로그/이미지/_downloads/
-├── p1~p6_*/      초기 분석 6개 글 (22장)
-└── pg2_1 … pg8_6/  나머지 42개 글 (154장)
+├── p1~p6_*/         초기 6개 글 (22장)
+├── pg2_1 … pg8_6/   페이지 2~8, 42개 글 (154장)
+└── pg9_1 … pg15_6/  페이지 9~15, 42개 글 (214장)
 ```
+> 페이지 9~15 상세 분류는 [[블로그/이미지/_분석원본_게시물별 이미지 분류.md]] 하단 참조.
