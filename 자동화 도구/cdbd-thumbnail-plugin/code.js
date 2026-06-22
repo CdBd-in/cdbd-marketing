@@ -47,6 +47,10 @@ const SLOT_TYPE_MAP = {
   "1:1262": "E", "1:1294": "E",
 };
 
+// 템플릿 페이지(1:1245)에 정상적으로 존재해야 하는 정식 슬롯 16종 ID.
+// 이 목록에 없는 최상위 FRAME = 자산 가져오기 잔재(캡처·미리보기) → 자동 정리 대상.
+const TEMPLATE_SLOT_IDS = new Set(Object.keys(SLOT_TYPE_MAP));
+
 // ============================================================================
 // cdbd.in viewer URL 매핑 (가이드 [[1-3-2. 이미지 출처]] §3.1·§2 기반)
 // A 유형 자동화: 타이틀 1a 기능명 → viewer URL + 영역 결정
@@ -488,6 +492,40 @@ function selectLayoutType(title, content) {
 
 figma.showUI(__html__, { width: 500, height: 700 });
 
+/**
+ * 자산 가져오기 잔재 프레임 자동 정리.
+ * — 템플릿 페이지(SLOT_TEMPLATE_PAGE_ID)에서 정식 슬롯 16종(TEMPLATE_SLOT_IDS)이
+ *   아닌 최상위 FRAME(캡처·미리보기 잔재)을 모두 제거한다.
+ * — 슬롯 16종은 ID 허용목록으로 보존하므로 안전하다.
+ * @returns {Promise<{removed: number, names: string[]}>}
+ */
+async function cleanupStrayFrames() {
+  await figma.loadAllPagesAsync();
+  const templatePage =
+    figma.root.children.find((p) => p.id === SLOT_TEMPLATE_PAGE_ID) ||
+    figma.root.children.find((p) => p.name.includes("슬롯"));
+  if (!templatePage) {
+    console.warn("[CdBd] 🧹 템플릿 페이지를 찾지 못해 잔재 정리 건너뜀");
+    return { removed: 0, names: [] };
+  }
+
+  const removedNames = [];
+  // remove() 중 라이브 컬렉션이 변형되므로 스냅샷 후 순회
+  for (const node of [...templatePage.children]) {
+    if (node.type !== "FRAME") continue;        // 프레임만 대상 (컴포넌트 등 보존)
+    if (TEMPLATE_SLOT_IDS.has(node.id)) continue; // 정식 슬롯 16종 보존
+    removedNames.push(node.name);
+    node.remove();
+  }
+
+  if (removedNames.length > 0) {
+    console.log(`[CdBd] 🧹 잔재 프레임 ${removedNames.length}개 정리: ${removedNames.join(", ")}`);
+  } else {
+    console.log("[CdBd] 🧹 정리할 잔재 프레임 없음");
+  }
+  return { removed: removedNames.length, names: removedNames };
+}
+
 figma.ui.onmessage = async (msg) => {
   if (msg.type === "create-variants") {
     try {
@@ -497,6 +535,16 @@ figma.ui.onmessage = async (msg) => {
     } catch (err) {
       figma.ui.postMessage({ type: "result", success: false, error: err.message });
       figma.notify(`❌ 오류: ${err.message}`, { error: true });
+    }
+  } else if (msg.type === "cleanup-strays") {
+    // 수동 정리 — UI 버튼에서 호출
+    try {
+      const { removed, names } = await cleanupStrayFrames();
+      figma.ui.postMessage({ type: "cleanup-result", success: true, removed, names });
+      figma.notify(removed > 0 ? `🧹 잔재 프레임 ${removed}개 정리 완료` : "🧹 정리할 잔재 프레임 없음");
+    } catch (err) {
+      figma.ui.postMessage({ type: "cleanup-result", success: false, error: err.message });
+      figma.notify(`❌ 정리 오류: ${err.message}`, { error: true });
     }
   } else if (msg.type === "generate-images-ai") {
     try {
@@ -522,6 +570,8 @@ async function createVariants(payload) {
   const { title, subtitle, emphasis, variants } = payload;
 
   await figma.loadAllPagesAsync();
+  // 자산 가져오기 잔재 프레임 자동 정리 (생성 전 템플릿 페이지 청소)
+  await cleanupStrayFrames();
   // 슬롯 템플릿 페이지 (clone 소스, 건드리지 않음)
   const templatePage =
     figma.root.children.find((p) => p.id === SLOT_TEMPLATE_PAGE_ID) ||
@@ -1149,6 +1199,8 @@ async function createVariantsFromImageData(payload) {
 
   // Step 1.5: 슬롯들이 Figma에 실제로 존재하는지 사전 검증
   await figma.loadAllPagesAsync();
+  // 자산 가져오기 잔재 프레임 자동 정리 (생성 전 템플릿 페이지 청소)
+  await cleanupStrayFrames();
   for (const sid of slotIds) {
     const slotNode = await figma.getNodeByIdAsync(sid);
     if (!slotNode) {
