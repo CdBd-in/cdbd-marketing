@@ -48,7 +48,8 @@
       "environmentHash": "",
       "installationMethodsByHost": {
         "device:9e0543e9-d10e-49a4-9eb3-58908b532dd1": "native-windows",
-        "device:7fedeb29-fd4f-436f-a44a-7ad0acb08b36": "native-windows"
+        "device:7fedeb29-fd4f-436f-a44a-7ad0acb08b36": "native-windows",
+        "device:dd38fa87-2427-4dfe-80b8-596a9446a541": "native-windows"
       },
       "wslDistroOverridesByHost": {}
     },
@@ -91,9 +92,10 @@
   },
   "lastCustomModel": "",
   "maxTabs": 3,
-  "tabBarPosition": "input",
   "enableAutoScroll": true,
   "deferMathRenderingDuringStreaming": true,
+  "expandFileEditsByDefault": false,
   "chatViewPlacement": "right-sidebar",
-  "hiddenProviderCommands": {}
+  "hiddenProviderCommands": {},
+  "tabBarPosition": "input"
 }
