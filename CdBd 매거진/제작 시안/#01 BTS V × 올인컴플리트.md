@@ -37,14 +37,21 @@ updated: 2026-06-22
 |---|------|------|---------------|--------|
 | 1 | HOOK | **Cover-IMG BG** | 제목: **BTS V가 산 그 모자, 첫 매장 문 여는 날** · 설명: (없음) | `allincomplete-cover.jpg` (네이비 볼캡 착용 모델) |
 | 2 | 누가 | **Body-Half** (이미지↑/텍스트↓) | 소제목: **올인컴플리트** · 본문: BTS V가 착용해 화제가 된 모자 브랜드. 첫 플래그십 매장을 연다. | `allincomplete-product.jpg` (네이비 볼캡 제품컷) |
-| 3 | 문제 | **Body-Texture BG-Illust** | 소제목: 기존 방식의 벽 · 본문(3): ① 종이 초대장 — 인쇄·발송·재고 ② SNS 공지 — 누가 올지 모름 ③ 자체 페이지 — 개발 2주 | Thiings ×3: `envelope`·`megaphone`·`hourglass` |
-| 4 | 데이터 | **Body-Half** (이미지↑/텍스트↓) | 소제목: 한 페이지에 다 담았다 · 본문: 초대장 + 룩북 + RSVP 응답 카드까지, 하나의 모바일 페이지로. | `allincomplete-cdbd-page.png` (**CdBd 실제 제작 페이지** 목업, 상단 모서리 각짐) — 상단 슬롯에 모서리 맞춰 위에서 블리드. tight 옵션: `allincomplete-cdbd-page-hero.png` |
-| 5 | 결과 | **Body-Full Bleed** (제목 오버레이) | 제목: **매장 오픈 전, 모든 정보를 모바일 한 페이지로** · 본문: 룩북·초대·예약을 따로 두지 않고. | `allincomplete-lookbook2.jpg` (라이트블루 볼캡 화보) |
-| 6 | 해법 | **Body-Texture BG-Illust** | 소제목: **CdBd가 한 일** · 본문(3): ① 초대 + 룩북 한 페이지 ② 응답 카드로 RSVP 자동 수집 ③ 디자이너 없이 5분 제작 | Thiings ×3: `mobile-phone`·`clipboard`·`stopwatch` |
-| 7 | 일반화 | **Body-Texture BG-Article** | 제목: 브랜드 런칭·플래그십 오픈을 준비 중이라면 · 본문: **페이지부터.** | (텍스트 중심 · 이미지 없음 또는 텍스처만) |
-| 8 | CTA | **BackCover-IMG BG** | 마무리: **전체 사례 → 프로필 링크** · 로고 `CdBd mag.` · (작게) home.cdbd.in | `allincomplete-cover.jpg` (표지와 수미상관, 디밍) |
+| 3 | 문제 | **Body-Texture BG-Illust** | 소제목: 기존 방식의 벽 · 본문(3): ① 종이 초대장 — 인쇄·발송·재고 ② SNS 공지 — 누가 올지 모름 ③ 자체 페이지 — 개발 2주 | Thiings ×3 **흑백 처리**: `envelope`·`question-mark`·`hourglass` |
+| 4 | 데이터 | **Body-Full Bleed** (black BG) | 소제목: 한 페이지에 다 담았다 · 본문: 초대장 · 룩북 · RSVP 응답 카드까지, 하나의 모바일 페이지로. | **검정 배경 + CdBd 실제 페이지 목업**(`allincomplete-cdbd-page.png`, 여백 두고 띄움·상단 각짐) + 하단 dim 그라데이션 + 텍스트 |
+| 5 | 결과 | **Body-Half** (이미지↑/텍스트↓) | 소제목: **매장 오픈 전, 모바일 한 페이지로** · 본문: 룩북·초대·예약을 따로 두지 않고, 흩어진 정보를 한 곳에서. · 출처 | `allincomplete-lookbook2.jpg` (라이트블루 볼캡 화보) |
+| 6 | 해법 | **Body-Texture BG-Illust** | 소제목: **CdBd가 한 일** · 본문(3): ① 초대 + 룩북 한 페이지 ② 응답 카드로 RSVP 자동 수집 ③ 디자이너 없이 5분 제작 | Thiings ×3 **컬러**: `mobile-phone`·`clipboard`·`lightning` |
+| 7 | 일반화 | **Body-Texture BG-Article** | 제목: 브랜드의 시작은 페이지부터 · 본문(아티클) · `7/8` | `allincomplete-lookbook1.jpg` (라이트블루 볼캡 화보) |
+| 8 | CTA | **BackCover-IMG BG** | 마무리: **전체 사례 → 프로필 링크 · home.cdbd.in** · 로고 `CdBd mag.`(화이트) | `allincomplete-navy-2.jpg` (네이비 볼캡 측면 — 표지와 다른 컷) |
 
 > **장수 조절 메모**: 표준 8장 풀스토리. 더 짧게(6장) 가려면 §기획가이드 깊이전략대로 4·7 비트를 통합·생략.
+
+### v2 수정 반영 (2026-06-22)
+- 이미지 중복 제거: 1·2·8 / 5·7 모두 서로 다른 컷 (8번 → 네이비 측면컷 `navy-2`)
+- 문제(03) ↔ 해법(06) 시각 구분: **문제 아이콘 흑백 / 해법 아이콘 컬러**
+- 03 아이콘 `megaphone`→`question-mark`(맥락: 누가 올지 모름), 06 `stopwatch`→`lightning`(빠름)
+- 03·06 제목 하이라이트 바 위치·폭 교정 (제목 글자폭에 맞춤)
+- 04↔05 페이지 유형 스왑: 04=Full Bleed(검정+목업+dim), 05=Body-Half
 
 ---
 
