@@ -21,16 +21,21 @@ console.error('통계 URL:', sp.url());
 
 // 빨간 선택박스 제거 시도: 다른 지표(클릭수) 클릭했다가 페이지뷰 다시 — 또는 그냥 둠. 여기선 그대로 캡처.
 async function clipCard(label, headingText, mustInclude) {
-  const box = await sp.evaluate(({ headingText, mustInclude }) => {
-    const els = [...document.querySelectorAll('*')];
-    const h = els.find(e => e.children.length === 0 && e.textContent.trim() === headingText);
-    if (!h) return null;
-    let c = h;
-    while (c && !mustInclude.every(t => c.textContent.includes(t))) c = c.parentElement;
-    if (!c) c = h.parentElement;
-    const r = c.getBoundingClientRect();
+  const box = await sp.evaluate(({ mustInclude }) => {
+    const els = [...document.querySelectorAll('div,section')];
+    let best = null, bestArea = Infinity;
+    for (const e of els) {
+      const t = e.textContent || '';
+      if (mustInclude.every(s => t.includes(s))) {
+        const r = e.getBoundingClientRect();
+        const a = r.width * r.height;
+        if (a > 5000 && a < bestArea) { best = e; bestArea = a; }
+      }
+    }
+    if (!best) return null;
+    const r = best.getBoundingClientRect();
     return { x: r.x, y: r.y, width: r.width, height: r.height };
-  }, { headingText, mustInclude });
+  }, { mustInclude });
   if (!box) { console.error(label, 'NOT FOUND'); return; }
   const pad = 8;
   await sp.screenshot({ path: join(OUT, `${label}.png`), clip: { x: Math.max(0, box.x - pad), y: Math.max(0, box.y - pad), width: box.width + pad * 2, height: box.height + pad * 2 } });
