@@ -13,13 +13,13 @@ const page = await context.newPage();
 await loginAndEnterEditor(page, context);
 console.error('로그인 OK');
 
-// 첫 "통계보기" 버튼 (카드 hover 시 노출) — force hover+click
-const statsBtn = page.getByRole('button', { name: '통계보기' }).first();
-await statsBtn.scrollIntoViewIfNeeded().catch(() => {});
-await statsBtn.hover({ force: true }).catch(() => {});
-await page.waitForTimeout(600);
-const popupP = context.waitForEvent('page', { timeout: 8000 }).catch(() => null);
-await statsBtn.click({ force: true });
+// 첫 "통계보기" 버튼 — DOM에서 직접 click 트리거 (hidden/hover 무관)
+const popupP = context.waitForEvent('page', { timeout: 12000 }).catch(() => null);
+const clicked = await page.evaluate(() => {
+  const b = [...document.querySelectorAll('button')].find(x => (x.textContent || '').trim() === '통계보기');
+  if (b) { b.click(); return true; } return false;
+});
+console.error('통계보기 click:', clicked);
 const np = await popupP;
 let sp = np || page;
 await sp.waitForTimeout(4500);
