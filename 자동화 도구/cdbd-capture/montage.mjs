@@ -11,18 +11,20 @@ const cells = files.map((f) => {
   const name = f.split('/').pop();
   return `<div class="c"><img src="${encodeURIComponent(name)}"><div class="l">${name}</div></div>`;
 }).join('');
+const COLS = parseInt(process.env.COLS || '4', 10);
+const CELL = parseInt(process.env.CELL || '320', 10);
 const html = `<!doctype html><meta charset=utf-8><style>
 body{margin:0;background:#222;font-family:sans-serif}
-.grid{display:grid;grid-template-columns:repeat(4,320px);gap:8px;padding:8px}
+.grid{display:grid;grid-template-columns:repeat(${COLS},${CELL}px);gap:8px;padding:8px}
 .c{background:#fff;border-radius:6px;overflow:hidden}
-.c img{width:320px;height:200px;object-fit:contain;background:#eee;display:block}
-.l{color:#fff;background:#000;font-size:13px;padding:3px 6px}
+.c img{width:${CELL}px;height:${Math.round(CELL*0.62)}px;object-fit:contain;background:#eee;display:block}
+.l{color:#fff;background:#000;font-size:14px;padding:3px 6px}
 </style><div class="grid">${cells}</div>`;
 
 const htmlPath = join(dirname(resolve(out)), '_sheet.html');
 writeFileSync(htmlPath, html);
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width: 1320, height: 800 } });
+const page = await browser.newPage({ viewport: { width: COLS * (CELL + 10) + 20, height: 800 } });
 await page.goto('file://' + htmlPath);
 await page.waitForTimeout(1500);
 await page.locator('.grid').screenshot({ path: out });
