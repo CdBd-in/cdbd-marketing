@@ -13,11 +13,12 @@ const page = await context.newPage();
 await loginAndEnterEditor(page, context);
 console.error('로그인 OK');
 
-// 첫 페이지 카드 → 통계보기
-const card = page.locator('div').filter({ has: page.getByText('새로운 페이지', { exact: false }) }).filter({ has: page.getByText(/수정됨/) }).first();
-await card.hover(); await page.waitForTimeout(1000);
+// 첫 "통계보기" 버튼 직접 클릭
+const statsBtn = page.getByRole('button', { name: '통계보기' }).first();
+await statsBtn.scrollIntoViewIfNeeded().catch(() => {});
+await page.waitForTimeout(500);
 const popupP = context.waitForEvent('page', { timeout: 8000 }).catch(() => null);
-await card.getByRole('button', { name: '통계보기', exact: true }).click();
+await statsBtn.click();
 const np = await popupP;
 let sp = np || page;
 await sp.waitForTimeout(4500);
