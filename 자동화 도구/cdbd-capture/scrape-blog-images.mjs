@@ -10,7 +10,8 @@ if (!URL) { console.error('need url'); process.exit(1); }
 
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
-await page.goto(URL, { waitUntil: 'networkidle', timeout: 60000 });
+await page.goto(URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+await page.waitForTimeout(2500);
 
 // 천천히 풀스크롤로 lazy-load 트리거
 await page.evaluate(async () => {
