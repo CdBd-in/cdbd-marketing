@@ -13,16 +13,10 @@ const page = await context.newPage();
 await loginAndEnterEditor(page, context);
 console.error('로그인 OK');
 
-// 첫 "통계보기" 버튼 — DOM에서 직접 click 트리거 (hidden/hover 무관)
-const popupP = context.waitForEvent('page', { timeout: 12000 }).catch(() => null);
-const clicked = await page.evaluate(() => {
-  const b = [...document.querySelectorAll('button')].find(x => (x.textContent || '').trim() === '통계보기');
-  if (b) { b.click(); return true; } return false;
-});
-console.error('통계보기 click:', clicked);
-const np = await popupP;
-let sp = np || page;
-await sp.waitForTimeout(4500);
+// 통계 페이지로 직접 이동 (page id 3030)
+await page.goto('https://www.cdbd.in/stats/3030/view', { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
+let sp = page;
+await sp.waitForTimeout(4000);
 console.error('통계 URL:', sp.url());
 
 // 빨간 선택박스 제거 시도: 다른 지표(클릭수) 클릭했다가 페이지뷰 다시 — 또는 그냥 둠. 여기선 그대로 캡처.
