@@ -4,20 +4,20 @@
   "title": "Continue from previous reference",
   "titleGenerationStatus": "success",
   "createdAt": 1780293869640,
-  "updatedAt": 1782278778041,
-  "lastResponseAt": 1782278778041,
+  "updatedAt": 1782294280559,
+  "lastResponseAt": 1782294280559,
   "sessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88",
   "providerState": {
     "providerSessionId": "6e79db76-37ac-4287-aa9c-6f75f67c4e88"
   },
   "usage": {
     "model": "opus",
-    "inputTokens": 1012,
-    "cacheCreationInputTokens": 337,
-    "cacheReadInputTokens": 94701,
+    "inputTokens": 2,
+    "cacheCreationInputTokens": 783,
+    "cacheReadInputTokens": 123085,
     "contextWindow": 1000000,
-    "contextTokens": 96050,
-    "percentage": 10,
+    "contextTokens": 123870,
+    "percentage": 12,
     "contextWindowIsAuthoritative": true
   }
 }
