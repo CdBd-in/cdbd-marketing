@@ -11,7 +11,7 @@
 
 ## 실행
 
-1. **`CdBd-블로그-썸네일`** Figma 파일(`3LPfZ6a6vlJrZ4TXorVWJL`) 열기
+1. **`CdBd-블로그-썸네일`** Figma 파일(`qRFc2HpQ4Mp562LQMB8BX0`) 열기
 2. **Plugins → Development → CdBd 블로그 썸네일 자동 제작** 실행
 3. UI에 다음 입력:
    - **타이틀** (줄바꿈은 `\n` 표기) — 예) `전 세계 파트너를 사로잡는\nCdBd 모바일 명함`
