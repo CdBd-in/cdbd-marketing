@@ -25,14 +25,14 @@
 
 ```json
 [
-  {"slotId": "1:1269", "imageHash": "1f0dd12ff1dab6ba707bdca34639a615078db56f", "name": "안1_corporate_상단·서브"},
-  {"slotId": "1:1246", "imageHash": "1f0dd12ff1dab6ba707bdca34639a615078db56f", "name": "안2_corporate_하단·서브"},
-  {"slotId": "1:1269", "imageHash": "bfcaf900ee18a3ba009a0ac49d532b0d26d477d2", "name": "안3_promotion_상단·서브"},
-  {"slotId": "1:1246", "imageHash": "bfcaf900ee18a3ba009a0ac49d532b0d26d477d2", "name": "안4_promotion_하단·서브"}
+  {"slotId": "338:3131", "imageHash": "1f0dd12ff1dab6ba707bdca34639a615078db56f", "name": "안1_corporate_상단·서브"},
+  {"slotId": "338:3107", "imageHash": "1f0dd12ff1dab6ba707bdca34639a615078db56f", "name": "안2_corporate_하단·서브"},
+  {"slotId": "338:3131", "imageHash": "bfcaf900ee18a3ba009a0ac49d532b0d26d477d2", "name": "안3_promotion_상단·서브"},
+  {"slotId": "338:3107", "imageHash": "bfcaf900ee18a3ba009a0ac49d532b0d26d477d2", "name": "안4_promotion_하단·서브"}
 ]
 ```
 
-- **`slotId`**: 슬롯 페이지(`1:1245`)의 16종 슬롯 중 하나. UI의 슬롯 ID 칩 클릭 시 클립보드 복사.
+- **`slotId`**: 슬롯 페이지(`338:3221`)의 16종 슬롯 중 하나. UI의 슬롯 ID 칩 클릭 시 클립보드 복사.
 - **`imageHash`**: Figma `upload_assets`로 업로드 후 받는 hash. Claude가 분석 후 안내.
 - **`name`**: 결과 레이어 이름. 사용자 검수 시 식별용.
 
@@ -49,7 +49,7 @@
 
 ## 잔재 프레임 자동 정리 (2026-06)
 
-자산을 가져오는 과정에서 템플릿 페이지(`1:1245`)에 남는 캡처·미리보기 프레임(예: `full`, `hero`, `thiings-*`, `c5-*` — 보통 400×300)을 자동으로 청소한다.
+자산을 가져오는 과정에서 템플릿 페이지(`338:3221`)에 남는 캡처·미리보기 프레임(예: `full`, `hero`, `thiings-*`, `c5-*` — 보통 400×300)을 자동으로 청소한다.
 
 - **판별 기준**: 템플릿 페이지의 최상위 `FRAME` 중 정식 슬롯 16종(`TEMPLATE_SLOT_IDS = SLOT_TYPE_MAP` 키)에 **없는** 것 → 잔재로 간주해 제거. 슬롯 16종은 ID 허용목록으로 보존되므로 안전.
 - **자동 실행**: `4안 자동 제작 ▶`(`createVariants`) 및 AI 이미지 생성(`createVariantsFromImageData`) 시작 시 `cleanupStrayFrames()`가 먼저 돌아 페이지를 청소한다.

@@ -76,7 +76,7 @@ node capture-catalog-cover.mjs    # 3개 카탈로그 일괄 (lookbook-offline·
 
 ### Figma 적용 (MCP)
 1. `upload_assets`로 표지 3장 업로드 → imageHash 획득
-2. C 슬롯(`1:1287`) clone → VISUAL_SLOT_1/2/3에 멀티페이지 목업(`338:3238`) 인스턴스
+2. C 슬롯(`338:3150`) clone → VISUAL_SLOT_1/2/3에 멀티페이지 목업(`338:3238`) 인스턴스
 3. 각 인스턴스의 **#ffffff SOLID rect(`Rectangle 3424`)만** 찾아 표지 hash로 fill (scaleMode **FILL**)
    - ⚠️ `IMAGE` fill rect(`image 167` 폰 본체)는 건드리지 않음 — SOLID 흰색만 타겟
 4. 좌→우 = 다른 카탈로그, 중앙 목업이 돌출
