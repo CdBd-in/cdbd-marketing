@@ -20,7 +20,7 @@ const argv = process.argv.slice(2);
 if (argv.length) list = list.filter(t => argv.includes(t.slug) || argv.includes(t.slug.split('/').pop()));
 
 const browser = await chromium.launch({ headless: true });
-const ctx = await browser.newContext({ viewport: { width: 1440, height: SEG_H }, locale: 'ko-KR', deviceScaleFactor: 3 });
+const ctx = await browser.newContext({ viewport: { width: 1440, height: SEG_H + 400 }, locale: 'ko-KR', deviceScaleFactor: 3 });
 const page = await ctx.newPage();
 
 async function revealPhoneContent() {
@@ -79,7 +79,7 @@ for (const t of list) {
         if (i === N - 1 && box.h > SEG_H) yTop = box.h - SEG_H;   // 마지막은 하단 정렬(겹침 허용)
         const segH = Math.min(SEG_H, box.h);
         const clipY = box.y + yTop;
-        await page.evaluate((y) => window.scrollTo(0, y), Math.max(0, clipY - 50));
+        await page.evaluate((y) => window.scrollTo(0, y), Math.max(0, clipY));
         await page.waitForTimeout(200);
         const fname = String(i + 1).padStart(2, '0') + '.png';
         await page.screenshot({ path: join(dir, fname), clip: { x: box.x, y: clipY, width: SEG_W, height: segH } });
