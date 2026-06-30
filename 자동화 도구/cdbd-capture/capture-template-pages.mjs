@@ -66,9 +66,18 @@ for (const t of list) {
         frame.style.border='none'; frame.style.borderRadius='0'; frame.style.boxShadow='none';
         const inner = frame.firstElementChild || frame;
         inner.setAttribute('data-cap','1');
+        // 클리핑 해제: inner의 모든 조상에서 overflow/고정높이 제거 → 폰 콘텐츠 전체가 펼쳐지도록
+        let n = inner;
+        while (n && n !== document.body) {
+          n.style.overflow = 'visible';
+          n.style.maxHeight = 'none';
+          if (n !== inner) n.style.height = 'auto';
+          n = n.parentElement;
+        }
         const r = inner.getBoundingClientRect();
         return { ok:true, w:Math.round(r.width), h:Math.round(r.height) };
       });
+      await page.waitForTimeout(800);
       if (!found.ok) { console.log(`✗ ${t.slug} — 폰 프레임 못 찾음`); continue; }
       await page.locator('[data-cap="1"]').screenshot({ path: join(OUT, t.slug.replace(/\//g,'__')+'.png') });
       console.log(`✓ ${t.slug}  단일 (${found.w}×${found.h})`);
