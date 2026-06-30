@@ -20,23 +20,33 @@ const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'ko-KR', deviceScaleFactor: 2 });
 const page = await ctx.newPage();
 
-// 문서 전체를 천천히 끝까지 스크롤 → lazy-load 콘텐츠/이미지 모두 트리거
-async function thoroughScroll() {
+// 폰 미리보기의 내부 스크롤 컨테이너를 끝까지 천천히 스크롤 →
+// reveal-on-scroll 애니메이션 + lazy 이미지 전부 트리거한 뒤 맨 위로 복귀
+async function revealPhoneContent() {
   await page.evaluate(async () => {
     const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-    let last = 0;
-    for (let i = 0; i < 80; i++) {
-      window.scrollBy(0, 500);
-      await sleep(350);
-      const h = document.body.scrollHeight;
-      if (window.scrollY + window.innerHeight >= h - 5) {
-        if (h === last) break; // 더 늘어나지 않으면 종료
-        last = h;
-      }
+    // 우측 절반의 스크롤 컨테이너(overflowY auto/scroll, scrollHeight>clientHeight) 탐색
+    const vw = window.innerWidth;
+    let scroller = null, best = 0;
+    for (const el of document.querySelectorAll('div')) {
+      const cs = getComputedStyle(el);
+      if (!/(auto|scroll)/.test(cs.overflowY)) continue;
+      if (el.scrollHeight <= el.clientHeight + 50) continue;
+      const r = el.getBoundingClientRect();
+      if (r.x < vw * 0.4) continue;
+      if (el.scrollHeight > best) { best = el.scrollHeight; scroller = el; }
     }
-    window.scrollTo(0, 0);
+    const target = scroller || document.scrollingElement;
+    const step = Math.max(300, (scroller ? scroller.clientHeight : window.innerHeight) * 0.6);
+    const max = scroller ? scroller.scrollHeight : document.body.scrollHeight;
+    for (let y = 0; y <= max + step; y += step) {
+      if (scroller) scroller.scrollTop = y; else window.scrollTo(0, y);
+      await sleep(380);
+    }
+    await sleep(600);
+    if (scroller) scroller.scrollTop = 0; else window.scrollTo(0, 0);
   });
-  await page.waitForTimeout(1500);
+  await page.waitForTimeout(1200);
 }
 
 const done = [];
@@ -46,7 +56,7 @@ for (const t of list) {
     await page.waitForTimeout(3500);
 
     if (t.type === 'single') {
-      await thoroughScroll();
+      await revealPhoneContent();
       const found = await page.evaluate(() => {
         const frame = Array.from(document.querySelectorAll('div')).find(d => {
           const c = (d.className||'').toString();
