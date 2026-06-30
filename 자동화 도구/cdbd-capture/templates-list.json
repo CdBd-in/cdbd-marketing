@@ -1,0 +1,44 @@
+[
+  {
+    "type": "single",
+    "desc": "VIP를 위한 맞춤 초대장으로 행사의 품격 높이기",
+    "url": "https://www.cdbd.in/templates/invitation/seminar",
+    "slug": "invitation/seminar"
+  },
+  {
+    "type": "single",
+    "desc": "예약형 초대장으로 방문 일정 조율 완전 자동화하기",
+    "url": "https://www.cdbd.in/templates/invitation/reservation",
+    "slug": "invitation/reservation"
+  },
+  {
+    "type": "single",
+    "desc": "RSVP 접수형 템플릿으로 초대와 참석 관리를 한 번에",
+    "url": "https://www.cdbd.in/templates/invitation/rsvp",
+    "slug": "invitation/rsvp"
+  },
+  {
+    "type": "single",
+    "desc": "고객의 이름이 담긴 초대장으로 참석율 2배 만들기",
+    "url": "https://www.cdbd.in/templates/invitation/personalized",
+    "slug": "invitation/personalized"
+  },
+  {
+    "type": "single",
+    "desc": "개발 없이 구축하는 우리 브랜드 팝업 스토어 예약 시스템",
+    "url": "https://www.cdbd.in/templates/invitation/popup-reservation",
+    "slug": "invitation/popup-reservation"
+  },
+  {
+    "type": "single",
+    "desc": "지원자 RSVP와 세션 선택을 한 페이지에",
+    "url": "https://www.cdbd.in/templates/invitation/recruit-rsvp",
+    "slug": "invitation/recruit-rsvp"
+  },
+  {
+    "type": "single",
+    "desc": "수강 신청부터 정원 관리까지, 반별 예약 카드 하나로 끝내기",
+    "url": "https://www.cdbd.in/templates/invitation/class-enroll",
+    "slug": "invitation/class-enroll"
+  }
+]
