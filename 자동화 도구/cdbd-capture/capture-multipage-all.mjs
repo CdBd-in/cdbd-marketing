@@ -8,7 +8,7 @@ import { readFileSync, mkdirSync, existsSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
 
-const OUT_ROOT = join(homedir(), 'Desktop', 'cdbd 템플릿 스크린샷 (목업용 분할)');
+const OUT_ROOT = process.env.CDBD_OUT_ROOT || join(homedir(), 'Desktop', 'CdBd', '마케팅', 'CdBd 템플릿 스크린샷');
 if (!existsSync(OUT_ROOT)) mkdirSync(OUT_ROOT, { recursive: true });
 
 let list = JSON.parse(readFileSync('templates-list.json', 'utf8')).filter(t => t.type === 'multi');
