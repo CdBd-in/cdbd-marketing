@@ -55,8 +55,8 @@ for (const t of list) {
 
     if (t.type === 'single') {
       await revealPhoneContent();
-      // 폰 프레임 정리 + 클리핑 해제 + inner 문서좌표/크기 측정
-      const box = await page.evaluate(() => {
+      // 폰 프레임 정리 + 클리핑 해제 + inner를 캡처 대상으로 마킹, 전체 콘텐츠 높이 측정
+      const fullH = await page.evaluate(() => {
         const frame = Array.from(document.querySelectorAll('div')).find(d => {
           const c = (d.className||'').toString();
           return c.includes('rounded-[19px]') && c.includes('border-[6px]');
@@ -64,28 +64,33 @@ for (const t of list) {
         if (!frame) return null;
         frame.style.border='none'; frame.style.borderRadius='0'; frame.style.boxShadow='none';
         const inner = frame.firstElementChild || frame;
+        inner.setAttribute('data-cap','1');
         let n = inner;
         while (n && n !== document.body) { n.style.overflow='visible'; n.style.maxHeight='none'; if (n!==inner) n.style.height='auto'; n = n.parentElement; }
-        window.scrollTo(0, 0);
-        const r = inner.getBoundingClientRect();
-        return { x: r.x + window.scrollX, y: r.y + window.scrollY, w: Math.round(r.width), h: Math.round(r.height) };
+        return inner.scrollHeight;
       });
-      if (!box) { console.log(`✗ ${t.slug} — 폰 프레임 못 찾음`); continue; }
-      await page.waitForTimeout(500);
+      if (fullH == null) { console.log(`✗ ${t.slug} — 폰 프레임 못 찾음`); continue; }
+      await page.waitForTimeout(400);
 
-      const N = Math.max(1, Math.ceil(box.h / SEG_H));
+      const segH = Math.min(SEG_H, fullH);
+      const N = Math.max(1, Math.ceil(fullH / SEG_H));
       for (let i = 0; i < N; i++) {
         let yTop = i * SEG_H;
-        if (i === N - 1 && box.h > SEG_H) yTop = box.h - SEG_H;   // 마지막은 하단 정렬(겹침 허용)
-        const segH = Math.min(SEG_H, box.h);
-        const clipY = box.y + yTop;
-        await page.evaluate((y) => window.scrollTo(0, y), Math.max(0, clipY));
-        await page.waitForTimeout(200);
+        if (i === N - 1 && fullH > SEG_H) yTop = fullH - SEG_H;   // 마지막은 하단 정렬(겹침 허용)
+        // inner를 segH 높이 스크롤 창으로 만들고 scrollTop으로 세그먼트 노출
+        await page.evaluate(({ yTop, segH }) => {
+          const inner = document.querySelector('[data-cap="1"]');
+          inner.style.height = segH + 'px';
+          inner.style.maxHeight = segH + 'px';
+          inner.style.overflow = 'hidden';
+          inner.scrollTop = yTop;
+        }, { yTop, segH });
+        await page.waitForTimeout(180);
         const fname = String(i + 1).padStart(2, '0') + '.png';
-        await page.screenshot({ path: join(dir, fname), clip: { x: box.x, y: clipY, width: SEG_W, height: segH } });
+        await page.locator('[data-cap="1"]').screenshot({ path: join(dir, fname) });
       }
-      console.log(`✓ ${t.slug}  단일 → ${N}분할 (전체 ${box.h}px)`);
-      summary.push({ slug: t.slug, type: 'single', segments: N, totalH: box.h });
+      console.log(`✓ ${t.slug}  단일 → ${N}분할 (전체 ${fullH}px, 세그 ${SEG_W}×${segH})`);
+      summary.push({ slug: t.slug, type: 'single', segments: N, totalH: fullH });
     } else {
       await page.waitForTimeout(2500);
       const box = await page.evaluate(() => {
