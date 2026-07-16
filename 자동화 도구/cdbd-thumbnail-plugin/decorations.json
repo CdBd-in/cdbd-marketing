@@ -1,12 +1,12 @@
 {
-  "_comment": "CdBd 썸네일 데코 자산 카탈로그. Figma 컴포넌트(figma_component_id) 또는 Thiings 직접 다운로드(thiings_url) 후 이미지 fill로 사용.",
+  "_comment": "CdBd 썸네일 데코 자산 카탈로그. 🔴 2026-07-16 정책 변경 — 매 썸네일마다 Thiings에서 주제에 맞는 아이콘을 새로 탐색·다운로드해 쓴다. 이 목록은 재사용 우선순위가 아니라 과거 사용 이력·폴백 참고용.",
   "_format": {
     "slug": "Thiings 슬러그 (URL의 /things/{slug})",
     "thiings_url": "원본 PNG URL (vercel-storage)",
-    "figma_component_id": "Figma 컴포넌트 ID (없으면 null → thiings_url 다운로드 후 직접 image fill)",
+    "figma_component_id": "Figma 컴포넌트 ID — 폴백 전용(재사용 우선 아님). 기본은 thiings 새 다운로드.",
     "match": "§5.4 매칭 기능명 (CdBd 제품) 또는 §5.1 톤 키워드",
     "priority": "⭐⭐⭐ | ⭐⭐ | ⭐",
-    "_사용법": "figma_component_id 있으면 createInstance / 없으면 thiings_url 다운로드 → upload_assets → VISUAL_SLOT에 image fill (D 유형 FIT)"
+    "_사용법": "🔴 기본 = 주제 키워드로 Thiings(10,000종+) 새로 검색 → 슬러그 확정 → https://www.thiings.co/things/{slug} PNG 다운로드 → upload_assets → 슬롯 IMAGE fill. figma_component_id는 폴백(주제에 맞는 게 없거나 다운로드 실패 시)에만 createInstance. 직전 썸네일과 같은 슬러그 재사용 ❌."
   },
   "decorations": {
     "sparkle": {
