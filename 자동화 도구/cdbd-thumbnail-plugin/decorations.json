@@ -1,122 +1,127 @@
 {
-  "_comment": "CdBd 썸네일 데코 자산 카탈로그. 🔴 2026-07-16 정책 변경 — 매 썸네일마다 Thiings에서 주제에 맞는 아이콘을 새로 탐색·다운로드해 쓴다. 이 목록은 재사용 우선순위가 아니라 과거 사용 이력·폴백 참고용.",
-  "_format": {
-    "slug": "Thiings 슬러그 (URL의 /things/{slug})",
-    "thiings_url": "원본 PNG URL (vercel-storage)",
-    "figma_component_id": "Figma 컴포넌트 ID — 폴백 전용(재사용 우선 아님). 기본은 thiings 새 다운로드.",
-    "match": "§5.4 매칭 기능명 (CdBd 제품) 또는 §5.1 톤 키워드",
-    "priority": "⭐⭐⭐ | ⭐⭐ | ⭐",
-    "_사용법": "🔴 기본 = 주제 키워드로 Thiings(10,000종+) 새로 검색 → 슬러그 확정 → https://www.thiings.co/things/{slug} PNG 다운로드 → upload_assets → 슬롯 IMAGE fill. figma_component_id는 폴백(주제에 맞는 게 없거나 다운로드 실패 시)에만 createInstance. 직전 썸네일과 같은 슬러그 재사용 ❌."
+  "_comment": "CdBd 썸네일 데코 — 단일 소스(SSOT). 🔴 2026-07-16 정책: 데코는 매번 Thiings에서 주제에 맞는 아이콘을 새로 검색·다운로드한다. 이 파일은 '재사용 목록'이 아니라 (a) 폴백 컴포넌트 인덱스 (b) 검증된 슬러그 사전이다.",
+  "_policy": {
+    "기본": "글 고유 명사 → Thiings 검색 → og:image에서 PNG URL 해석 → 다운로드 → 슬롯 IMAGE fill",
+    "폴백": "검색·다운로드 전부 실패 시에만 fallback_components 사용 (sparkle2/3/4 랜덤)",
+    "금지": [
+      "직전 썸네일과 같은 슬러그 재사용",
+      "sparkle1(338:3248) 사용",
+      "하드코딩 매핑을 1순위로 사용"
+    ],
+    "슬러그_검증": "존재하지 않는 슬러그도 HTTP 200 + 사이트 기본 OG를 반환한다. 반드시 og:image:alt 가 '<Name> 3D icon' 형식인지 확인할 것 (2026-07-16 확인).",
+    "참조": "1. 블로그/1-1. 썸네일/1-1-3. 이미지 규칙.md §4 원칙 · §4.1 컴포넌트 15종 · §1d 검색어 힌트"
   },
-  "decorations": {
-    "magic-wand": {
-      "thiings_url": null,
-      "figma_component_id": "338:3256",
-      "match": "AI·자동화·스마트",
-      "priority": "⭐⭐"
-    },
-    "crown": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-o82qImf0LoNhDhTch7C2G2CwyVj9Ud.png",
-      "figma_component_id": "338:3258",
-      "match": "프리미엄·VIP·고급",
-      "priority": "⭐⭐"
-    },
-    "shield": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-CZxT18DNf12Vjv8rrZv8V0tddRi9Xu.png",
-      "figma_component_id": null,
-      "match": "안전·보안·신뢰",
-      "priority": "⭐⭐"
-    },
-    "calendar": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-ij7GEZhfmzLNlLgDJVhkST8FIm5rJV.png",
-      "figma_component_id": "338:3260",
-      "match": "예약·이벤트·일정",
-      "priority": "⭐⭐"
-    },
-    "globe": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-KBUXl6AhDj2IsoZnozHL39yX1acqa5.png",
-      "figma_component_id": "338:3262",
-      "match": "글로벌·해외·다국어",
-      "priority": "⭐⭐"
-    },
-    "envelope": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-lp9vjuXTCqeB9yhVXBoBmyqdy8e9jv.png",
-      "figma_component_id": null,
-      "match": "초대장 (invitation 5종) §5.4 ⭐⭐⭐",
-      "priority": "⭐⭐⭐"
-    },
-    "credit-card": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-xylXWxjRoBYdaH9IPOx1080olvl5Ur.png",
-      "figma_component_id": null,
-      "match": "결제·금융 (※ 명함은 id-card 등 별도 시도)",
-      "priority": "⭐⭐"
-    },
-    "book": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-QhvfavmoGfPmREwwvl4XtqTIORARDz.png",
-      "figma_component_id": "338:3274",
-      "match": "카탈로그·브로셔 (catalog 4종) §5.4 ⭐⭐⭐",
-      "priority": "⭐⭐⭐"
-    },
-    "gift": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-yqO1RPHoOjuNAvqMy997ClCPIwICsb.png",
-      "figma_component_id": null,
-      "match": "추석·명절·선물·이벤트·혜택",
-      "priority": "⭐⭐"
-    },
-    "bar-chart": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-73pNGHJBFF75t0zRsAgQInW9DAM4vd.png",
-      "figma_component_id": null,
-      "match": "영업 데이터·분석·통계·매출·성장·비교 (§5.4 분석)",
-      "priority": "⭐⭐"
-    },
-    "piggy-bank": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-yXrodRQ1tufqDh2wXeFl82sDXZBv3c.png",
-      "figma_component_id": null,
-      "match": "비용 절감·예산·인쇄비 제거·절약",
-      "priority": "⭐⭐"
-    },
-    "qr-code": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-hheqtvAvZLesg9WYTVCosfDrtUtC7H.png",
-      "figma_component_id": null,
-      "match": "QR·배포·박람회·로드쇼·링크",
-      "priority": "⭐⭐"
-    },
-    "leaf": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-emC1BR5ljWANScSXgr4K8nwvA1f0aW.png",
-      "figma_component_id": null,
-      "match": "ESG·환경·친환경·디지털 전환·지속가능",
-      "priority": "⭐⭐"
+  "_verified": "2026-07-16 Figma 실조회 + Thiings 슬러그 실존 검증",
+  "fallback_components": {
+    "_note": "보조 이미지_데코 section(338:3247) 실제 자식 15종. 폴백 전용. sparkle1은 사용 금지라 제외.",
+    "_random_pool": [
+      "sparkle2",
+      "sparkle3",
+      "sparkle4"
+    ],
+    "sparkle1": {
+      "id": "338:3248",
+      "banned": true,
+      "note": "사용 금지 — 화이트리스트 제외"
     },
     "sparkle2": {
-      "thiings_url": null,
-      "figma_component_id": "338:3250",
-      "match": "일반 강조 (기본값)",
-      "priority": "⭐⭐⭐",
-      "_note": "구 'sparkle' 항목 대체 — sparkle1(338:3248)은 사용 금지라 화이트리스트 sparkle2로 교체 (2026-07-16)"
+      "id": "338:3250"
+    },
+    "sparkle3": {
+      "id": "338:3252"
+    },
+    "sparkle4": {
+      "id": "338:3254"
+    },
+    "magic wind": {
+      "id": "338:3256"
+    },
+    "crown": {
+      "id": "338:3258"
+    },
+    "calendar": {
+      "id": "338:3260"
+    },
+    "globe": {
+      "id": "338:3262"
+    },
+    "stethoscope": {
+      "id": "338:3264"
+    },
+    "document": {
+      "id": "338:3266"
+    },
+    "paper": {
+      "id": "338:3268"
+    },
+    "file": {
+      "id": "338:3270"
+    },
+    "folder": {
+      "id": "338:3272"
+    },
+    "book": {
+      "id": "338:3274"
+    },
+    "name-card-stack": {
+      "id": "338:3276"
     }
   },
-  "needed": {
-    "_comment": "§5.4 1순위 자산 — Thiings에서 직접 다운로드 후 사용 (book·chart는 2026-06-22 완료)",
-    "card": {
-      "thiings_slug": "card",
-      "match": "명함 (profilelink 7종)",
-      "priority": "⭐⭐⭐"
-    },
-    "chat-bubble": {
-      "thiings_slug": "chat-bubble",
-      "match": "상담·문의 (폼)",
-      "priority": "⭐⭐⭐"
-    },
-    "pen": {
-      "thiings_slug": "pen",
-      "match": "서명·계약 (guide)",
-      "priority": "⭐⭐⭐"
-    }
+  "verified_slugs": {
+    "_note": "Thiings 실존 확인된 슬러그(og:image:alt = '<Name> 3D icon'). 검색어 후보의 출발점 — 고정 매핑 아님.",
+    "기능": [
+      "contact",
+      "book",
+      "calendar",
+      "ticket",
+      "envelope",
+      "bar-chart",
+      "dashboard",
+      "qr-code",
+      "handshake"
+    ],
+    "톤": [
+      "magic-wand",
+      "robot",
+      "gear",
+      "crown",
+      "diamond",
+      "trophy",
+      "rocket",
+      "shield",
+      "globe",
+      "world-map",
+      "airplane",
+      "stethoscope",
+      "document",
+      "file",
+      "contract",
+      "paper",
+      "folder",
+      "archive-box",
+      "lightbulb",
+      "party-popper",
+      "gift",
+      "lantern"
+    ]
   },
-  "_추가_후보": {
-    "_comment": "이번 세션 탐색 중 발견한 추가 Thiings 슬러그 (미사용, 필요 시 활용)",
-    "money": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-IeKGYKeLd25OWlrmd5WrSsfbD7OIPA.png",
-    "coin": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-S70eRKwGghbWrxnQFigJARrNiDgtR2.png",
-    "recycle": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-3oO1FdYezMT0TBNCoEM47udBNFPzer.png"
+  "dead_slugs": {
+    "_note": "❌ 실존하지 않음 — 후보에 넣지 말 것 (2026-07-16 검증). 넣어도 og:image:alt 검증에서 걸러지나 헛시도만 늘어남.",
+    "list": [
+      "name-card-stack",
+      "card",
+      "catalog",
+      "magazine",
+      "chart-up",
+      "link",
+      "share",
+      "lock",
+      "check",
+      "medical-bag",
+      "printer",
+      "hands",
+      "people",
+      "moon-cake"
+    ]
   }
 }
