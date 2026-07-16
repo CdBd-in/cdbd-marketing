@@ -369,32 +369,48 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 591:646(멀�
       // Step 1: 보조 3D 아이콘 — Thiings에서 다운로드 (선택)
       // ════════════════════════════════════════════
       let thiingsIcon = null;
-      if (decoration && decoration.thiings_url) {
+      // 🔴 2026-07-16 정책: 매번 Thiings에서 주제에 맞는 아이콘을 새로 검색·다운로드 (§4 원칙)
+      //   searchTerms를 순서대로 시도 → 슬러그 페이지의 og:image에서 PNG URL 해석 → 다운로드
+      //   전부 실패해야만 폴백 컴포넌트(decoration.fallback) 사용
+      const _terms = (decoration && decoration.searchTerms) || [];
+
+      async function resolveThiingsPng(slug) {
+        const page = await fetch(`https://www.thiings.co/things/${encodeURIComponent(slug)}`);
+        if (!page.ok) throw new Error(`슬러그 없음 (HTTP ${page.status})`);
+        const html = await page.text();
+        const m = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i);
+        if (!m) throw new Error('og:image 없음');
+        return m[1];
+      }
+      async function downloadThiingsPng(url, slug) {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const buf = await (await r.blob()).arrayBuffer();
+        return { success: true, bytes: Array.from(new Uint8Array(buf)),
+                 name: `thiings_${slug}`, keyword: slug, isIcon: true };
+      }
+
+      for (const slug of _terms) {
         try {
-          console.log(`[CdBd] Thiings 다운로드: ${decoration.slug} → ${decoration.thiings_url}`);
           document.getElementById('result').innerHTML =
-            `📥 Thiings 3D 아이콘 다운로드 중… (${decoration.slug})`;
-
-          const response = await fetch(decoration.thiings_url);
-          if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-          const blob = await response.blob();
-          const arrayBuffer = await blob.arrayBuffer();
-          const bytes = Array.from(new Uint8Array(arrayBuffer));
-
-          thiingsIcon = {
-            success: true,
-            bytes: bytes,
-            name: `thiings_${decoration.slug}`,
-            keyword: decoration.slug,
-            isIcon: true
-          };
-          console.log(`[CdBd] ✅ Thiings 다운로드 완료: ${decoration.slug}`);
+            `📥 Thiings 검색·다운로드 중… (${slug})`;
+          const png = await resolveThiingsPng(slug);
+          thiingsIcon = await downloadThiingsPng(png, slug);
+          console.log(`[CdBd] ✅ Thiings 신규 다운로드: ${slug} → ${png}`);
+          break;
         } catch (e) {
-          console.error(`[CdBd] Thiings 다운로드 실패:`, e.message);
+          console.warn(`[CdBd] Thiings "${slug}" 실패 → 다음 후보: ${e.message}`);
         }
-      } else if (decoration && decoration.figma_id) {
-        console.log(`[CdBd] ⚠️ Thiings URL 없음 (${decoration.slug}). Figma 컴포넌트 ${decoration.figma_id} 사용 예정`);
+      }
+
+      // 하위호환: 구 thiings_url 직접 지정 시
+      if (!thiingsIcon && decoration && decoration.thiings_url) {
+        try { thiingsIcon = await downloadThiingsPng(decoration.thiings_url, decoration.slug); }
+        catch (e) { console.error('[CdBd] 구 thiings_url 다운로드 실패:', e.message); }
+      }
+      if (!thiingsIcon) {
+        const fb = decoration && decoration.fallback;
+        console.warn(`[CdBd] ⚠️ Thiings 전부 실패 → 폴백 컴포넌트 ${fb ? fb.slug + ' (' + fb.figma_id + ')' : '없음'}`);
       }
 
       // ════════════════════════════════════════════

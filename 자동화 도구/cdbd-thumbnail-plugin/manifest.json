@@ -4,7 +4,9 @@
   "api": "1.0.0",
   "main": "code.js",
   "ui": "ui.html",
-  "editorType": ["figma"],
+  "editorType": [
+    "figma"
+  ],
   "networkAccess": {
     "allowedDomains": [
       "https://lexica.art",
@@ -17,7 +19,9 @@
       "https://cdbd.in",
       "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com",
       "https://*.public.blob.vercel-storage.com",
-      "https://thiings.co"
+      "https://thiings.co",
+      "https://www.thiings.co",
+      "https://*.thiings.co"
     ]
   }
 }
