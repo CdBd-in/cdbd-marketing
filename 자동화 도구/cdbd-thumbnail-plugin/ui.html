@@ -380,6 +380,12 @@ mockupId: 75:34(원페이지-1, 기본) / 1:1369(원페이지-2) / 591:646(멀�
         const html = await page.text();
         const m = html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/i);
         if (!m) throw new Error('og:image 없음');
+        // 🔴 필수 검증: 없는 슬러그도 HTTP 200 + 사이트 기본 OG 이미지를 준다 (2026-07-16 확인).
+        //    실제 아이콘 페이지만 og:image:alt 가 "<Name> 3D icon" 형식 → 이걸로 진짜/가짜 판별.
+        const alt = html.match(/<meta\s+property="og:image:alt"\s+content="([^"]+)"/i);
+        if (!alt || !/\b3D icon\b/i.test(alt[1])) {
+          throw new Error(`실존 슬러그 아님 (기본 OG: "${alt ? alt[1] : '?'}")`);
+        }
         return m[1];
       }
       async function downloadThiingsPng(url, slug) {

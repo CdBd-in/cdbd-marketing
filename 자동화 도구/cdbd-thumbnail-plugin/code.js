@@ -193,24 +193,26 @@ const FALLBACK_COMPONENTS = {
 // 우선순위: ① 글 고유 명사에서 새로 뽑기 ⭐ → ② 아래 계열 힌트 → ③ sparkle 폴백
 // ───────────────────────────────────────────────────────────
 const SEARCH_HINTS = [
+  // ⚠️ 힌트 슬러그는 실존 검증 완료 (2026-07-16). 없는 슬러그는 og:image:alt 검증에서 걸러지지만,
+  //    후보에 죽은 슬러그를 넣으면 헛시도만 늘어나므로 검증된 것만 유지한다.
   // CdBd 기능명 계열 (⭐⭐⭐ 최우선 힌트)
-  { keywords: ["명함", "프로필", "profilelink"], hints: ["name-card-stack", "card", "contact"] },
-  { keywords: ["카탈로그", "룩북", "브로셔", "매거진"], hints: ["book", "catalog", "magazine"] },
+  { keywords: ["명함", "프로필", "profilelink"], hints: ["contact", "handshake"] },
+  { keywords: ["카탈로그", "룩북", "브로셔", "매거진"], hints: ["book"] },
   { keywords: ["예약", "초대", "invitation"], hints: ["calendar", "ticket", "envelope"] },
-  { keywords: ["통계", "성과", "데이터", "분석"], hints: ["bar-chart", "chart-up", "dashboard"] },
-  { keywords: ["QR", "링크", "배포"], hints: ["qr-code", "link", "share"] },
+  { keywords: ["통계", "성과", "데이터", "분석"], hints: ["bar-chart", "dashboard"] },
+  { keywords: ["QR", "링크", "배포"], hints: ["qr-code", "envelope"] },
   // 톤·감정 계열
   { keywords: ["AI", "자동화", "스마트"], hints: ["magic-wand", "robot", "gear"] },
   { keywords: ["프리미엄", "VIP", "고급"], hints: ["crown", "diamond", "trophy"] },
-  { keywords: ["성장", "성공", "매출", "상승"], hints: ["chart-up", "trophy", "rocket"] },
-  { keywords: ["안전", "보안", "신뢰"], hints: ["shield", "lock", "check"] },
+  { keywords: ["성장", "성공", "매출", "상승"], hints: ["trophy", "rocket", "bar-chart"] },
+  { keywords: ["안전", "보안", "신뢰"], hints: ["shield"] },
   { keywords: ["글로벌", "해외", "다국어"], hints: ["globe", "world-map", "airplane"] },
-  { keywords: ["의료", "병원", "헬스케어", "한의사"], hints: ["stethoscope", "medical-bag"] },
+  { keywords: ["의료", "병원", "헬스케어", "한의사"], hints: ["stethoscope"] },
   { keywords: ["PDF", "플립북", "문서", "계약", "약관"], hints: ["document", "file", "contract"] },
-  { keywords: ["종이", "인쇄물", "아날로그"], hints: ["paper", "printer"] },
+  { keywords: ["종이", "인쇄물", "아날로그"], hints: ["paper"] },
   { keywords: ["보관", "정리", "자료실", "관리"], hints: ["folder", "archive-box"] },
-  { keywords: ["팀", "협업", "함께", "공유"], hints: ["hands", "people", "handshake"] },
-  { keywords: ["아이디어", "팁", "노하우"], hints: ["lightbulb", "sparkle2"] },
+  { keywords: ["팀", "협업", "함께", "공유"], hints: ["handshake"] },
+  { keywords: ["아이디어", "팁", "노하우"], hints: ["lightbulb"] },
   { keywords: ["런칭", "출시", "신규", "오픈"], hints: ["rocket", "party-popper"] },
 ];
 
