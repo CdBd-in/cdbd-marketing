@@ -9,39 +9,33 @@
     "_사용법": "🔴 기본 = 주제 키워드로 Thiings(10,000종+) 새로 검색 → 슬러그 확정 → https://www.thiings.co/things/{slug} PNG 다운로드 → upload_assets → 슬롯 IMAGE fill. figma_component_id는 폴백(주제에 맞는 게 없거나 다운로드 실패 시)에만 createInstance. 직전 썸네일과 같은 슬러그 재사용 ❌."
   },
   "decorations": {
-    "sparkle": {
-      "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-SJcxLxIC8lH8u7d9CvcOGIULgEz7wX.png",
-      "figma_component_id": "4:141",
-      "match": "일반 강조 (기본값)",
-      "priority": "⭐⭐⭐"
-    },
     "magic-wand": {
       "thiings_url": null,
-      "figma_component_id": "4:167",
+      "figma_component_id": "338:3256",
       "match": "AI·자동화·스마트",
       "priority": "⭐⭐"
     },
     "crown": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-o82qImf0LoNhDhTch7C2G2CwyVj9Ud.png",
-      "figma_component_id": "14:2",
+      "figma_component_id": "338:3258",
       "match": "프리미엄·VIP·고급",
       "priority": "⭐⭐"
     },
     "shield": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-CZxT18DNf12Vjv8rrZv8V0tddRi9Xu.png",
-      "figma_component_id": "14:3",
+      "figma_component_id": null,
       "match": "안전·보안·신뢰",
       "priority": "⭐⭐"
     },
     "calendar": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-ij7GEZhfmzLNlLgDJVhkST8FIm5rJV.png",
-      "figma_component_id": "14:4",
+      "figma_component_id": "338:3260",
       "match": "예약·이벤트·일정",
       "priority": "⭐⭐"
     },
     "globe": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-KBUXl6AhDj2IsoZnozHL39yX1acqa5.png",
-      "figma_component_id": "14:5",
+      "figma_component_id": "338:3262",
       "match": "글로벌·해외·다국어",
       "priority": "⭐⭐"
     },
@@ -59,7 +53,7 @@
     },
     "book": {
       "thiings_url": "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-QhvfavmoGfPmREwwvl4XtqTIORARDz.png",
-      "figma_component_id": null,
+      "figma_component_id": "338:3274",
       "match": "카탈로그·브로셔 (catalog 4종) §5.4 ⭐⭐⭐",
       "priority": "⭐⭐⭐"
     },
@@ -92,6 +86,13 @@
       "figma_component_id": null,
       "match": "ESG·환경·친환경·디지털 전환·지속가능",
       "priority": "⭐⭐"
+    },
+    "sparkle2": {
+      "thiings_url": null,
+      "figma_component_id": "338:3250",
+      "match": "일반 강조 (기본값)",
+      "priority": "⭐⭐⭐",
+      "_note": "구 'sparkle' 항목 대체 — sparkle1(338:3248)은 사용 금지라 화이트리스트 sparkle2로 교체 (2026-07-16)"
     }
   },
   "needed": {

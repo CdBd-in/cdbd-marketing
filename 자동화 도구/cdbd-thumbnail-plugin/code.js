@@ -167,164 +167,97 @@ const TYPE_TO_SLOTS = {
 // 컴포넌트 페이지: ✨ 컴포넌트 (1:1343) → 보조 이미지_데코 section (4:117)
 // ============================================================================
 
-// sparkle 1-4 (§4.1: 다양성 확보용, 자동화에서 랜덤 또는 회전 사용)
+// 🔴 2026-07-16 정책: 데코는 매번 Thiings에서 주제에 맞는 아이콘을 새로 검색·다운로드한다.
+// 하드코딩 매핑 우선 선택 폐지 — 그게 "맨날 같은 썸네일"의 원인이었음 (§4 원칙 / §1d).
+// 아래 표들은 "고정 정답"이 아니라 (a) 검색어 힌트 (b) 다운로드 실패 시 폴백 컴포넌트다.
+
+// 폴백 컴포넌트 — 실측 검증된 ID만 (보조 이미지_데코 section 338:3247)
+// ⛔ sparkle1(338:3248)은 화이트리스트 제외 — 폴백 풀에 넣지 않는다 (§4.1 / 레이아웃 규칙 §2.4)
 const SPARKLE_VARIANTS = [
-  { slug: "sparkle1", figma_id: "4:141", thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-SJcxLxIC8lH8u7d9CvcOGIULgEz7wX.png" },
-  { slug: "sparkle2", figma_id: "4:166", thiings_url: null }, // variant
-  { slug: "sparkle3", figma_id: "4:165", thiings_url: null },
-  { slug: "sparkle4", figma_id: "4:164", thiings_url: null },
+  { slug: "sparkle2", figma_id: "338:3250", thiings_url: null },
+  { slug: "sparkle3", figma_id: "338:3252", thiings_url: null },
+  { slug: "sparkle4", figma_id: "338:3254", thiings_url: null },
 ];
 
-// ───────────────────────────────────────────────────────────
-// §5.4 CdBd 기능명 → D 자산 매핑 (최우선 ⭐⭐⭐)
-// ───────────────────────────────────────────────────────────
-const FUNCTION_TO_DECORATION = [
-  {
-    keywords: ["초대장", "invitation", "RSVP", "참석"],
-    slug: "envelope",
-    figma_id: null, // 컴포넌트화 대기 (1d12e23b... 다운로드 완료)
-    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-lp9vjuXTCqeB9yhVXBoBmyqdy8e9jv.png",
-    note: "§5.4 초대장 1순위",
-  },
-  {
-    keywords: ["예약", "예약 관리", "예약 시스템", "일정 조율", "appointment", "reservation"],
-    slug: "calendar",
-    figma_id: "14:4",
-    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-ij7GEZhfmzLNlLgDJVhkST8FIm5rJV.png",
-    note: "§5.4 예약 1순위",
-  },
-  {
-    keywords: ["AI", "ai", "인공지능", "자동화", "automation", "스마트", "smart"],
-    slug: "magic-wand",
-    figma_id: "4:167",
-    thiings_url: null, // Figma 컴포넌트만 있음
-    note: "§5.4 AI·자동화 1순위",
-  },
-  // §5.4 미등록 자산 (slug만 매칭하고 다운로드 불가 시 다음 후보로)
-  {
-    keywords: ["명함"],
-    slug: "card",
-    figma_id: null,
-    thiings_url: null,
-    note: "§5.4 명함 1순위 (미등록)",
-  },
-  {
-    keywords: ["카탈로그", "브로셔", "catalog", "brochure"],
-    slug: "book",
-    figma_id: null,
-    thiings_url: null,
-    note: "§5.4 카탈로그·브로셔 1순위 (미등록)",
-  },
-  {
-    keywords: ["상담", "문의", "consultation", "inquiry"],
-    slug: "chat-bubble",
-    figma_id: null,
-    thiings_url: null,
-    note: "§5.4 상담·문의 1순위 (미등록)",
-  },
-  {
-    keywords: ["서명", "계약", "signature", "contract"],
-    slug: "pen",
-    figma_id: null,
-    thiings_url: null,
-    note: "§5.4 서명·계약 1순위 (미등록)",
-  },
-  {
-    keywords: ["분석", "통계", "성장", "매출", "성공", "analytics"],
-    slug: "chart-up",
-    figma_id: null,
-    thiings_url: null,
-    note: "§5.4 분석·성장 1순위 (미등록)",
-  },
-  {
-    keywords: ["결제", "금융", "payment", "finance"],
-    slug: "credit-card",
-    figma_id: null,
-    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-xylXWxjRoBYdaH9IPOx1080olvl5Ur.png",
-    note: "결제·금융",
-  },
-];
+// 실존 폴백 컴포넌트 인덱스 (Figma 조회 검증 2026-07-16)
+const FALLBACK_COMPONENTS = {
+  "sparkle2": "338:3250", "sparkle3": "338:3252", "sparkle4": "338:3254",
+  "magic-wand": "338:3256", "crown": "338:3258", "calendar": "338:3260",
+  "globe": "338:3262", "stethoscope": "338:3264", "document": "338:3266",
+  "paper": "338:3268", "file": "338:3270", "folder": "338:3272",
+  "book": "338:3274", "name-card-stack": "338:3276",
+};
 
 // ───────────────────────────────────────────────────────────
-// §5.1 톤·정서 → 데코 매핑 (1a 매칭 없을 때 fallback)
+// 검색어 힌트 — Thiings 검색의 "출발점"일 뿐, 최종 선택 아님
+// 우선순위: ① 글 고유 명사에서 새로 뽑기 ⭐ → ② 아래 계열 힌트 → ③ sparkle 폴백
 // ───────────────────────────────────────────────────────────
-const TONE_TO_DECORATION = [
-  {
-    keywords: ["프리미엄", "VIP", "vip", "고급", "premium"],
-    slug: "crown",
-    figma_id: "14:2",
-    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-o82qImf0LoNhDhTch7C2G2CwyVj9Ud.png",
-    note: "§5.1 프리미엄 1순위",
-  },
-  {
-    keywords: ["안전", "보안", "신뢰", "security", "safe", "trust"],
-    slug: "shield",
-    figma_id: "14:3",
-    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-CZxT18DNf12Vjv8rrZv8V0tddRi9Xu.png",
-    note: "§5.1 안전·보안 1순위",
-  },
-  {
-    keywords: ["글로벌", "해외", "다국어", "global", "international"],
-    slug: "globe",
-    figma_id: "14:5",
-    thiings_url: "https://lftz25oez4aqbxpq.public.blob.vercel-storage.com/image-KBUXl6AhDj2IsoZnozHL39yX1acqa5.png",
-    note: "§5.1 글로벌 1순위",
-  },
-  // 미등록 (slug만)
-  { keywords: ["팀", "협업", "함께", "공유"], slug: "hands", figma_id: null, thiings_url: null, note: "§5.1 팀·협업 (미등록)" },
-  { keywords: ["아이디어", "팁", "노하우", "tips"], slug: "lightbulb", figma_id: null, thiings_url: null, note: "§5.1 아이디어 (미등록)" },
-  { keywords: ["런칭", "출시", "신규", "오픈"], slug: "rocket", figma_id: null, thiings_url: null, note: "§5.1 런칭 (미등록)" },
+const SEARCH_HINTS = [
+  // CdBd 기능명 계열 (⭐⭐⭐ 최우선 힌트)
+  { keywords: ["명함", "프로필", "profilelink"], hints: ["name-card-stack", "card", "contact"] },
+  { keywords: ["카탈로그", "룩북", "브로셔", "매거진"], hints: ["book", "catalog", "magazine"] },
+  { keywords: ["예약", "초대", "invitation"], hints: ["calendar", "ticket", "envelope"] },
+  { keywords: ["통계", "성과", "데이터", "분석"], hints: ["bar-chart", "chart-up", "dashboard"] },
+  { keywords: ["QR", "링크", "배포"], hints: ["qr-code", "link", "share"] },
+  // 톤·감정 계열
+  { keywords: ["AI", "자동화", "스마트"], hints: ["magic-wand", "robot", "gear"] },
+  { keywords: ["프리미엄", "VIP", "고급"], hints: ["crown", "diamond", "trophy"] },
+  { keywords: ["성장", "성공", "매출", "상승"], hints: ["chart-up", "trophy", "rocket"] },
+  { keywords: ["안전", "보안", "신뢰"], hints: ["shield", "lock", "check"] },
+  { keywords: ["글로벌", "해외", "다국어"], hints: ["globe", "world-map", "airplane"] },
+  { keywords: ["의료", "병원", "헬스케어", "한의사"], hints: ["stethoscope", "medical-bag"] },
+  { keywords: ["PDF", "플립북", "문서", "계약", "약관"], hints: ["document", "file", "contract"] },
+  { keywords: ["종이", "인쇄물", "아날로그"], hints: ["paper", "printer"] },
+  { keywords: ["보관", "정리", "자료실", "관리"], hints: ["folder", "archive-box"] },
+  { keywords: ["팀", "협업", "함께", "공유"], hints: ["hands", "people", "handshake"] },
+  { keywords: ["아이디어", "팁", "노하우"], hints: ["lightbulb", "sparkle2"] },
+  { keywords: ["런칭", "출시", "신규", "오픈"], hints: ["rocket", "party-popper"] },
 ];
 
 /**
- * 데코 자동 선택 (가이드 §5.4 → §5.1 → sparkle 폴백 순서)
+ * 🔴 데코 검색어 후보 산출 (2026-07-16 재작성)
  *
- * 가이드 §5.5: "기능명 매칭이 없을 때만 §5.1 톤 매핑 사용"
- * 가이드 §4.1: "sparkle 4종: 자동화에서 랜덤 또는 회전 사용"
+ * 하드코딩 아이콘을 "선택"하지 않는다. Thiings에서 매번 새로 검색할
+ * **검색어 후보**를 돌려주고, 실제 아이콘은 다운로드로 확정한다.
  *
- * @returns {{ slug, figma_id, thiings_url, note }}
+ * 반환: { searchTerms: string[], fallback: {slug, figma_id}, note }
+ *  - searchTerms: Thiings 검색 후보 (앞쪽이 우선). UI가 순서대로 시도.
+ *  - fallback: 검색·다운로드 전부 실패했을 때만 쓰는 컴포넌트 (sparkle2/3/4 랜덤)
  */
-function selectDecoration(blogTitle, blogContent = "") {
+function selectDecoration(blogTitle, blogContent = "", opts = {}) {
   const text = `${blogTitle} ${blogContent}`.toLowerCase();
+  const avoid = new Set((opts.avoidSlugs || []).map(s => String(s).toLowerCase())); // 직전 썸네일 슬러그 회피
 
-  // ─── 1순위: §5.4 CdBd 기능명 매칭 ⭐⭐⭐ ───
-  for (const deco of FUNCTION_TO_DECORATION) {
-    for (const kw of deco.keywords) {
-      if (text.includes(kw.toLowerCase())) {
-        // 다운로드 또는 인스턴스화 가능한지 확인
-        if (deco.thiings_url || deco.figma_id) {
-          console.log(`[CdBd] 데코 매칭: "${kw}" → ${deco.slug} (${deco.note})`);
-          return deco;
-        } else {
-          console.warn(`[CdBd] 매칭됐지만 미등록: ${deco.slug} (${deco.note})`);
-          // 다음 후보 계속 탐색
-        }
-      }
+  const terms = [];
+  const push = (t) => {
+    const k = String(t).toLowerCase();
+    if (t && !avoid.has(k) && !terms.includes(t)) terms.push(t);
+  };
+
+  // ① 글 고유 명사 우선 — 호출자가 넘긴 주제 키워드(가장 구체적)
+  (opts.topicTerms || []).forEach(push);
+
+  // ② 계열 힌트 — 매칭되는 것 전부 후보에 추가 (등록 여부와 무관하게 수집)
+  for (const row of SEARCH_HINTS) {
+    if (row.keywords.some(kw => text.includes(kw.toLowerCase()))) {
+      row.hints.forEach(push);
     }
   }
 
-  // ─── 2순위: §5.1 톤 매칭 ───
-  for (const deco of TONE_TO_DECORATION) {
-    for (const kw of deco.keywords) {
-      if (text.includes(kw.toLowerCase())) {
-        if (deco.thiings_url || deco.figma_id) {
-          console.log(`[CdBd] 톤 매칭: "${kw}" → ${deco.slug} (${deco.note})`);
-          return deco;
-        } else {
-          console.warn(`[CdBd] 톤 매칭됐지만 미등록: ${deco.slug} (${deco.note})`);
-        }
-      }
-    }
-  }
+  // ③ 폴백 — 화이트리스트 sparkle만 (sparkle1 제외)
+  const fb = SPARKLE_VARIANTS[Math.floor(Math.random() * SPARKLE_VARIANTS.length)];
 
-  // ─── 폴백: sparkle 1-4 랜덤 (§4.1 다양성) ───
-  const sparkle = SPARKLE_VARIANTS[Math.floor(Math.random() * SPARKLE_VARIANTS.length)];
-  console.log(`[CdBd] 데코 폴백: ${sparkle.slug} (sparkle 1-4 랜덤)`);
+  console.log(`[CdBd] 데코 검색어 후보: ${terms.length ? terms.join(", ") : "(없음 → 폴백)"}`);
   return {
-    slug: sparkle.slug,
-    figma_id: sparkle.figma_id,
-    thiings_url: sparkle.thiings_url,
-    note: "§5.1 일반 강조 (기본값)",
+    searchTerms: terms,
+    fallback: { slug: fb.slug, figma_id: fb.figma_id },
+    note: terms.length
+      ? "Thiings 신규 검색 (매번 새로 다운로드 — §4 원칙)"
+      : "검색어 미도출 → sparkle 폴백",
+    // 하위호환: 기존 코드가 .slug를 참조할 수 있어 첫 후보/폴백을 노출
+    slug: terms[0] || fb.slug,
+    figma_id: terms.length ? null : fb.figma_id,
+    thiings_url: null,
   };
 }
 
