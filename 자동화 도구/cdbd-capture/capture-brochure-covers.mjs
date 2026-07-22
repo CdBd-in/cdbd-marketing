@@ -5,10 +5,9 @@ import { mkdirSync, existsSync } from 'fs';
 import { resolve, join } from 'path';
 const W = 390, H = 860;                     // 폰 스크린 비율(0.4535)에 근접(0.4535*860≈390)
 const CATALOGS = [
+  ['https://www.cdbd.in/templates/catalog/lookbook-offline/viewer', 'lookbook-offline'],
+  ['https://www.cdbd.in/templates/catalog/lookbook-online/viewer', 'lookbook-online'],
   ['https://www.cdbd.in/templates/catalog/oak_table/viewer', 'oak_table'],
-  ['https://www.cdbd.in/templates/catalog/lookbook/viewer', 'lookbook'],
-  ['https://www.cdbd.in/templates/catalog/newarrival/viewer', 'newarrival'],
-  ['https://www.cdbd.in/templates/catalog/online_lookbook/viewer', 'online_lookbook'],
 ];
 const OUT = resolve('./screenshots/brochure-covers');
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
