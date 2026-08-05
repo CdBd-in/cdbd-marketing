@@ -6,6 +6,7 @@
   "effortLevel": "xhigh",
   "serviceTier": "default",
   "enableAutoTitleGeneration": true,
+  "titleGenerationLocale": "",
   "titleGenerationModel": "opus",
   "excludedTags": [],
   "mediaFolder": "",
@@ -24,6 +25,7 @@
   "locale": "en",
   "providerConfigs": {
     "claude": {
+      "enabled": true,
       "safeMode": "acceptEdits",
       "cliPath": "",
       "cliPathsByHost": {
@@ -34,8 +36,10 @@
       "enableBangBash": false,
       "customModels": "",
       "lastModel": "opus",
+      "modelEnvironmentType": "opus",
+      "titleModelEnvironmentType": "opus",
       "environmentVariables": "",
-      "environmentHash": ""
+      "environmentHash": "runtime-input:v1:122487052b8f958c73c485cf85d894a31a0f7b9fe6fa52e270cc8c223a2bd9d6"
     },
     "codex": {
       "enabled": false,
@@ -51,7 +55,11 @@
       },
       "wslDistroOverridesByHost": {},
       "modelAliases": {},
-      "visibleModels": null
+      "visibleModels": null,
+      "discoveredModels": [],
+      "enableUltraEffort": false,
+      "catalogTimestamp": 0,
+      "catalogFingerprint": ""
     },
     "opencode": {
       "cliPath": "",
@@ -76,6 +84,18 @@
       "preferredThinkingByModel": {},
       "toolMode": "all",
       "visibleModels": []
+    },
+    "grok": {
+      "catalogsByHost": {},
+      "cliPath": "",
+      "cliPathsByHost": {},
+      "enabled": false,
+      "environmentHash": "",
+      "environmentVariables": "",
+      "modelAliases": {},
+      "planBasePermissionMode": "normal",
+      "preferredReasoningByModel": {},
+      "visibleModels": null
     }
   },
   "settingsProvider": "claude",
@@ -90,6 +110,7 @@
   "savedProviderPermissionMode": {
     "claude": "yolo"
   },
+  "pendingProviderSessionInvalidations": {},
   "lastCustomModel": "",
   "maxTabs": 3,
   "enableAutoScroll": true,
