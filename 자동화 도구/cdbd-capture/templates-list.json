@@ -1,135 +1,205 @@
 [
- {
-  "type": "single",
-  "desc": "VIP를 위한 맞춤 초대장으로 행사의 품격 높이기",
-  "catUrl": "https://www.cdbd.in/templates/invitation",
-  "url": "https://www.cdbd.in/templates/invitation/seminar",
-  "slug": "invitation/seminar"
- },
- {
-  "type": "single",
-  "desc": "예약형 초대장으로 방문 일정 조율 완전 자동화하기",
-  "catUrl": "https://www.cdbd.in/templates/invitation",
-  "url": "https://www.cdbd.in/templates/invitation/reservation",
-  "slug": "invitation/reservation"
- },
- {
-  "type": "single",
-  "desc": "RSVP 접수형 템플릿으로 초대와 참석 관리를 한 번에",
-  "catUrl": "https://www.cdbd.in/templates/invitation",
-  "url": "https://www.cdbd.in/templates/invitation/rsvp",
-  "slug": "invitation/rsvp"
- },
- {
-  "type": "single",
-  "desc": "고객의 이름이 담긴 초대장으로 참석율 2배 만들기",
-  "catUrl": "https://www.cdbd.in/templates/invitation",
-  "url": "https://www.cdbd.in/templates/invitation/personalized",
-  "slug": "invitation/personalized"
- },
- {
-  "type": "single",
-  "desc": "개발 없이 구축하는 우리 브랜드 팝업 스토어 예약 시스템",
-  "catUrl": "https://www.cdbd.in/templates/invitation",
-  "url": "https://www.cdbd.in/templates/invitation/popup-reservation",
-  "slug": "invitation/popup-reservation"
- },
- {
-  "type": "single",
-  "desc": "지원자 RSVP와 세션 선택을 한 페이지에",
-  "catUrl": "https://www.cdbd.in/templates/invitation",
-  "url": "https://www.cdbd.in/templates/invitation/recruit-rsvp",
-  "slug": "invitation/recruit-rsvp"
- },
- {
-  "type": "single",
-  "desc": "수강 신청부터 정원 관리까지, 반별 예약 카드 하나로 끝내기",
-  "catUrl": "https://www.cdbd.in/templates/invitation",
-  "url": "https://www.cdbd.in/templates/invitation/class-enroll",
-  "slug": "invitation/class-enroll"
- },
- {
-  "type": "single",
-  "desc": "제품의 정보 전달과 고객 문의 연결을 위한 디지털 상세 페이지",
-  "catUrl": "https://www.cdbd.in/templates/catalog",
-  "url": "https://www.cdbd.in/templates/catalog/product-detail",
-  "slug": "catalog/product-detail"
- },
- {
-  "type": "multi",
-  "desc": "시즌 컬렉션과 매장 정보 감각적으로 전달하기",
-  "catUrl": "https://www.cdbd.in/templates/catalog",
-  "url": "https://www.cdbd.in/templates/catalog/lookbook-offline",
-  "slug": "catalog/lookbook-offline"
- },
- {
-  "type": "multi",
-  "desc": "신제품 소개부터 구매 유도, 매장 안내까지 하나의 흐름으로",
-  "catUrl": "https://www.cdbd.in/templates/catalog",
-  "url": "https://www.cdbd.in/templates/catalog/newarrival",
-  "slug": "catalog/newarrival"
- },
- {
-  "type": "multi",
-  "desc": "화보 감성 그대로, 제품 탐색부터 쿠폰까지",
-  "catUrl": "https://www.cdbd.in/templates/catalog",
-  "url": "https://www.cdbd.in/templates/catalog/lookbook-online",
-  "slug": "catalog/lookbook-online"
- },
- {
-  "type": "single",
-  "desc": "프로모션 노출과 상담 신청으로 전환을 만드는 영업용 명함",
-  "catUrl": "https://www.cdbd.in/templates/profilelink",
-  "url": "https://www.cdbd.in/templates/profilelink/promotion",
-  "slug": "profilelink/promotion"
- },
- {
-  "type": "single",
-  "desc": "원 페이지 설문형으로 고객 이탈률 최소화하기",
-  "catUrl": "https://www.cdbd.in/templates/profilelink",
-  "url": "https://www.cdbd.in/templates/profilelink/intake",
-  "slug": "profilelink/intake"
- },
- {
-  "type": "single",
-  "desc": "원클릭 연락처 저장 기능으로 선점하는 비즈니스 기회",
-  "catUrl": "https://www.cdbd.in/templates/profilelink",
-  "url": "https://www.cdbd.in/templates/profilelink/corporate",
-  "slug": "profilelink/corporate"
- },
- {
-  "type": "single",
-  "desc": "복잡한 홈페이지 대신, 핵심 진료 정보부터 정리해 보여주기",
-  "catUrl": "https://www.cdbd.in/templates/profilelink",
-  "url": "https://www.cdbd.in/templates/profilelink/dental",
-  "slug": "profilelink/dental"
- },
- {
-  "type": "single",
-  "desc": "연락처와 작업 이력을 한 번에 확인하는 포트폴리오형 명함",
-  "catUrl": "https://www.cdbd.in/templates/profilelink",
-  "url": "https://www.cdbd.in/templates/profilelink/portfolio",
-  "slug": "profilelink/portfolio"
- },
- {
-  "type": "single",
-  "desc": "연락처를 넘어, 진행하는 사업과 캠페인을 소개하기",
-  "catUrl": "https://www.cdbd.in/templates/profilelink",
-  "url": "https://www.cdbd.in/templates/profilelink/campaign",
-  "slug": "profilelink/campaign"
- },
- {
-  "type": "single",
-  "desc": "복잡한 B2B 영업, 모바일 명함으로 실계약 전환율 40% 상승",
-  "catUrl": "https://www.cdbd.in/templates/profilelink",
-  "url": "https://www.cdbd.in/templates/profilelink/sales",
-  "slug": "profilelink/sales"
- },
- {
-  "type": "multi",
-  "desc": "스타트업 IR 피치덱 — 링크로 여는 회사소개서",
-  "catUrl": "https://www.cdbd.in/templates/catalog",
-  "url": "https://www.cdbd.in/templates/catalog/startup-deck",
-  "slug": "catalog/startup-deck"
- }
+  {
+    "type": "single",
+    "desc": "초청장이 곧 입장 QR이 되는 임원 만찬 초대장",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/prestige",
+    "slug": "invitation/prestige"
+  },
+  {
+    "type": "single",
+    "desc": "예매 문의 DM을 절반으로 줄이는 공연 초대장",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/event-ticket",
+    "slug": "invitation/event-ticket"
+  },
+  {
+    "type": "single",
+    "desc": "종이 좌석표 대신, 좌석 배치도와 동반자 정보를 한 페이지에 담기",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/gala-rsvp",
+    "slug": "invitation/gala-rsvp"
+  },
+  {
+    "type": "single",
+    "desc": "흩어져있던 회차 별 예배 신청, 한 페이지에 모아두기",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/church-rsvp",
+    "slug": "invitation/church-rsvp"
+  },
+  {
+    "type": "single",
+    "desc": "지원자 RSVP와 세션 선택을 한 페이지에",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/recruit-rsvp",
+    "slug": "invitation/recruit-rsvp"
+  },
+  {
+    "type": "single",
+    "desc": "수강 신청부터 정원 관리까지, 반별 예약 카드 하나로 끝내기",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/class-enroll",
+    "slug": "invitation/class-enroll"
+  },
+  {
+    "type": "single",
+    "desc": "개발 없이 구축하는 우리 브랜드 팝업 스토어 예약 시스템",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/popup-reservation",
+    "slug": "invitation/popup-reservation"
+  },
+  {
+    "type": "single",
+    "desc": "고객의 이름이 담긴 초대장으로 참석율 2배 만들기",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/personalized",
+    "slug": "invitation/personalized"
+  },
+  {
+    "type": "single",
+    "desc": "RSVP 접수형 템플릿으로 초대와 참석 관리를 한 번에",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/rsvp",
+    "slug": "invitation/rsvp"
+  },
+  {
+    "type": "single",
+    "desc": "예약형 초대장으로 방문 일정 조율 완전 자동화하기",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/reservation",
+    "slug": "invitation/reservation"
+  },
+  {
+    "type": "single",
+    "desc": "VIP를 위한 맞춤 초대장으로 행사의 품격 높이기",
+    "catUrl": "https://www.cdbd.in/templates/invitation",
+    "url": "https://www.cdbd.in/templates/invitation/seminar",
+    "slug": "invitation/seminar"
+  },
+  {
+    "type": "single",
+    "desc": "전시가 끝나도 바이어 폰에 남아 상담으로 이어지는 박람회 QR 카탈로그",
+    "catUrl": "https://www.cdbd.in/templates/catalog",
+    "url": "https://www.cdbd.in/templates/catalog/trade-show",
+    "slug": "catalog/trade-show"
+  },
+  {
+    "type": "single",
+    "desc": "제품 하나하나가 상세페이지가 되는 뷰티 카탈로그",
+    "catUrl": "https://www.cdbd.in/templates/catalog",
+    "url": "https://www.cdbd.in/templates/catalog/beauty-catalog",
+    "slug": "catalog/beauty-catalog"
+  },
+  {
+    "type": "multi",
+    "desc": "읽고 끝나지 않는 IR 피치덱",
+    "catUrl": "https://www.cdbd.in/templates/catalog",
+    "url": "https://www.cdbd.in/templates/catalog/startup-deck",
+    "slug": "catalog/startup-deck"
+  },
+  {
+    "type": "multi",
+    "desc": "신제품 소개부터 구매 유도, 매장 안내까지 하나의 흐름으로",
+    "catUrl": "https://www.cdbd.in/templates/catalog",
+    "url": "https://www.cdbd.in/templates/catalog/newarrival",
+    "slug": "catalog/newarrival"
+  },
+  {
+    "type": "multi",
+    "desc": "화보 감성 그대로, 제품 탐색부터 쿠폰까지",
+    "catUrl": "https://www.cdbd.in/templates/catalog",
+    "url": "https://www.cdbd.in/templates/catalog/lookbook-online",
+    "slug": "catalog/lookbook-online"
+  },
+  {
+    "type": "multi",
+    "desc": "시즌 컬렉션과 매장 정보 감각적으로 전달하기",
+    "catUrl": "https://www.cdbd.in/templates/catalog",
+    "url": "https://www.cdbd.in/templates/catalog/lookbook-offline",
+    "slug": "catalog/lookbook-offline"
+  },
+  {
+    "type": "single",
+    "desc": "제품의 정보 전달과 고객 문의 연결을 위한 디지털 상세 페이지",
+    "catUrl": "https://www.cdbd.in/templates/catalog",
+    "url": "https://www.cdbd.in/templates/catalog/product-detail",
+    "slug": "catalog/product-detail"
+  },
+  {
+    "type": "single",
+    "desc": "사원은 사진·번호만 바꾸고, 회사가 배포하는 표준 영업 명함",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/corporate-sales",
+    "slug": "profilelink/corporate-sales"
+  },
+  {
+    "type": "single",
+    "desc": "반복 설명은 그만, 링크 하나로 끝내는 프리랜서 소개서",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/doyun",
+    "slug": "profilelink/doyun"
+  },
+  {
+    "type": "single",
+    "desc": "\"얼마예요?\"가 \"언제 가면 돼요?\"로 바뀌는 PT 코치 명함",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/coach-card",
+    "slug": "profilelink/coach-card"
+  },
+  {
+    "type": "multi",
+    "desc": "블로그에 흩어진 시공 사진 대신, 전후 비교부터 견적 문의까지 한 페이지로",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/interior-portfolio",
+    "slug": "profilelink/interior-portfolio"
+  },
+  {
+    "type": "single",
+    "desc": "복잡한 B2B 영업, 모바일 명함으로 실계약 전환율 40% 상승",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/sales",
+    "slug": "profilelink/sales"
+  },
+  {
+    "type": "single",
+    "desc": "프로모션 노출과 상담 신청으로 전환을 만드는 영업용 명함",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/promotion",
+    "slug": "profilelink/promotion"
+  },
+  {
+    "type": "single",
+    "desc": "연락처를 넘어, 진행하는 사업과 캠페인을 소개하기",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/campaign",
+    "slug": "profilelink/campaign"
+  },
+  {
+    "type": "single",
+    "desc": "연락처와 작업 이력을 한 번에 확인하는 포트폴리오형 명함",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/portfolio",
+    "slug": "profilelink/portfolio"
+  },
+  {
+    "type": "single",
+    "desc": "복잡한 홈페이지 대신, 핵심 진료 정보부터 정리해 보여주기",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/dental",
+    "slug": "profilelink/dental"
+  },
+  {
+    "type": "single",
+    "desc": "원클릭 연락처 저장 기능으로 선점하는 비즈니스 기회",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/corporate",
+    "slug": "profilelink/corporate"
+  },
+  {
+    "type": "single",
+    "desc": "원 페이지 설문형으로 고객 이탈률 최소화하기",
+    "catUrl": "https://www.cdbd.in/templates/profilelink",
+    "url": "https://www.cdbd.in/templates/profilelink/intake",
+    "slug": "profilelink/intake"
+  }
 ]
