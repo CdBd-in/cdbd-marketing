@@ -29,7 +29,7 @@
       "safeMode": "acceptEdits",
       "cliPath": "",
       "cliPathsByHost": {
-        "device:9e0543e9-d10e-49a4-9eb3-58908b532dd1": "/opt/homebrew/bin/claude"
+        "device-499b3a0254f70edb65ea5785605389b1c231c52645d96027e1c3b8b915b51913": "/opt/homebrew/bin/claude"
       },
       "loadUserSettings": true,
       "enableChrome": false,
