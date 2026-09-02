@@ -5,9 +5,9 @@ const URL='https://www.cdbd.in/templates/invitation/popup-reservation/viewer';
 const W=430, H=Math.round(430/0.4643);
 const OUT=resolve('./screenshots/usecase04'); if(!existsSync(OUT)) mkdirSync(OUT,{recursive:true});
 const SHOTS=[
-  {name:'p-lookbook', y:620},   // 룩북 사진 + POPUP DURATION / OPENING HOURS
-  {name:'p-gift',     y:1250},  // SPECIAL GIFT 갤러리
-  {name:'p-map',      y:1819},  // RESERVATION 버튼 + 지도 (페이지 하단 한계)
+  {name:'p-lookbook', y:712},   // 룩북 사진 + POPUP DURATION / OPENING HOURS
+    // SPECIAL GIFT 갤러리
+    // RESERVATION 버튼 + 지도 (페이지 하단 한계)
 ];
 const b=await chromium.launch({headless:true});
 const c=await b.newContext({viewport:{width:W,height:H},locale:'ko-KR',deviceScaleFactor:3});
