@@ -1,0 +1,27 @@
+{
+  "pageHeight": 3185,
+  "VIEWPORT_W": 430,
+  "VIEWPORT_H": 926,
+  "shots": [
+    {
+      "i": 0,
+      "y": 0,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase05/gala430-s00.png"
+    },
+    {
+      "i": 1,
+      "y": 926,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase05/gala430-s01.png"
+    },
+    {
+      "i": 2,
+      "y": 1852,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase05/gala430-s02.png"
+    },
+    {
+      "i": 3,
+      "y": 2259,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase05/gala430-s03.png"
+    }
+  ]
+}
