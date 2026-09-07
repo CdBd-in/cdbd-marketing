@@ -6,7 +6,7 @@ import { mkdirSync, existsSync } from 'fs';
 import { resolve, join } from 'path';
 
 const URL = 'https://www.cdbd.in/templates/invitation/seminar/viewer';
-const W = 378, CLIP_H = 888, ANCHOR = 72.4, ZOOM = 17;
+const W = 378, CLIP_H = 888, ANCHOR = 70.0, ZOOM = 17;
 const OUT = resolve('./screenshots/usecase06/en');
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });
 
