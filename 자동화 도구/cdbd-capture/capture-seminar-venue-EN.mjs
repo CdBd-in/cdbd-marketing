@@ -22,7 +22,7 @@ const MAP = new Map([
   ['*호텔 로비 도착 시 비상등을 켜주시면,', '*On arrival, switch on your hazard'],
   ['사전 등록된 정보를 바탕으로', 'lights and our VIP valet team will'],
   ['VIP 전담 발렛 서비스가 제공됩니다', 'assist you using your registration'],
-  ['강남구 테헤란로5길 7 KG Tower', '7 Teheran-ro 5-gil, Gangnam-gu'],
+  ['강남구 테헤란로5길 7 KG Tower', 'KG Tower, 7 Teheran-ro 5-gil'],
   ['행사 장소 확인하기', 'View Event Location'],
 ]);
 
