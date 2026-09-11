@@ -1,0 +1,22 @@
+{
+  "pageHeight": 2745,
+  "VIEWPORT_W": 430,
+  "VIEWPORT_H": 926,
+  "shots": [
+    {
+      "i": 0,
+      "y": 0,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase04/popup430-s00.png"
+    },
+    {
+      "i": 1,
+      "y": 926,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase04/popup430-s01.png"
+    },
+    {
+      "i": 2,
+      "y": 1819,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase04/popup430-s02.png"
+    }
+  ]
+}

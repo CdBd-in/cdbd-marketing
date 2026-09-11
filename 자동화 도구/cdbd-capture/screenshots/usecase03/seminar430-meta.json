@@ -1,0 +1,37 @@
+{
+  "pageHeight": 5237,
+  "VIEWPORT_W": 430,
+  "VIEWPORT_H": 926,
+  "shots": [
+    {
+      "i": 0,
+      "y": 0,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase03/seminar430-s00.png"
+    },
+    {
+      "i": 1,
+      "y": 926,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase03/seminar430-s01.png"
+    },
+    {
+      "i": 2,
+      "y": 1852,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase03/seminar430-s02.png"
+    },
+    {
+      "i": 3,
+      "y": 2778,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase03/seminar430-s03.png"
+    },
+    {
+      "i": 4,
+      "y": 3704,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase03/seminar430-s04.png"
+    },
+    {
+      "i": 5,
+      "y": 4311,
+      "f": "/Users/mustard/Documents/GitHub/design/cdbd-marketing/자동화 도구/cdbd-capture/screenshots/usecase03/seminar430-s05.png"
+    }
+  ]
+}
